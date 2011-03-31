@@ -3,11 +3,18 @@
 /**
  * Template Controller blog
  *
+ * @package SCSeed
+ * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
- * @copyrignt
  */
 class Controller_Blog_Comment extends Controller_Blog_Template {
 
+	/**
+	 * Shows comments tree
+	 *
+	 * @throws HTTP_Exception_404
+	 * @return void
+	 */
 	public function action_tree()
 	{
 		if( ! $this->_ajax)
@@ -49,4 +56,4 @@ class Controller_Blog_Comment extends Controller_Blog_Template {
 			->set('blog_comments', $comments_root->render_descendants('comments/list'));
 	}
 
-} // End Controller_blog
+} // End Controller_Blog_Comment

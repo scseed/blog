@@ -3,8 +3,9 @@
 /**
  * tag Model for Jelly ORM
  *
+ * @package SCSeed
+ * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
- * @copyrignt
  */
 class Model_Blog_Tag extends Jelly_Model {
 
@@ -22,4 +23,4 @@ class Model_Blog_Tag extends Jelly_Model {
 			))
 			->load_with(array('blog', 'tag'));
 	}
-} // End Model_tag
+} // End Model_Blog_Tag

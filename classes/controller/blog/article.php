@@ -3,27 +3,24 @@
 /**
  * Template Controller blog
  *
+ * @package SCSeed
+ * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
- * @copyrignt
  */
 class Controller_Blog_Article extends Controller_Blog_Template {
 
-	public function action_list()
-	{
-		$type = $this->request->param('type');
-
-		$blog_articles = Jelly::query('blog')->show_articles($type)->select();
-
-		$this->template->content = View::factory('frontend/content/blog/list')
-			->bind('blog_articles', $blog_articles);
-	}
-
+	/**
+	 * Shows blog article
+	 *
+	 * @throws HTTP_Exception_404
+	 * @return void
+	 */
 	public function action_show()
 	{
 		$id = (int) $this->request->param('id');
 
 		if( ! $id)
-		throw new HTTP_Exception_404();
+			throw new HTTP_Exception_404();
 
 		$article = Jelly::query('blog', $id)->active()->select();
 
@@ -35,4 +32,4 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			->bind('article', $article);
 	}
 
-} // End Controller_blog
+} // End Controller_Blog_Article

@@ -3,10 +3,11 @@
 /**
  * tag Model for Jelly ORM
  *
+ * @package SCSeed
+ * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
- * @copyrignt
  */
-class Model_tag extends Jelly_Model {
+class Model_Tag extends Jelly_Model {
 
 	/**
 	 * Initializating model meta information

@@ -3,8 +3,9 @@
 /**
  * Template Controller template
  *
+ * @package SCSeed
+ * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
- * @copyrignt
  */
 class Controller_Blog_Template extends Controller_Template {
 
@@ -22,4 +23,4 @@ class Controller_Blog_Template extends Controller_Template {
 		parent::after();
 	}
 
-} // End Controller_template
+} // End Controller_Blog_Template

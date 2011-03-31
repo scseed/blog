@@ -3,6 +3,7 @@
 /**
  * comment Model for Jelly ORM
  *
+ * @package SCSeed
  * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
@@ -37,4 +38,4 @@ class Model_Blog_Comment extends Jelly_Model_MPTT {
 
 		parent::initialize($meta);
 	}
-} // End Model_comment
+} // End Model_Blog_Comment

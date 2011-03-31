@@ -3,8 +3,9 @@
 /**
  * blog Model for Jelly ORM
  *
+ * @package SCSeed
+ * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
- * @copyrignt
  */
 class Model_Builder_Blog extends Jelly_Builder {
 
@@ -21,4 +22,4 @@ class Model_Builder_Blog extends Jelly_Builder {
 				break;
 		}
 	}
-} // End Model_blog
+} // End Model_Builder_Blog

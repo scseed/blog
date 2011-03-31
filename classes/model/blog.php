@@ -3,6 +3,7 @@
 /**
  * blog Model for Jelly ORM
  *
+ * @package SCSeed
  * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
@@ -53,6 +54,11 @@ class Model_Blog extends Jelly_Model {
 
 	}
 
+	/**
+	 * Gets article intro by its cut tag
+	 *
+	 * @return string
+	 */
 	public function intro()
 	{
 		$cut = strstr($this->text, '~~~', TRUE);
@@ -64,8 +70,13 @@ class Model_Blog extends Jelly_Model {
 		return $cut;
 	}
 
+	/**
+	 * Counts blog comments
+	 *
+	 * @return integer
+	 */
 	public function count_comments()
 	{
 		return $this->get('comments')->where('level', '!=', 0)->active()->count();
 	}
-} // End Model_blog
+} // End Model_Blog

@@ -3,6 +3,7 @@
 /**
  * type Model for Jelly ORM
  *
+ * @package SCSeed
  * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
@@ -23,4 +24,4 @@ class Model_Blog_Type extends Jelly_Model {
 				'blogs' => Jelly::field('HasMany'),
 			));
 	}
-} // End Model_type
+} // End Model_Blog_Type

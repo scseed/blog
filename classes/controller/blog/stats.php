@@ -3,11 +3,18 @@
 /**
  * Template Controller blog
  *
+ * @package SCSeed
+ * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
- * @copyrignt
  */
 class Controller_Blog_Stats extends Controller_Blog_Template {
 
+	/**
+	 * Shows blog stats
+	 *
+	 * @throws HTTP_Exception_404
+	 * @return void
+	 */
 	public function action_show()
 	{
 		if( ! $this->_ajax)
@@ -25,4 +32,4 @@ class Controller_Blog_Stats extends Controller_Blog_Template {
 			;
 	}
 
-} // End Controller_blog
+} // End Controller_Blog_Stats
