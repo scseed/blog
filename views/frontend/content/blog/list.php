@@ -13,7 +13,7 @@
 			)?>
 			/
 			<?php echo HTML::anchor(
-				Route::get('blog')->uri(array(
+				Route::get('blog_article')->uri(array(
 					'action' => 'show',
 					'id' => $blog_article->id
 				)),
@@ -23,7 +23,7 @@
 		<div class="text">
 			<?php echo $textile->TextileThis($blog_article->intro())?>
 			<p><?php echo HTML::anchor(
-				Route::get('blog')->uri(array(
+				Route::get('blog_article')->uri(array(
 					'action' => 'show',
 					'id' => $blog_article->id
 				)) . '#article_cut',
@@ -69,8 +69,8 @@
 				<div class="badge left">
 					<?php echo HTML::anchor(
 							Route::get('blog')->uri(array(
+								'controller' => 'article',
 								'action' => 'show',
-//								'type' => 'blog',
 								'id' => $blog_article->id
 							)) . '#comments',
 							HTML::image('i/icons/views.gif', array('alt' => 'Комментарии')),
@@ -80,8 +80,8 @@
 					<div class="title">
 						<?php echo HTML::anchor(
 							Route::get('blog')->uri(array(
+								'controller' => 'article',
 								'action' => 'show',
-//								'type' => 'blog',
 								'id' => $blog_article->id
 							)) . '#comments',
 							$blog_article->count_comments(),
