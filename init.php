@@ -36,7 +36,9 @@ Route::set('blog_stats', '<action>/<id>')
 		'controller' => 'stats',
 		'action' => 'show',
 ));
-Route::set('blog_comment', 'comment(/<action>(/<id>))')
+Route::set('blog_comment', 'comment(/<action>(/<id>(/<place>)))', array(
+	'place' => '(inside|next)'
+))
 	->defaults(array(
 		'directory' => 'blog',
 		'controller' => 'comment',

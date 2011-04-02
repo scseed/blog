@@ -68,7 +68,7 @@
 				</div>
 				<div class="badge left">
 					<?php echo HTML::anchor(
-							Route::get('blog')->uri(array(
+							Route::get('blog_article')->uri(array(
 								'controller' => 'article',
 								'action' => 'show',
 								'id' => $blog_article->id
@@ -79,7 +79,7 @@
 					?>
 					<div class="title">
 						<?php echo HTML::anchor(
-							Route::get('blog')->uri(array(
+							Route::get('blog_article')->uri(array(
 								'controller' => 'article',
 								'action' => 'show',
 								'id' => $blog_article->id

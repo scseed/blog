@@ -30,7 +30,12 @@ class Model_Blog_Comment extends Jelly_Model_MPTT {
 				'date_create' => Jelly::field('Timestamp', array(
 					'auto_now_create' => TRUE,
 				)),
-				'text' => Jelly::field('Text'),
+				'text' => Jelly::field('Text', array(
+					'empty' => FALSE,
+					'rules' => array(
+						'not_empty' => array(TRUE)
+					),
+				)),
 				'is_active' => Jelly::field('Boolean', array(
 					'default' => TRUE
 				)),
