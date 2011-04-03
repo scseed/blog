@@ -30,7 +30,7 @@ Route::set('blog_tag', 'tag(/<action>(/<tag_name>)(/<id>))', array(
 		'controller' => 'tag',
 		'action' => 'tree',
 ));
-Route::set('blog_stats', '<action>/<id>')
+Route::set('blog_stats', 'stats/<action>/<id>')
 	->defaults(array(
 		'directory' => 'blog',
 		'controller' => 'stats',

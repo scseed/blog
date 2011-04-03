@@ -39,7 +39,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		$type = $this->request->param('type', NULL);
 
 		if( ! $type)
-			throw new HTTP_Exception_404();
+			throw new HTTP_Exception_404('Blog type is not specified');
 
 		$articles = Jelly::query('blog')->active()->where('blog:type.name', '=', HTML::chars($type))->select();
 
