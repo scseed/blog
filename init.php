@@ -1,7 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
+/**
+ * Load language conf
+ */
+$langs = Controller_Page::langs();
 
-Route::set('blog', 'blog(/<action>(/<type>)(/<id>))', array(
+Route::set('blog', '(<lang>/)blog(/<action>(/<type>)(/<id>))', array(
+	'lang'       => $langs,
 	'id' => '([0-9]*)',
 	'type' => '([a-z]*)',
 ))
@@ -12,7 +17,8 @@ Route::set('blog', 'blog(/<action>(/<type>)(/<id>))', array(
 		'type' => NULL,
 		'id' => NULL,
 ));
-Route::set('blog_article', 'article(/<action>(/<id>))', array(
+Route::set('blog_article', '(<lang>/)article(/<action>(/<id>))', array(
+	'lang'       => $langs,
 	'id' => '([0-9]*)',
 ))
 	->defaults(array(
@@ -21,7 +27,8 @@ Route::set('blog_article', 'article(/<action>(/<id>))', array(
 		'action' => 'show',
 		'id' => NULL,
 ));
-Route::set('blog_tag', 'tag(/<action>(/<tag_name>)(/<id>))', array(
+Route::set('blog_tag', '(<lang>/)tag(/<action>(/<tag_name>)(/<id>))', array(
+	'lang'       => $langs,
 	'tag_name' => '([a-zа-яA-ZА-Я]*)',
 	'id' => '([0-9]*)',
 ))
@@ -30,13 +37,16 @@ Route::set('blog_tag', 'tag(/<action>(/<tag_name>)(/<id>))', array(
 		'controller' => 'tag',
 		'action' => 'tree',
 ));
-Route::set('blog_stats', 'stats/<action>/<id>')
+Route::set('blog_stats', '(<lang>/)stats/<action>/<id>', array(
+	'lang'       => $langs,
+))
 	->defaults(array(
 		'directory' => 'blog',
 		'controller' => 'stats',
 		'action' => 'show',
 ));
-Route::set('blog_comment', 'comment(/<action>(/<id>(/<place>)))', array(
+Route::set('blog_comment', '(<lang>/)comment(/<action>(/<id>(/<place>)))', array(
+	'lang'       => $langs,
 	'place' => '(inside|next)'
 ))
 	->defaults(array(
