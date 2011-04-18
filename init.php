@@ -1,9 +1,8 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-
 Route::set('blog', 'blog(/<action>(/<type>)(/<id>))', array(
 	'id' => '([0-9]*)',
-	'type' => '([a-z]*)',
+	'type' => '([_a-z0-9]*)',
 ))
 	->defaults(array(
 		'directory' => 'blog',
@@ -22,7 +21,7 @@ Route::set('blog_article', 'article(/<action>(/<id>))', array(
 		'id' => NULL,
 ));
 Route::set('blog_tag', 'tag(/<action>(/<tag_name>)(/<id>))', array(
-	'tag_name' => '([a-zа-яA-ZА-Я]*)',
+	'tag_name' => '([_a-zа-яA-ZА-Я]*)',
 	'id' => '([0-9]*)',
 ))
 	->defaults(array(

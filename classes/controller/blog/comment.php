@@ -48,7 +48,7 @@ class Controller_Blog_Comment extends Controller_Blog_Template {
 			$comments_root = Jelly::factory('blog_comment')
 				->set(array(
 					'blog' => $blog_id,
-					'text' => ' '
+					'text' => '-'
 				))->save();
 			$comments_root->insert_as_new_root($scope);
 			$place = 'inside';

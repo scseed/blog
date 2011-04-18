@@ -52,11 +52,78 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			'type'  => NULL,
 			'title' => NULL,
 			'text'  => NULL,
+			'tags'  => NULL,
 		);
+		$errors = NULL;
 
 		if($_POST)
 		{
-			$article = Jelly::factory('')
+			$post = Arr::extract($_POST, array_keys($post));
+
+			$post['text'] = HTML::chars($post['text']);
+
+			$post['author'] = $this->_user->id;
+
+			$article = Jelly::factory('blog');
+
+			unset($post['tags']);
+
+			$article->set($post);
+
+			try
+			{
+				$article->save();
+			}
+			catch( Jelly_Validation_Exception $e)
+			{
+				$errors = $e->errors('common_validation');
+			}
+
+			$_tags = explode(',', Arr::get($_POST, 'tags'));
+
+			if(is_string($_tags))
+			{
+				$_tags[] = $_tags;
+			}
+
+			$tags = array();
+			foreach($_tags as $_tag)
+			{
+				$_tag = HTML::chars(trim($_tag));
+
+				$tag = Jelly::query('tag')->where('name', '=', $_tag)->limit(1)->select();
+
+				if( ! $tag->loaded())
+				{
+					$tag = Jelly::factory('tag');
+					$tag->name = $_tag;
+
+					try
+					{
+						$tag->save();
+					}
+					catch(Jelly_Validation_Exception $e)
+					{
+						break;
+					}
+				}
+
+				$tags[] = $tag;
+			}
+
+			if($article->loaded())
+			{
+
+				$article->add('tags', $tags);
+				$article->save();
+			}
+
+			if(! $errors)
+			{
+				$this->request->redirect(Route::url('blog_article', array('action' => 'show', 'id' => $article->id)));
+			}
+
+			$post['tags'] = implode(',', $_tags);
 		}
 
 		StaticCss::instance()
@@ -69,6 +136,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		$this->template->page_title = __('New Blog Article');
 		$this->template->content = View::factory('frontend/form/blog/new')
 			->bind('types', $types)
+			->bind('post', $post)
 		;
 	}
 

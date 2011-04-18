@@ -42,6 +42,7 @@ class Model_Blog extends Jelly_Model {
 					'default' => FALSE,
 				)),
 				'score' => Jelly::field('Integer', array(
+					'default' => 0,
 				)),
 				'tags' => Jelly::field('ManyToMany', array(
 					'trough' => 'blog_tags',

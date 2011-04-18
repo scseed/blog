@@ -33,7 +33,7 @@ class Model_Blog_Comment extends Jelly_Model_MPTT {
 				'text' => Jelly::field('Text', array(
 					'empty' => FALSE,
 					'rules' => array(
-						'not_empty' => array(TRUE)
+						array('not_empty')
 					),
 				)),
 				'is_active' => Jelly::field('Boolean', array(
