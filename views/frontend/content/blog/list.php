@@ -53,8 +53,8 @@
 								'action' => 'profile',
 								'id' => $blog_article->author->id,
 							)),
-							$blog_article->author->user_data->last_name,
-							array('title' => $blog_article->author->user_data->last_name)
+							$blog_article->author->name,
+							array('title' => $blog_article->author->name)
 						)?>
 					</div>
 				</div>

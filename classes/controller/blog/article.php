@@ -9,6 +9,18 @@
  */
 class Controller_Blog_Article extends Controller_Blog_Template {
 
+	public function before()
+	{
+		switch($this->request->action())
+		{
+			case 'new':
+				$this->_auth_required = TRUE;
+				break;
+		}
+
+		parent::before();
+	}
+
 	/**
 	 * Shows blog article
 	 *
@@ -30,6 +42,34 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		$this->template->title = $article->title;
 		$this->template->content = View::factory('frontend/content/blog/article')
 			->bind('article', $article);
+	}
+
+	public function action_new()
+	{
+		$types = Jelly::query('blog_type')->select();
+
+		$post = array(
+			'type'  => NULL,
+			'title' => NULL,
+			'text'  => NULL,
+		);
+
+		if($_POST)
+		{
+			$article = Jelly::factory('')
+		}
+
+		StaticCss::instance()
+			->addCss('/js/libs/markitup/markitup/skins/markitup/style.css')
+			->addCss('/js/libs/textile/style.css');
+		StaticJs::instance()
+			->addJs('/js/libs/markitup/markitup/jquery.markitup.js')
+			->addJs('/js/libs/textile/set.js');
+
+		$this->template->page_title = __('New Blog Article');
+		$this->template->content = View::factory('frontend/form/blog/new')
+			->bind('types', $types)
+		;
 	}
 
 } // End Controller_Blog_Article

@@ -20,6 +20,11 @@ class Model_Builder_Blog extends Jelly_Builder {
 					->where('score', '>', 10)
 				;
 				break;
+			case 'my':
+//				exit(Debug::vars($this->user) . View::factory('profiler/stats'));
+				return $this
+					->where('author', '=', $this->user['member_id']);
+				break;
 		}
 	}
 } // End Model_Builder_Blog

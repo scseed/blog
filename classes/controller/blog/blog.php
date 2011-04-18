@@ -24,6 +24,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 
 		$blog_articles = Jelly::query('blog')->show_articles($type)->select();
 
+		$this->template->page_title = __('blog_list_'.$type);
 		$this->template->content = View::factory('frontend/content/blog/list')
 			->bind('blog_articles', $blog_articles);
 	}
@@ -74,6 +75,13 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 
 		$this->template->content = View::factory('frontend/content/blog/name')->bind('blog_type', $blog_type);
 
+	}
+
+	public function action_my()
+	{
+		$this->_auth_required = TRUE;
+		$this->template->page_title = __('Мой блог');
+		$this->template->content = View::factory('frontend/content/blog/my');
 	}
 
 } // End Controller_Blog_Blog

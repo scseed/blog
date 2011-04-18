@@ -7,7 +7,7 @@
  * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
-class Controller_Blog_Template extends Controller_Template {
+abstract class Controller_Blog_Template extends Controller_Template {
 
 	/**
 	 * Loading Textile support
