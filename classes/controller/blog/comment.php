@@ -9,6 +9,15 @@
  */
 class Controller_Blog_Comment extends Controller_Blog_Template {
 
+	public function after()
+	{
+		if($this->_user == NULL)
+		{
+			$this->template->content = NULL;
+		}
+		parent::after();
+	}
+
 	/**
 	 * Shows comments tree
 	 *

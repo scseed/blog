@@ -21,8 +21,8 @@ Route::set('blog_article', 'article(/<action>(/<id>))', array(
 		'id' => NULL,
 ));
 Route::set('blog_tag', 'tag(/<action>(/<tag_name>)(/<id>))', array(
-	'tag_name' => '([_a-zа-яA-ZА-Я]*)',
-	'id' => '([0-9]*)',
+	'tag_name' => '([_a-zа-яA-ZА-Я%\s]+[0-9]*)',
+	'id' => '([0-9]+)',
 ))
 	->defaults(array(
 		'directory' => 'blog',

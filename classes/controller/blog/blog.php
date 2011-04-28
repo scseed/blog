@@ -25,8 +25,20 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		$blog_articles = Jelly::query('blog')->show_articles($type)->select();
 
 		$this->template->page_title = __('blog_list_'.$type);
-		$this->template->content = View::factory('frontend/content/blog/list')
-			->bind('blog_articles', $blog_articles);
+
+		if(count($blog_articles) == 1)
+		{
+			$this->template->content = Request::factory(Route::url('blog_article', array(
+				'action' => 'show',
+				'id' => $blog_articles[0]->id
+			)))->execute()->body();
+		}
+		else
+		{
+			$this->template->content = View::factory('frontend/content/blog/list')
+				->bind('blog_articles', $blog_articles);
+		}
+
 	}
 
 	/**

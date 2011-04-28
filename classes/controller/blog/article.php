@@ -14,6 +14,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		switch($this->request->action())
 		{
 			case 'new':
+			case 'edit':
 				$this->_auth_required = TRUE;
 				break;
 		}
@@ -134,6 +135,62 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			->addJs('/js/libs/textile/set.js');
 
 		$this->template->page_title = __('New Blog Article');
+		$this->template->content = View::factory('frontend/form/blog/new')
+			->bind('types', $types)
+			->bind('post', $post)
+		;
+	}
+
+	public function action_edit()
+	{
+		$id = (int) $this->request->param('id');
+
+		if( ! $id)
+			throw new HTTP_Exception_404();
+
+		$article = Jelly::query('blog', $id)->active()->select();
+
+		if( ! $article->loaded())
+			throw new HTTP_Exception_404();
+
+		if($this->_user->id != $article->author->id)
+			throw new HTTP_Exception_401();
+
+		$types = Jelly::query('blog_type')->select();
+
+		$post = array(
+			'type'  => $article->type->id,
+			'title' => $article->title,
+			'text'  => $article->text,
+			'tags'  => implode(', ', Arr::pluck($article->tags->as_array('name'), 'name')),
+		);
+		$errors = NULL;
+
+		if($_POST)
+		{
+			$post = Arr::extract($_POST, array_keys($post));
+			unset($post['tags']);
+
+			$article->set($post);
+
+			try
+			{
+				$article->save();
+				$this->request->redirect(Route::url('blog_article', array('action' => 'show', 'id' => $article->id)));
+			}
+			catch(Jelly_Validation_Exception $e)
+			{
+				$errors = $e->errors('common_validation');
+			}
+		}
+
+		StaticCss::instance()
+			->addCss('/js/libs/markitup/markitup/skins/markitup/style.css')
+			->addCss('/js/libs/textile/style.css');
+		StaticJs::instance()
+			->addJs('/js/libs/markitup/markitup/jquery.markitup.js')
+			->addJs('/js/libs/textile/set.js');
+
 		$this->template->content = View::factory('frontend/form/blog/new')
 			->bind('types', $types)
 			->bind('post', $post)
