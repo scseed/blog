@@ -39,10 +39,17 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 		if( ! $article->loaded())
 			throw new HTTP_Exception_404();
+		$comments = Request::factory(Route::get('blog_comment')->uri(array(
+				'action' => 'tree',
+				'id' => $article->id,
+				'visibility' => ($article->allow_comments) ? 'show' : 'hide'
+			)))->execute()->body();
 
 		$this->template->title = $article->title;
 		$this->template->content = View::factory('frontend/content/blog/article')
-			->bind('article', $article);
+			->bind('article', $article)
+			->bind('comments', $comments)
+		;
 	}
 
 	public function action_new()
@@ -75,7 +82,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			{
 				$article->save();
 			}
-			catch( Jelly_Validation_Exception $e)
+			catch(Jelly_Validation_Exception $e)
 			{
 				$errors = $e->errors('common_validation');
 			}

@@ -16,8 +16,5 @@
 	)))->execute()->body()?>
 </div>
 <div id="comments">
-	<?php echo Request::factory(Route::get('blog_comment')->uri(array(
-		'action' => 'tree',
-		'id' => $article->id
-	)))->execute()->body()?>
+	<?php echo $comments?>
 </div>

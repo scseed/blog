@@ -9,14 +9,14 @@
  */
 class Controller_Blog_Comment extends Controller_Blog_Template {
 
-	public function after()
-	{
-		if($this->_user == NULL)
-		{
-			$this->template->content = NULL;
-		}
-		parent::after();
-	}
+//	public function before()
+//	{
+//		parent::before();
+//		if($this->_user == NULL)
+//		{
+//			$this->_user_logged_in = FALSE;
+//		}
+//	}
 
 	/**
 	 * Shows comments tree
@@ -26,6 +26,15 @@ class Controller_Blog_Comment extends Controller_Blog_Template {
 	 */
 	public function action_tree()
 	{
+		$allow_comments = $this->request->param('action');
+
+		if($allow_comments == 'hide')
+		{
+			$this->template->content = NULL;
+			exit();
+		}
+
+
 		if( ! $this->_ajax)
 			throw new HTTP_Exception_404();
 
@@ -72,13 +81,10 @@ class Controller_Blog_Comment extends Controller_Blog_Template {
 				$place = 'inside';
 		}
 
-//		exit(Debug::vars($last_comment) . View::factory('profiler/stats'));
-
 		$this->template->content = View::factory('frontend/content/blog/comments')
 			->set('blog_comments', $comments_root->render_descendants('comments/list'))
 			->bind('id', $last_comment->id)
 			->bind('blog_id', $blog_id)
-			->set('author_id', 1)
 			->bind('place', $place)
 			;
 	}
@@ -88,13 +94,15 @@ class Controller_Blog_Comment extends Controller_Blog_Template {
 		$comment_root_id = $this->request->param('id', NULL);
 		$comment_place   = $this->request->param('place', 'next');
 
+
 		if( ! $comment_root_id)
 			throw new HTTP_Exception_404();
 
 		if($_POST)
 		{
-			$post    = Arr::extract($_POST, array('text', 'blog', 'author'));
+			$post    = Arr::extract($_POST, array('text', 'blog'));
 			$post['text'] = trim(HTML::chars($post['text']));
+			$post['author'] = $this->_user['member_id'];
 			if( ! $post['text'])
 				$this->request->redirect(Request::initial()->referrer().'#comment_'.$comment_root_id);
 
