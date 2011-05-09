@@ -1,10 +1,12 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
 <?php echo HTML::anchor(
 	Route::url('blog_article', array('action' => 'new')),
-	'Новая статья'
+	'Новая статья',
+	array('class' => 'button_link')
 )?>
-<br />
+&nbsp;
 <?php echo HTML::anchor(
 	Route::url('blog', array('action' => 'list', 'type' => 'my')),
-	'Собственные статьи'
+	'Собственные статьи',
+	array('class' => 'button_link')
 )?>

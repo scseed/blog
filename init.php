@@ -35,11 +35,13 @@ Route::set('blog_stats', 'stats/<action>/<id>')
 		'controller' => 'stats',
 		'action' => 'show',
 ));
-Route::set('blog_comment', 'comment(/<action>(/<id>(/<place>)))', array(
-	'place' => '(inside|next)'
+Route::set('blog_comment', 'comment(/<action>(/<id>(/<place>)(/<visibility>)))', array(
+	'place' => '(inside|next)',
+	'visibility' => '(show|hide)'
 ))
 	->defaults(array(
 		'directory' => 'blog',
 		'controller' => 'comment',
 		'action' => 'tree',
+		'visibility' => 'show',
 ));

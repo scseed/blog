@@ -19,7 +19,7 @@ foreach ($nodes as $node): ?>
 				<div class="author"><?php echo $node->author->user_data->last_name?></div>
 				<div class="date_create"><?php echo date('r', $node->date_create)?></div>
 				<div class="actions">
-					<div class="add_comment" prev_id="<?php echo $node->id?>" place="inside" title="Ответить на комментарий">[ &larr; ]</div>
+					<?php if(isset($_user)):?><div class="add_comment" prev_id="<?php echo $node->id?>" place="inside" title="Ответить на комментарий">[ &larr; ]</div><?php endif;?>
 				</div>
 			</div>
 			<div class="text"><?php echo $node->text?></div>
