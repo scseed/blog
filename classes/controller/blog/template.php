@@ -16,10 +16,6 @@ abstract class Controller_Blog_Template extends Controller_Template {
 	 */
 	public function after()
 	{
-		require_once Kohana::find_file('vendor', 'textile' . DIRECTORY_SEPARATOR . 'textile');
-
-		if(is_object($this->template->content))
-			$this->template->content->textile = new Textile();
 
 		parent::after();
 	}
