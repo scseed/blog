@@ -8,7 +8,7 @@ $langs = Controller_Page::langs();
 Route::set('blog', '(<lang>/)blog(/<action>(/<type>)(/<id>))', array(
 	'lang'       => $langs,
 	'id' => '([0-9]*)',
-	'type' => '([a-z]*)',
+	'type' => '([_a-z0-9]*)',
 ))
 	->defaults(array(
 		'directory' => 'blog',
@@ -44,13 +44,4 @@ Route::set('blog_stats', '(<lang>/)stats/<action>/<id>', array(
 		'directory' => 'blog',
 		'controller' => 'stats',
 		'action' => 'show',
-));
-Route::set('blog_comment', '(<lang>/)comment(/<action>(/<id>(/<place>)))', array(
-	'lang'       => $langs,
-	'place' => '(inside|next)'
-))
-	->defaults(array(
-		'directory' => 'blog',
-		'controller' => 'comment',
-		'action' => 'tree',
 ));

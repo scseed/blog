@@ -7,7 +7,7 @@
  * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
-class Controller_Blog_Template extends Controller_Template {
+abstract class Controller_Blog_Template extends Controller_Template {
 
 	/**
 	 * Loading Textile support
@@ -16,9 +16,6 @@ class Controller_Blog_Template extends Controller_Template {
 	 */
 	public function after()
 	{
-		require_once Kohana::find_file('vendor', 'textile' . DIRECTORY_SEPARATOR . 'textile');
-
-		$this->template->content->textile = new Textile();
 
 		parent::after();
 	}
