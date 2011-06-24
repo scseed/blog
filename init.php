@@ -3,7 +3,7 @@
 /**
  * Load language conf
  */
-$langs = Controller_Page::langs();
+$langs = Page::instance()->system_langs();
 
 Route::set('blog', '(<lang>/)blog(/<action>(/<type>)(/<id>))', array(
 	'lang'       => $langs,
