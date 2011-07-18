@@ -9,22 +9,9 @@
  */
 class Model_Builder_Blog extends Jelly_Builder {
 
-	public function show_articles($type = NULL)
+	public function on_main()
 	{
-		switch($type)
-		{
-			case 'mainpage':
-				return $this
-					->active()
-					->where('is_on_main', '=', TRUE)
-					->where('score', '>', 10)
-				;
-				break;
-			case 'my':
-//				exit(Debug::vars($this->user) . View::factory('profiler/stats'));
-				return $this
-					->where('author', '=', $this->user['member_id']);
-				break;
-		}
+		return $this->active()->where('is_on_main', '=', TRUE);
 	}
+
 } // End Model_Builder_Blog
