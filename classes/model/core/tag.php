@@ -7,7 +7,7 @@
  * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
-class Model_Tag extends Model_Core_Tag {
+class Model_Core_Tag extends Jelly_Model {
 
 	/**
 	 * Initializating model meta information
@@ -16,8 +16,10 @@ class Model_Tag extends Model_Core_Tag {
 	 */
 	public static function initialize(Jelly_Meta $meta)
 	{
-		$meta->field('blogs', 'ManyToMany', array('through' => 'blogs_tags'));
-		
-		parent::initialize($meta);
+		$meta->table('tags')
+			->fields(array(
+				'id' => Jelly::field('Primary'),
+				'name' => Jelly::field('String'),
+			));
 	}
 } // End Model_tag

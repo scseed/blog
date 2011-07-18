@@ -1,32 +1,32 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
+<div>
+<?php echo HTML::anchor(
+	Route::url('blog_article', array('action' => 'new', 'category' => $category->name, 'lang' => I18n::lang())),
+	__('Написать статью в блог'),
+	array('class' => 'button')
+)?>
+</div>
 <div id="posts">
-<?php foreach($blog_articles as $blog_article):?>
-	<div class="post">
-		<h2>
-			<?php echo HTML::anchor(
-				Route::get('blog')->uri(array(
-					'action' => 'show',
-					'type' => $blog_article->type->name
-				)),
-				$blog_article->type->description,
-				array('title' => $blog_article->type->description)
-			)?>
-			/
-			<?php echo HTML::anchor(
-				Route::get('blog_article')->uri(array(
-					'action' => 'show',
+<?php
+foreach($blog_articles as $blog_article):
+	$article_url = Route::get('blog')->uri(array(
+					'category' => $blog_article->category->name,
 					'id' => $blog_article->id
-				)),
+				));
+	$user_avatar = ($blog_article->author->has_avatar)
+		? 'media/images/avatars/'.$blog_article->author->id.'/thumb.jpg'
+		: 'i/stubs/avatar_comment.png';
+?>
+	<div class="post">
+		<h2><?php echo HTML::anchor(
+				$article_url,
 				$blog_article->title,
 				array('title' => $blog_article->title))?>
 		</h2>
 		<div class="text">
 			<?php echo $textile->TextileThis($blog_article->intro())?>
 			<p><?php echo HTML::anchor(
-				Route::get('blog_article')->uri(array(
-					'action' => 'show',
-					'id' => $blog_article->id
-				)) . '#article_cut',
+				$article_url . '#article_cut',
 				'Читать дальше &rarr;',
 				array('title' => $blog_article->title)
 			)?></p>
@@ -37,23 +37,21 @@
 				<div class="badge">
 					<?php echo
 						HTML::anchor(
-							Route::get('default')->uri(array(
-								'controller' => 'user',
-								'action' => 'profile',
+							Route::get('profile')->uri(array(
+								'action'     => 'show',
 								'id' => $blog_article->author->id,
 							)),
-							HTML::image('i/icons/user.gif', array('alt' => 'Автор')),
+							HTML::image($user_avatar, array('alt' => 'Автор')),
 							array('title' => 'Автор статьи')
 						);
 					?>
 					<div class="title">
 						<?php echo HTML::anchor(
-							Route::get('default')->uri(array(
-								'controller' => 'user',
-								'action' => 'profile',
+							Route::get('profile')->uri(array(
+								'action'     => 'show',
 								'id' => $blog_article->author->id,
 							)),
-							$blog_article->author->name,
+							$blog_article->author->fullname,
 							array('title' => $blog_article->author->name)
 						)?>
 					</div>
@@ -68,23 +66,18 @@
 				</div>
 				<div class="badge left">
 					<?php echo HTML::anchor(
-							Route::get('blog_article')->uri(array(
-								'controller' => 'article',
-								'action' => 'show',
-								'id' => $blog_article->id
-							)) . '#comments',
+							$article_url. '#comments',
 							HTML::image('i/icons/views.gif', array('alt' => 'Комментарии')),
 							array('title' => 'Комментарии')
 						);
 					?>
 					<div class="title">
 						<?php echo HTML::anchor(
-							Route::get('blog_article')->uri(array(
-								'controller' => 'article',
-								'action' => 'show',
-								'id' => $blog_article->id
-							)) . '#comments',
-							$blog_article->count_comments(),
+							$article_url . '#comments',
+							Jelly::query('comment')
+								->where('type', '=', 'blog')
+								->where('object_id', '=', $blog_article->id)
+								->count(),
 							array('title' => 'Комментарии')
 						)?>
 					</div>

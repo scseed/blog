@@ -5,37 +5,28 @@
  */
 $langs = Page::instance()->system_langs();
 
-Route::set('blog', '(<lang>/)blog(/<action>(/<type>)(/<id>))', array(
+Route::set('blog', '(<lang>/)blog/<category>(/<id>)(/<action>)', array(
 	'lang'       => $langs,
-	'id' => '([0-9]*)',
-	'type' => '([_a-z0-9]*)',
+	'category' => '[\w_]+',
+	'id'       => '\d+',
+	'action'   => '\w+'
 ))
 	->defaults(array(
 		'directory' => 'blog',
 		'controller' => 'blog',
 		'action' => 'show',
-		'type' => NULL,
-		'id' => NULL,
+		'category' => NULL,
 ));
-Route::set('blog_article', '(<lang>/)article(/<action>(/<id>))', array(
-	'lang'       => $langs,
-	'id' => '([0-9]*)',
+
+Route::set('blog_article', '(<lang>/)article(/<action>(/<category>)(/<id>))', array(
+	'lang'     => $langs,
+	'id'       => '\d+',
+	'category' => '[^\d][\w_]+',
 ))
 	->defaults(array(
 		'directory' => 'blog',
 		'controller' => 'article',
-		'action' => 'show',
-		'id' => NULL,
-));
-Route::set('blog_tag', '(<lang>/)tag(/<action>(/<tag_name>)(/<id>))', array(
-	'lang'       => $langs,
-	'tag_name' => '([a-zа-яA-ZА-Я]*)',
-	'id' => '([0-9]*)',
-))
-	->defaults(array(
-		'directory' => 'blog',
-		'controller' => 'tag',
-		'action' => 'tree',
+		'action' => '',
 ));
 Route::set('blog_stats', '(<lang>/)stats/<action>/<id>', array(
 	'lang'       => $langs,
@@ -44,4 +35,14 @@ Route::set('blog_stats', '(<lang>/)stats/<action>/<id>', array(
 		'directory' => 'blog',
 		'controller' => 'stats',
 		'action' => 'show',
+));
+Route::set('tags', '(<lang>/)tags(/<type>)/<object_id>', array(
+	'lang'      => $langs,
+	'type'      => '\w+',
+	'object_id' => '[-_\w]+',
+))
+	->defaults(array(
+		'directory' => 'blog',
+		'controller' => 'tags',
+		'action' => 'list',
 ));

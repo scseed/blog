@@ -9,15 +9,18 @@
  */
 abstract class Controller_Blog_Template extends Controller_Template {
 
-	/**
-	 * Loading Textile support
-	 *
-	 * @return void
-	 */
-	public function after()
+	public function before()
 	{
+		switch($this->request->action())
+		{
+			case 'new':
+			case 'edit':
+				$this->_auth_required = TRUE;
+				break;
+		}
 
-		parent::after();
+		parent::before();
+		StaticCss::instance()->add('css/blog.css');
 	}
 
 } // End Controller_Blog_Template

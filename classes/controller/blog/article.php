@@ -11,15 +11,19 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 	public function before()
 	{
-		switch($this->request->action())
+		parent::before();
+
+		if($this->request->action() == 'new' OR
+		   $this->request->action() == 'edit')
 		{
-			case 'new':
-			case 'edit':
-				$this->_auth_required = TRUE;
-				break;
+			StaticCss::instance()
+				->add('/js/libs/markitup/markitup/skins/markitup/style.css')
+				->add('/js/libs/textile/style.css');
+			StaticJs::instance()
+				->add('/js/libs/markitup/markitup/jquery.markitup.js')
+				->add('/js/libs/textile/set.js');
 		}
 
-		parent::before();
 	}
 
 	/**
@@ -54,29 +58,47 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 	public function action_new()
 	{
-		$types = Jelly::query('blog_type')->select();
+		$category_name = HTML::chars($this->request->param('category'));
+
+		if(! $category_name)
+			throw new HTTP_Exception_404('Category is not defined');
+
+		$categories = Jelly::query('blog_category')->select();
+
+		$current_category = NULL;
+		foreach($categories as $category)
+		{
+			if($category->name == $category_name)
+			{
+				$current_category = $category;
+			}
+		}
+
+		if( ! $current_category)
+			throw new HTTP_Exception_404('Category is not exists');
+
 
 		$post = array(
-			'type'  => NULL,
-			'title' => NULL,
-			'text'  => NULL,
-			'tags'  => NULL,
+			'article' => array(
+				'category' => NULL,
+				'title'    => NULL,
+				'text'     => NULL,
+			),
+			'tags'     => NULL,
 		);
 		$errors = NULL;
 
-		if($_POST)
+		if($this->request->method() === HTTP_Request::POST)
 		{
-			$post = Arr::extract($_POST, array_keys($post));
+			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
-			$post['text'] = HTML::chars($post['text']);
+			$article_data['text'] = HTML::chars($article_data['text']);
 
-			$post['author'] = $this->_user->id;
+			$article_data['author'] = $this->_user->id;
 
 			$article = Jelly::factory('blog');
 
-			unset($post['tags']);
-
-			$article->set($post);
+			$article->set($article_data);
 
 			try
 			{
@@ -87,63 +109,25 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 				$errors = $e->errors('common_validation');
 			}
 
-			$_tags = explode(',', Arr::get($_POST, 'tags'));
+			$_tags = explode(',', preg_replace('/([,;][\s]?)/', ',', Arr::get($this->request->post(), 'tags')));
 
 			if(is_string($_tags))
 			{
 				$_tags[] = $_tags;
 			}
 
-			$tags = array();
-			foreach($_tags as $_tag)
-			{
-				$_tag = HTML::chars(trim($_tag));
+			if( ! $errors)
+				$this->_save_tags($article, $_tags);
 
-				$tag = Jelly::query('tag')->where('name', '=', $_tag)->limit(1)->select();
-
-				if( ! $tag->loaded())
-				{
-					$tag = Jelly::factory('tag');
-					$tag->name = $_tag;
-
-					try
-					{
-						$tag->save();
-					}
-					catch(Jelly_Validation_Exception $e)
-					{
-						break;
-					}
-				}
-
-				$tags[] = $tag;
-			}
-
-			if($article->loaded())
-			{
-
-				$article->add('tags', $tags);
-				$article->save();
-			}
-
-			if(! $errors)
-			{
-				$this->request->redirect(Route::url('blog_article', array('action' => 'show', 'id' => $article->id)));
-			}
+			$post['article'] = $article_data;
 
 			$post['tags'] = implode(',', $_tags);
 		}
 
-		StaticCss::instance()
-			->addCss('/js/libs/markitup/markitup/skins/markitup/style.css')
-			->addCss('/js/libs/textile/style.css');
-		StaticJs::instance()
-			->addJs('/js/libs/markitup/markitup/jquery.markitup.js')
-			->addJs('/js/libs/textile/set.js');
-
 		$this->template->page_title = __('New Blog Article');
 		$this->template->content = View::factory('frontend/form/blog/new')
-			->bind('types', $types)
+			->bind('current_category', $current_category->id)
+			->bind('categories', $categories)
 			->bind('post', $post)
 		;
 	}
@@ -161,29 +145,111 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			throw new HTTP_Exception_404();
 
 		if($this->_user->id != $article->author->id)
-			throw new HTTP_Exception_401();
+			throw new HTTP_Exception_401(
+				'User with id `:user_id` can\'t edit article with id `:article_id` by author with id `:author_id`',
+				array(
+					':user_id' => $this->_user->id,
+					':article_id' => $article->id,
+					':author_id' => $article->author->id
+				)
+			);
 
-		$types = Jelly::query('blog_type')->select();
+		$categories = Jelly::query('blog_category')->select();
 
 		$post = array(
-			'type'  => $article->type->id,
-			'title' => $article->title,
-			'text'  => $article->text,
-			'tags'  => implode(', ', Arr::pluck($article->tags->as_array('name'), 'name')),
+			'article' => array(
+				'category' => $article->type->id,
+				'title'    => $article->title,
+				'text'     => $article->text,
+			),
+			'tags'  => implode(', ', Arr::pluck($article->tags->as_array(), 'name')),
 		);
+		
 		$errors = NULL;
 
-		if($_POST)
+		if($this->request->method() === HTTP_Request::POST)
 		{
-			$post = Arr::extract($_POST, array_keys($post));
-			unset($post['tags']);
+			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
-			$article->set($post);
+			$article_data['text'] = HTML::chars($article_data['text']);
+
+			$article->set($article_data);
 
 			try
 			{
 				$article->save();
-				$this->request->redirect(Route::url('blog_article', array('action' => 'show', 'id' => $article->id)));
+			}
+			catch(Jelly_Validation_Exception $e)
+			{
+				$errors = $e->errors('common_validation');
+			}
+
+			$_tags = explode(',', preg_replace('/([,;][\s]?)/', ',', Arr::get($this->request->post(), 'tags')));
+
+			if(is_string($_tags))
+			{
+				$_tags[] = $_tags;
+			}
+
+			if( ! $errors)
+				$this->_save_tags($article, $_tags);
+
+			$article_data['article'] = $article_data;
+
+			$article_data['tags'] = implode(',', $_tags);
+		}
+
+		$this->template->content = View::factory('frontend/form/blog/new')
+			->bind('categories', $categories)
+			->bind('post', $post)
+			
+		;
+	}
+
+	/**
+	 * Saving post tags
+	 * 
+	 * @param Jelly_Model $article
+	 * @param array $_tags
+	 * @return void
+	 */
+	protected function _save_tags(Jelly_Model $article, array $_tags)
+	{
+		$tags   = array();
+		$errors = NULL;
+		
+		foreach($_tags as $_tag)
+		{
+			$_tag = HTML::chars(trim($_tag));
+
+			$tag = Jelly::query('tag')->where('name', '=', $_tag)->limit(1)->select();
+
+			if( ! $tag->loaded())
+			{
+				$tag = Jelly::factory('tag');
+				$tag->name = $_tag;
+
+				try
+				{
+					$tag->save();
+				}
+				catch(Jelly_Validation_Exception $e)
+				{
+					break;
+				}
+			}
+
+			$tags_ids[] = $tag->id;
+			$tags[] = $tag;
+		}
+
+		if($article->loaded())
+		{
+			$article->tags = Jelly::query('tag')->where('id', 'IN', $tags_ids)->select();
+
+			try
+			{
+				$article->save();
 			}
 			catch(Jelly_Validation_Exception $e)
 			{
@@ -191,17 +257,10 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			}
 		}
 
-		StaticCss::instance()
-			->addCss('/js/libs/markitup/markitup/skins/markitup/style.css')
-			->addCss('/js/libs/textile/style.css');
-		StaticJs::instance()
-			->addJs('/js/libs/markitup/markitup/jquery.markitup.js')
-			->addJs('/js/libs/textile/set.js');
-
-		$this->template->content = View::factory('frontend/form/blog/new')
-			->bind('types', $types)
-			->bind('post', $post)
-		;
+		if(! $errors)
+		{
+			$this->request->redirect(Route::url('blog', array('category' => $article->category->name, 'id' => $article->id)));
+		}
 	}
 
 } // End Controller_Blog_Article

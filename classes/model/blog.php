@@ -19,8 +19,8 @@ class Model_Blog extends Jelly_Model {
 		$meta->table('blogs')
 			->fields(array(
 				'id' => Jelly::field('Primary'),
-				'type' => Jelly::field('BelongsTo', array(
-					'foreign' => 'blog_type'
+				'category' => Jelly::field('BelongsTo', array(
+					'foreign' => 'blog_category'
 				)),
 				'author' => Jelly::field('BelongsTo', array(
 					'foreign' => 'user'
@@ -45,13 +45,13 @@ class Model_Blog extends Jelly_Model {
 					'default' => 0,
 				)),
 				'tags' => Jelly::field('ManyToMany', array(
-					'trough' => 'blog_tags',
+					'trough' => 'blogs_tags',
 				)),
 				'comments' => Jelly::field('HasMany', array(
-					'foreign' => 'blog_comment'
+					'foreign' => 'comment.object_id'
 				)),
 			))
-			->load_with(array('type', 'author'));
+			->load_with(array('category', 'author'));
 
 	}
 

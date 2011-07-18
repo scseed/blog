@@ -10,38 +10,6 @@
 class Controller_Blog_Blog extends Controller_Blog_Template {
 
 	/**
-	 * Shows list of blogs articles by there destination (ie mainpage)
-	 *
-	 * @throws HTTP_Exception_404
-	 * @return void
-	 */
-	public function action_list()
-	{
-		$type = $this->request->param('type');
-
-		if( ! $type)
-			throw new HTTP_Exception_404();
-
-		$blog_articles = Jelly::query('blog')->show_articles($type)->select();
-
-		$this->template->page_title = __('blog_list_'.$type);
-
-		if(count($blog_articles) == 1)
-		{
-			$this->template->content = Request::factory(Route::url('blog_article', array(
-				'action' => 'show',
-				'id' => $blog_articles[0]->id
-			)))->execute()->body();
-		}
-		else
-		{
-			$this->template->content = View::factory('frontend/content/blog/list')
-				->bind('blog_articles', $blog_articles);
-		}
-
-	}
-
-	/**
 	 * Displays the specified blog posts
 	 *
 	 * @throws HTTP_Exception_404
@@ -49,51 +17,88 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 	 */
 	public function action_show()
 	{
-		$type = $this->request->param('type', NULL);
+		$category = $this->request->param('category', NULL);
+		$id       = (int) $this->request->param('id');
 
-		if( ! $type)
-			throw new HTTP_Exception_404('Blog type is not specified');
+		if( ! $category)
+			throw new HTTP_Exception_404('Blog category is not specified');
 
-		$articles = Jelly::query('blog')->active()->where('blog:type.name', '=', HTML::chars($type))->select();
-
-		$this->template->title = $articles[0]->type->description;
-		$this->template->content = View::factory('frontend/content/blog/list')
-			->bind('blog_articles', $articles);
-	}
-
-	/**
-	 * Displays blog name
-	 *
-	 * @throws HTTP_Exception_404
-	 * @return HTML::anchor()
-	 */
-	public function action_name()
-	{
-		$id = $this->request->param('id', NULL);
-		$type = $this->request->param('type', NULL);
-
-		if( ! $id)
+		if($id)
 		{
-			if( ! $type)
-				throw new HTTP_Exception_404();
-
-			$blog_type = Jelly::query('blog_type')->where('name', '=', HTML::chars($type))->limit(1)->select();
+			$this->_article();
 		}
 		else
 		{
-			$blog = Jelly::query('blog', (int) $id)->select();
-			$blog_type = $blog->type;
+			$this->_list();
 		}
-
-		$this->template->content = View::factory('frontend/content/blog/name')->bind('blog_type', $blog_type);
-
 	}
 
-	public function action_my()
+	protected function _list()
 	{
-		$this->_auth_required = TRUE;
-		$this->template->page_title = __('Мой блог');
-		$this->template->content = View::factory('frontend/content/blog/my');
+		$category_name = HTML::chars($this->request->param('category', NULL));
+
+		$category = Jelly::query('blog_category')
+			->where('name', '=', $category_name)
+			->limit(1)
+			->select();
+
+		if( ! $category->loaded())
+			throw new HTTP_Exception_404('There is no such blog category: :category', array(':category' => $category_name));
+		
+		$articles = Jelly::query('blog')
+			->active()
+			->where('category', '=', $category->id)
+			->order_by('date_create', 'DESC')
+			->select();
+
+		$this->page_title = $category->title .' / '.__('Блоги');
+		$this->template->content = View::factory('frontend/content/blog/list')
+			->bind('blog_articles', $articles)
+			->bind('category', $category);
 	}
+
+	/**
+	 * Shows blog article
+	 *
+	 * @throws HTTP_Exception_404
+	 * @return void
+	 */
+	protected function _article()
+	{
+		$id = (int) $this->request->param('id');
+
+		if( ! $id)
+			throw new HTTP_Exception_404();
+
+		$article = Jelly::query('blog', $id)->active()->select();
+
+		if( ! $article->loaded())
+			throw new HTTP_Exception_404();
+
+		$comments = Request::factory(
+				Route::url('comments', array(
+						'lang'    => I18n::lang(),
+						'action'    => 'tree',
+						'type'      => 'blog',
+						'object_id' => $article->id,
+					)
+				)
+			)->execute()->body();
+
+		$tags = Request::factory(
+			Route::get('tags')->uri(array(
+				'type' => 'blog',
+				'object_id' => $article->id
+			)))->execute()->body();
+
+		$this->template->title = $article->title;
+		$this->template->content = View::factory('frontend/content/blog/article')
+			->bind('article', $article)
+			->bind('comments', $comments)
+			->bind('tags', $tags)
+		;
+	}
+
+
 
 } // End Controller_Blog_Blog

@@ -7,7 +7,7 @@
  * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
-class Model_Blog_Type extends Jelly_Model {
+class Model_Blog_Category extends Jelly_Model {
 
 	/**
 	 * Initializating model meta information
@@ -16,10 +16,11 @@ class Model_Blog_Type extends Jelly_Model {
 	 */
 	public static function initialize(Jelly_Meta $meta)
 	{
-		$meta->table('blog_types')
+		$meta->table('blog_categories')
 			->fields(array(
 				'id' => Jelly::field('Primary'),
 				'name' => Jelly::field('String'),
+				'title' => Jelly::field('String'),
 				'description' => Jelly::field('Text'),
 				'blogs' => Jelly::field('HasMany'),
 			));

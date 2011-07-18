@@ -1,13 +1,12 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
 /**
- * tag Model for Jelly ORM
+ * tags Model for Jelly ORM
  *
- * @package SCSeed
- * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
+ * @copyrignt 
  */
-class Model_Tag extends Model_Core_Tag {
+class Model_Blogs_Tags extends Jelly_Model {
 
 	/**
 	 * Initializating model meta information
@@ -16,8 +15,10 @@ class Model_Tag extends Model_Core_Tag {
 	 */
 	public static function initialize(Jelly_Meta $meta)
 	{
-		$meta->field('blogs', 'ManyToMany', array('through' => 'blogs_tags'));
-		
-		parent::initialize($meta);
+		$meta->table('blogs_tags')
+			->fields(array(
+				'blog' => Jelly::field('BelongsTo'),
+				'tag'  => Jelly::field('BelongsTo'),
+			));
 	}
-} // End Model_tag
+} // End Model_tags

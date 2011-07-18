@@ -7,7 +7,7 @@
  * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
-class Controller_Blog_Tag extends Controller_Blog_Template {
+class Controller_Blog_Tags extends Controller_Blog_Template {
 
 	/**
 	 * Shows blog tags
@@ -15,22 +15,29 @@ class Controller_Blog_Tag extends Controller_Blog_Template {
 	 * @throws HTTP_Exception_404
 	 * @return void
 	 */
-	public function action_tree()
+	public function action_list()
 	{
 		if( ! $this->_ajax)
 			throw new HTTP_Exception_404();
 
-		$blog_id = (int) $this->request->param('id');
+		$object_id = (int) $this->request->param('object_id');
+		$type_name = HTML::chars($this->request->param('type'));
 
-		if( ! $blog_id)
+		if( ! $object_id OR !$type_name)
 			throw new HTTP_Exception_404();
 
-		$tags = Jelly::query('blog_tag')->where('blog', '=', $blog_id)->select();
+		$model_name = Inflector::plural($type_name).'_tags';
+		$objects_tags = Jelly::query($model_name)
+			->with('tag')
+			->with($type_name)
+			->where($type_name, '=', $object_id)
+			->order_by($model_name.':tag.name', 'ASC')
+			->select();
 
-		$tags_count = count($tags);
+		$tags_count = count($objects_tags);
 
 		$this->template->content = View::factory('frontend/content/blog/tags')
-			->bind('tags', $tags)
+			->bind('objects_tags', $objects_tags)
 			->bind('tags_count', $tags_count)
 			;
 	}
