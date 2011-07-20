@@ -62,7 +62,7 @@ class Model_Blog extends Jelly_Model {
 	 */
 	public function intro()
 	{
-		$cut = strstr($this->text, '~~~', TRUE);
+		$cut = strstr($this->text, '~~~');
 		if($cut == FALSE)
 		{
 			$cut = $this->text;

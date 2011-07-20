@@ -94,7 +94,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 			$article_data['text'] = HTML::chars($article_data['text']);
 
-			$article_data['author'] = $this->_user->id;
+			$article_data['author'] = $this->_user['member_id'];
 
 			$article = Jelly::factory('blog');
 
@@ -144,11 +144,11 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if( ! $article->loaded())
 			throw new HTTP_Exception_404();
 
-		if($this->_user->id != $article->author->id)
+		if($this->_user['member_id'] != $article->author->id)
 			throw new HTTP_Exception_401(
 				'User with id `:user_id` can\'t edit article with id `:article_id` by author with id `:author_id`',
 				array(
-					':user_id' => $this->_user->id,
+					':user_id' => $this->_user['member_id'],
 					':article_id' => $article->id,
 					':author_id' => $article->author->id
 				)
