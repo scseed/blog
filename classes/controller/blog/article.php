@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
-
 /**
  * Template Controller blog
  *
@@ -8,6 +7,8 @@
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
 class Controller_Blog_Article extends Controller_Blog_Template {
+
+    protected $admin_group = 0;
 
 	public function before()
 	{
@@ -55,6 +56,72 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			->bind('comments', $comments)
 		;
 	}
+
+    /**
+     * Moves article in differ category if admin
+     * or makes demand to change category
+     * @return void
+     */
+    public function action_move()
+    {
+
+        $id = (int) $this->request->param('id');
+
+        if( ! $id)
+            throw new HTTP_Exception_404();
+
+        $article = Jelly::query('blog', $id)->active()->select();
+
+        if( ! $article->loaded())
+            throw new HTTP_Exception_404();
+
+        if($this->_user['member_id'] != $article->author->id or $this->_user['member_group_id']!=$this->admin_group)
+            throw new HTTP_Exception_401(
+                'User with id `:user_id` can\'t edit article with id `:article_id` by author with id `:author_id`',
+                array(
+                    ':user_id' => $this->_user['member_id'],
+                    ':article_id' => $article->id,
+                    ':author_id' => $article->author->id
+                )
+            );
+
+        /// todo: определить админ или владелец статьи, в зависимости от этого обработка
+    }
+
+    /**
+     * Deletes blog article
+     * @return void
+     */
+    public function action_del()
+    {
+        $id = (int) $this->request->param('id');
+
+        if( ! $id)
+            throw new HTTP_Exception_404();
+
+        $article = Jelly::query('blog', $id)->active()->select();
+
+        if( ! $article->loaded())
+            throw new HTTP_Exception_404();
+
+        if($this->_user['member_id'] != $article->author->id or $this->_user['member_group_id']!=$this->admin_group)
+            throw new HTTP_Exception_401(
+                'User with id `:user_id` can\'t edit article with id `:article_id` by author with id `:author_id`',
+                array(
+                    ':user_id' => $this->_user['member_id'],
+                    ':article_id' => $article->id,
+                    ':author_id' => $article->author->id
+                )
+            );
+        try {
+            $article->delete();
+        }
+        catch (Exception $e) {
+            throw new Database_Exception(-100, 'Delete failed?');
+        }
+
+        $this->request->redirect('blog/self');
+    }
 
 	public function action_new()
 	{
@@ -144,7 +211,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if( ! $article->loaded())
 			throw new HTTP_Exception_404();
 
-		if($this->_user['member_id'] != $article->author->id)
+        if($this->_user['member_id'] != $article->author->id or $this->_user['member_group_id']!=$this->admin_group)
 			throw new HTTP_Exception_401(
 				'User with id `:user_id` can\'t edit article with id `:article_id` by author with id `:author_id`',
 				array(
@@ -199,7 +266,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			$post['tags'] = implode(',', $_tags);
 		}
 
-		$this->template->content = View::factory('frontend/form/blog/new')
+		$this->template->content = View::factory('frontend/form/blog/edit')
 			->bind('categories', $categories)
 			->bind('post', $post)
 			

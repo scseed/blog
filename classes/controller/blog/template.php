@@ -19,6 +19,10 @@ abstract class Controller_Blog_Template extends Controller_Template {
 				break;
 		}
 
+        @include ipbwi_BOARD_PATH.'conf_global.php';
+        $this->admin_group = intval($INFO['admin_group']);
+        View::set_global('admin_group', $this->admin_group);
+
 		parent::before();
 		StaticCss::instance()->add('css/blog.css');
 	}

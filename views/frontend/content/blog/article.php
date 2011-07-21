@@ -13,9 +13,7 @@
 <div id="actions">
 <?php
     if (! empty($_user)) {
-        @include ipbwi_BOARD_PATH.'conf_global.php';
-        $admin_group = intval($INFO['admin_group']);
-        if ($_user['member_group_id']==$admin_group) {
+        if ($_user['member_group_id']==$admin_group or $_user['member_id']==$article->author->id) {
             echo HTML::anchor(Route::get('blog_article')->uri(array(
 					'id' => $article->id,
                     'action' => 'edit'
@@ -24,23 +22,10 @@
 					'id' => $article->id,
                     'action' => 'del'
 				)), 'Удалить');
-
             echo HTML::anchor(Route::get('blog_article')->uri(array(
-					'id' => $article->id,
-                    'action' => 'move'
-				)), 'Сменить категорию');
-
-        }
-        elseif ($_user['member_id']==$article->author->id) {
-            echo HTML::anchor(Route::get('blog_article')->uri(array(
-					'id' => $article->id,
-                    'action' => 'edit'
-				)), 'Правка');
-
-            echo HTML::anchor(Route::get('blog_article')->uri(array(
-					'id' => $article->id,
-                    'action' => 'del'
-				)), 'Удалить');
+                'id' => $article->id,
+                'action' => 'move'
+                )), ($_user['member_group_id']==$admin_group)? 'Сменить категорию': 'Заявка на смену категории');
         }
     }
 ?>

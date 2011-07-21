@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
-<h4>Some text</h4>
+<h4>Редактирование статьи</h4>
 <div id="new_article">
 	<?php echo Form::open(Request::current())?>
 	<div class="form-item">
@@ -19,7 +19,7 @@
 		<?php echo Form::input('tags', $post['tags'], array('id' => 'blog_tags'))?>
 	</div>
 	<div class="form-item">
-		<?php echo Form::button(NULL, 'Создать')?>
+		<?php echo Form::button(NULL, 'Сохранить')?>
 	</div>
 	<?php echo Form::close();?>
 </div>
