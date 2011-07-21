@@ -43,9 +43,9 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 		if( ! $article->loaded())
 			throw new HTTP_Exception_404();
-		$comments = Request::factory(Route::get('blog_comment')->uri(array(
+		$comments = Request::factory(Route::get('comments')->uri(array(
 				'action' => 'tree',
-				'id' => $article->id,
+				'object_id' => $article->id,
 				'visibility' => ($article->allow_comments) ? 'show' : 'hide'
 			)))->execute()->body();
 
@@ -60,8 +60,8 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 	{
 		$category_name = HTML::chars($this->request->param('category'));
 
-		if(! $category_name)
-			throw new HTTP_Exception_404('Category is not defined');
+		if(! $category_name) $category_name = 'self';
+			//throw new HTTP_Exception_404('Category is not defined');
 
 		$categories = Jelly::query('blog_category')->select();
 
@@ -194,9 +194,9 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			if( ! $errors)
 				$this->_save_tags($article, $_tags);
 
-			$article_data['article'] = $article_data;
+			$post['article'] = $article_data;
 
-			$article_data['tags'] = implode(',', $_tags);
+			$post['tags'] = implode(',', $_tags);
 		}
 
 		$this->template->content = View::factory('frontend/form/blog/new')

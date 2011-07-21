@@ -47,7 +47,7 @@ Route::set('blog', '(<lang>/)blog/<category>(/<id>)(/<action>)', array(
 		'category' => NULL,
 ));
 
-Route::set('blog_article', '(<lang>/)article(/<action>(/<category>)(/<id>))', array(
+Route::set('blog_article', '(<lang>/)article(/<id>)(/<action>)', array(
 	'lang'     => $langs,
 	'id'       => '\d+',
 	'category' => '[^\d][\w_]+',
@@ -55,7 +55,7 @@ Route::set('blog_article', '(<lang>/)article(/<action>(/<category>)(/<id>))', ar
 	->defaults(array(
 		'directory' => 'blog',
 		'controller' => 'article',
-		'action' => '',
+		'action' => 'show',
 ));
 Route::set('blog_stats', '(<lang>/)stats/<action>/<id>', array(
 	'lang'       => $langs,

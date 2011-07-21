@@ -33,7 +33,7 @@ class Model_Blog extends Jelly_Model {
 					'default' => NULL,
 					'allow_null' => TRUE,
 				)),
-				'title' => Jelly::field('String'),
+				'title' => Jelly::field('String', array('rules' => array('not_empty'=>NULL))),
 				'text' => Jelly::field('Text'),
 				'is_active' => Jelly::field('Boolean', array(
 					'default' => TRUE,

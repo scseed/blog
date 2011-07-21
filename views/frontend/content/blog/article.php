@@ -10,3 +10,38 @@
 </div>
 <div id="tags"><?php echo $tags?></div>
 <div id="comments"><?php echo $comments?></div>
+<div id="actions">
+<?php
+    if (! empty($_user)) {
+        @include ipbwi_BOARD_PATH.'conf_global.php';
+        $admin_group = intval($INFO['admin_group']);
+        if ($_user['member_group_id']==$admin_group) {
+            echo HTML::anchor(Route::get('blog_article')->uri(array(
+					'id' => $article->id,
+                    'action' => 'edit'
+				)), 'Правка');
+            echo HTML::anchor(Route::get('blog_article')->uri(array(
+					'id' => $article->id,
+                    'action' => 'del'
+				)), 'Удалить');
+
+            echo HTML::anchor(Route::get('blog_article')->uri(array(
+					'id' => $article->id,
+                    'action' => 'move'
+				)), 'Сменить категорию');
+
+        }
+        elseif ($_user['member_id']==$article->author->id) {
+            echo HTML::anchor(Route::get('blog_article')->uri(array(
+					'id' => $article->id,
+                    'action' => 'edit'
+				)), 'Правка');
+
+            echo HTML::anchor(Route::get('blog_article')->uri(array(
+					'id' => $article->id,
+                    'action' => 'del'
+				)), 'Удалить');
+        }
+    }
+?>
+</div>

@@ -48,17 +48,18 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		$articles = Jelly::query('blog')
 			->active()
 			->where('category', '=', $category->id)
+            ->and_where('author_id', '=', $this->_user['member_id'])
 			->order_by('date_create', 'DESC')
 			->select();
 
-		$this->page_title = $category->title .' / '.__('Блоги');
+		$this->template->title = $category->title .' / '.__('Блоги');
 		$this->template->content = View::factory('frontend/content/blog/list')
 			->bind('blog_articles', $articles)
 			->bind('category', $category);
 	}
 
 	/**
-	 * Shows blog article
+	 * Shows blog article for its owner
 	 *
 	 * @throws HTTP_Exception_404
 	 * @return void
@@ -70,7 +71,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		if( ! $id)
 			throw new HTTP_Exception_404();
 
-		$article = Jelly::query('blog', $id)->active()->select();
+		$article = Jelly::query('blog', $id)->where('author_id', '=', $this->_user['member_id'])->active()->select();
 
 		if( ! $article->loaded())
 			throw new HTTP_Exception_404();

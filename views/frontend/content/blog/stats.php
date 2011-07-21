@@ -1,8 +1,8 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
-<span>Информация:</span>
+<!--<span>Информация:</span>-->
 <dl>
 	<dt>Дата создания:</dt>
-	<dd><?php echo date('r', $article->date_create)?></dd>
+	<dd><?php echo date('d.m.Y H:i', $article->date_create)?></dd>
 	<dt>Автор:</dt>
-	<dd><?php echo $article->author->user_data->last_name?></dd>
+	<dd><?php print_r( $article->author->name)?></dd>
 </dl>
