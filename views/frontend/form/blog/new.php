@@ -4,7 +4,7 @@
 	<?php echo Form::open(Request::current())?>
 	<div class="form-item">
 		<?php echo Form::label('blog_category', 'Категория')?>
-		<?php echo Form::select('article[category]', $categories->as_array('id', 'title'), $category_name, array('id' => 'blog_category'))?>
+		<?php echo Form::select('article[category]', $categories->as_array('id', 'title'), $current_category, array('id' => 'blog_category'))?>
 	</div>
 	<div class="form-item">
 		<?php echo Form::label('blog_title', 'Заголовок')?>

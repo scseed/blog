@@ -22,10 +22,23 @@
 					'id' => $article->id,
                     'action' => 'del'
 				)), 'Удалить');
-            echo HTML::anchor(Route::get('blog_article')->uri(array(
-                'id' => $article->id,
-                'action' => 'move'
-                )), ($_user['member_group_id']==$admin_group)? 'Сменить категорию': 'Заявка на смену категории');
+        }
+
+        // автор может оставить заявку на замену, но если он сам админ, то смена произойдет напрямую
+        $demand = Jelly::query('blog_demand')->where('blog', '=', $article->id)
+                        ->and_where('is_done', '=', 0)->limit(1)->select();
+        if ($demand->loaded())
+        {
+            echo 'Статья находится на модерации';
+        }
+        else
+        {
+            if ($_user['member_id']==$article->author->id) {
+                echo HTML::anchor(Route::get('blog_article')->uri(array(
+                    'id' => $article->id,
+                    'action' => 'move'
+                    )), ($_user['member_group_id']==$admin_group)? 'Сменить категорию': 'Заявка на смену категории');
+            }
         }
     }
 ?>

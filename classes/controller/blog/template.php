@@ -9,6 +9,8 @@
  */
 abstract class Controller_Blog_Template extends Controller_Template {
 
+    protected $admin_group = 0;
+
 	public function before()
 	{
 		switch($this->request->action())

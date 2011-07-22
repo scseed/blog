@@ -8,8 +8,6 @@
  */
 class Controller_Blog_Article extends Controller_Blog_Template {
 
-    protected $admin_group = 0;
-
 	public function before()
 	{
 		parent::before();
@@ -85,7 +83,87 @@ class Controller_Blog_Article extends Controller_Blog_Template {
                 )
             );
 
-        /// todo: определить админ или владелец статьи, в зависимости от этого обработка
+        $categories = Jelly::query('blog_category')->select();
+
+        $errors = NULL;
+        /// определить админ или владелец статьи, в зависимости от этого обработка
+        if ($this->_user['member_group_id']==$this->admin_group)
+        {
+
+            $post = array(
+                'article' => array(
+                    'category' => $article->category->id,
+                ),
+            );
+
+            if($this->request->method() === HTTP_Request::POST)
+            {
+                $article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
+                $article->set($article_data);
+
+                try
+                {
+                    $article->save();
+                }
+                catch(Jelly_Validation_Exception $e)
+                {
+                    $errors = $e->errors('common_validation');
+                }
+                if ( ! $errors) {
+                    Jelly::query('blog_demand')->where('blog', '=', $article->id)
+                        ->and_where('is_done', '=', 0)->limit(1)->select()->delete();
+                    $this->request->redirect(Route::url('blog_article', array('id' => $article->id)));
+                }
+
+                $post['article'] = $article_data;
+            }
+            $title = 'Перенос статьи в другую категорию';
+        }
+        else
+        {
+            $post = array(
+                'article' => array(
+                    'category' => $article->type->id,
+                    'message' => ''
+                ),
+            );
+
+            if($this->request->method() === HTTP_Request::POST)
+            {
+                $article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
+                $demand = Jelly::query('blog_demand')->where('blog', '=', $id)
+                        ->and_where('is_done', '=', 0)->limit(1)->select();
+                /*if ($demand->loaded()) {
+                    throw new Exception('Открытая заявка на перенос данной статьи уже существует');
+                }*/
+                $demand->set( array (
+                    'blog' => $id,
+                    'category' => $article_data['category'],
+                    'message' => HTML_parser::factory($article_data['message'])->plaintext,
+                    'is_done' => 0
+                ));
+                try
+                {
+                    $demand->save();
+                }
+                catch(Jelly_Validation_Exception $e)
+                {
+                    $errors = $e->errors('common_validation');
+                }
+                if ( ! $errors)
+                    $this->request->redirect(Route::url('blog_article', array('id' => $article->id)));
+
+                $post['article'] = $article_data;
+            }
+            $title = 'Заявка на перенос статьи в другую категорию';
+        }
+        $this->template->content = View::factory('frontend/form/blog/move')
+            ->bind('categories', $categories)
+            ->bind('post', $post)
+            ->set('title', $title)
+            ->set('current_category', $article->category->id)
+        ;
+
     }
 
     /**
@@ -130,7 +208,10 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if(! $category_name) $category_name = 'self';
 			//throw new HTTP_Exception_404('Category is not defined');
 
-		$categories = Jelly::query('blog_category')->select();
+        if ($this->_user['member_group_id']==$this->admin_group)
+		    $categories = Jelly::query('blog_category')->select();
+        else
+            $categories = Jelly::query('blog_category')->common()->select();
 
 		$current_category = NULL;
 		foreach($categories as $category)
@@ -159,7 +240,8 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		{
 			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
-			$article_data['text'] = HTML::chars($article_data['text']);
+//			$article_data['text'] = HTML::chars($article_data['text']);
+            $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
 
 			$article_data['author'] = $this->_user['member_id'];
 
@@ -221,11 +303,14 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 				)
 			);
 
-		$categories = Jelly::query('blog_category')->select();
+        if ($this->_user['member_group_id']==$this->admin_group)
+		    $categories = Jelly::query('blog_category')->select();
+        else
+            $categories = Jelly::query('blog_category')->common()->select();
 
 		$post = array(
 			'article' => array(
-				'category' => $article->type->id,
+				'category' => $article->category->id,
 				'title'    => $article->title,
 				'text'     => $article->text,
 			),
@@ -238,7 +323,8 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		{
 			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
-			$article_data['text'] = HTML::chars($article_data['text']);
+//			$article_data['text'] = HTML::chars($article_data['text']);
+            $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
 
 			$article->set($article_data);
 
@@ -265,8 +351,8 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 			$post['tags'] = implode(',', $_tags);
 		}
-
 		$this->template->content = View::factory('frontend/form/blog/edit')
+            ->set('current_category', $article->category->id)
 			->bind('categories', $categories)
 			->bind('post', $post)
 			
@@ -326,7 +412,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 		if(! $errors)
 		{
-			$this->request->redirect(Route::url('blog', array('category' => $article->category->name, 'id' => $article->id)));
+			$this->request->redirect(Route::url('blog_article', array('id' => $article->id)));
 		}
 	}
 

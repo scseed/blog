@@ -22,6 +22,7 @@ class Model_Blog_Demand extends Jelly_Model {
                 'category' => Jelly::field('BelongsTo', array(
 					'foreign' => 'blog_category'
 				)),
+                'message' => Jelly::field('Text'),
                 'is_done' => Jelly::field('Integer')
             ));
 	}
