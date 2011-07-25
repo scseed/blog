@@ -17,6 +17,8 @@ abstract class Controller_Blog_Template extends Controller_Template {
 		{
 			case 'new':
 			case 'edit':
+            case 'del':
+            case 'move':
 				$this->_auth_required = TRUE;
 				break;
 		}

@@ -45,6 +45,7 @@ Route::set('article_list', '(<lang>/)articles/<category>/<id>', array(
 		'action' => 'show',
 ));
 
+/*
 Route::set('blog', '(<lang>/)blog/<category>(/<id>)(/<action>)', array(
 	'lang'       => $langs,
 	'category' => '[\w_]+',
@@ -56,6 +57,20 @@ Route::set('blog', '(<lang>/)blog/<category>(/<id>)(/<action>)', array(
 		'controller' => 'blog',
 		'action' => 'show',
 		'category' => NULL,
+));
+*/
+
+Route::set('blog', '(<lang>/)blog(/<action>)(/<category>)', array(
+    'lang'       => $langs,
+    'category' => '[\w_]+',
+    'id'       => '\d+',
+    'action'   => '\w+'
+))
+    ->defaults(array(
+        'directory' => 'blog',
+        'controller' => 'blog',
+        'action' => 'show',
+        'category' => NULL,
 ));
 
 Route::set('blog_article', '(<lang>/)article(/<id>)(/<action>)', array(

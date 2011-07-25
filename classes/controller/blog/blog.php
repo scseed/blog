@@ -7,6 +7,9 @@
  * @package Blog
  * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
  */
+ /// todo: методы для редактирования и удаления категорий блогов
+    /// при удалении всем статьям стваить категорию self
+    
 class Controller_Blog_Blog extends Controller_Blog_Template {
 
 	/**
@@ -24,7 +27,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 			throw new HTTP_Exception_404('Blog category is not specified');
 
 		if($id)
-		{
+		{   // not used. use /article/<id> instead
 			$this->_article();
 		}
 		else
@@ -32,6 +35,39 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 			$this->_list();
 		}
 	}
+
+    /**
+     * Creates new blog category or car_book
+     * @return void
+     */
+    public function action_new()
+    {
+        if($this->request->method() === HTTP_Request::POST)
+        {
+            $post = array(
+                'cat'=>NULL,
+                'name'=>NULL,
+                'title'=>NULL,
+                'description'=>NULL,
+                'user'=>NULL,
+            );
+            $post_data = Arr::get($this->request->post(), array_keys($post));
+            $category = Jelly::factory('blog_category');
+            if ($post_data['cat']=='blog')
+            {
+                if ($this->_user['member_group_id']!=$this->admin_group)
+                    throw new HTTP_Exception_401(); // только админ может создать новый тип блога
+                $post_data['user'] = NULL;
+                $category->set($post_data)->save();
+            }
+            elseif ($post_data['cat']=='car_book')
+            {
+                $post_data['name'] = 'car_book';
+                $category->set($post_data)->save();
+            }
+        }
+        /// todo: нарисовать view для заведения новых блогов
+    }
 
 	protected function _list()
 	{

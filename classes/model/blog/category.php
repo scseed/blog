@@ -22,7 +22,11 @@ class Model_Blog_Category extends Jelly_Model {
 				'name' => Jelly::field('String'),
 				'title' => Jelly::field('String'),
 				'description' => Jelly::field('Text'),
+                'is_common' => Jelly::field('Boolean'),
 				'blogs' => Jelly::field('HasMany'),
+                'user' => Jelly::field('BelongsTo', array(
+                    'foreign' => 'user'
+                )),
 			));
 	}
 } // End Model_Blog_Type
