@@ -18,6 +18,7 @@ class Model_Blog_Demand extends Jelly_Model {
 	{
 		$meta->table('blog_demands')
 			->fields(array(
+                'id' => Jelly::field('Primary'),
                 'blog' => Jelly::field('BelongsTo'),
                 'category' => Jelly::field('BelongsTo', array(
 					'foreign' => 'blog_category'

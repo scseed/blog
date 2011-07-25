@@ -56,6 +56,65 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 	}
 
     /**
+     * Moderate article demands to change category
+     *
+     * @throws HTTP_Exception_404
+     * @return void
+     */
+    public function action_moderate()
+    {
+
+        if ($this->_user['member_group_id']!=$this->admin_group)
+            throw new HTTP_Exception_404();
+
+        $id = (int) $this->request->param('id');
+
+        if( ! $id) {
+
+            $demands_count = Jelly::query('blog_demand')->where('is_done', '=', '0')->count();
+            $page = max(1, arr::get($_GET, 'page', 1));
+            $offset = 20 * ($page-1);
+
+            $pager = new Pagination(array(
+                 'total_items'		=> $demands_count,
+                  'items_per_page'  => 20,
+                  'current_page'    => array
+                  (
+                      'source'		=> 'query_string',
+                      'key'         => 'page'
+                  ),
+                  'auto_hide'       => TRUE,
+                  'view'			=> 'pagination/ru'
+            ));
+            $demands = Jelly::query('blog_demand')->where('is_done', '=', '0')->limit(20)->offset($offset)->select();
+            $this->template->content = View::factory('frontend/content/blog/moderate')
+                    ->bind('demands', $demands)->bind('pager', $pager);
+        }
+        else {
+            switch (arr::get($_GET, 'action')) {
+                case 'allow':
+                    $demand = Jelly::query('blog_demand')->where('blog', '=', $id)->and_where('is_done', '=', 0)->limit(1)->select();
+                    $article_id = $demand->blog->id;
+                    $category_id = $demand->category->id;
+                    $article = Jelly::query('blog', $article_id)->select();
+                    if( ! $article->loaded())
+                        throw new HTTP_Exception_404();
+                    $article->category = $category_id;
+                    $article->save();
+                    $demand->is_done = 1;
+                    $demand->save();
+                    break;
+                case 'deny':
+                    Jelly::query('blog_demand')->where('blog', '=', $id)->and_where('is_done', '=', 0)->limit(1)->select()->delete();
+                    break;
+                default:
+                    break;
+            }
+            $this->request->redirect(Route::url('blog_article', array('action' => 'moderate')));
+        }
+    }
+
+    /**
      * Moves article in differ category if admin
      * or makes demand to change category
      * @return void
