@@ -9,9 +9,9 @@
  */
 class Model_Builder_Category extends Jelly_Builder {
 
-	public function common()
+	public function common($user_id = 0)
 	{
-		return $this->where('is_common', '=', TRUE);
+		return $this->where('is_common', '=', TRUE)->or_where('user_id', '=', $user_id);
 	}
 
 } // End Model_Builder_Blog

@@ -30,6 +30,23 @@ class Controller_Blog_List extends Controller_Blog_Template {
 			->bind('category', $category);
 	}
 
+    /// todo: доделать этот метод
+    /**
+     * action for route car_books (prints list of car_books of user_id)
+     *
+     * @return void
+     */
+    public function action_carbooks() {
+        
+        $id = 2;
+        print_r(Jelly::query('blog')
+			->active()
+            ->where('author', '=', $id)
+            ->and_where(':category.name', '=', 'car_book')
+			->order_by('date_create', 'DESC')
+			->select());
+    }
+
 	public function mainpage()
 	{
 		return Jelly::query('blog')

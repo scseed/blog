@@ -24,6 +24,16 @@ foreach($blog_list_methods as $blog_list_method)
 
 $blog_lists = '('.implode($blog_lists, '|').')';
 
+Route::set('car_books', '(<lang>/)car_books/<id>', array(
+	'lang'     => $langs,
+    'id'       => '\d+',
+))
+	->defaults(array(
+		'directory' => 'blog',
+		'controller' => 'list',
+		'action' => 'carbooks',
+));
+
 Route::set('blog_list', '(<lang>/)blogs/<list_type>', array(
 	'lang'     => $langs,
 	'list_type' => $blog_lists,

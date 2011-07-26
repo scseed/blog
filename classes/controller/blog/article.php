@@ -270,7 +270,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
         if ($this->_user['member_group_id']==$this->admin_group)
 		    $categories = Jelly::query('blog_category')->select();
         else
-            $categories = Jelly::query('blog_category')->common()->select();
+            $categories = Jelly::query('blog_category')->common($this->_user['member_id'])->select();
 
 		$current_category = NULL;
 		foreach($categories as $category)
@@ -365,7 +365,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
         if ($this->_user['member_group_id']==$this->admin_group)
 		    $categories = Jelly::query('blog_category')->select();
         else
-            $categories = Jelly::query('blog_category')->common()->select();
+            $categories = Jelly::query('blog_category')->common($this->_user['member_id'])->select();
 
 		$post = array(
 			'article' => array(
