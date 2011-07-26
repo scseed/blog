@@ -15,6 +15,10 @@ foreach($blog_list_methods as $blog_list_method)
 {
 	if(
 		$blog_list_method != 'action_show' AND
+        $blog_list_method != 'action_list' AND
+        $blog_list_method != 'action_edit' AND
+        $blog_list_method != 'action_del' AND
+        $blog_list_method != 'action_new' AND
 		$blog_list_method != 'before' AND
 		$blog_list_method != 'after' AND
 		$blog_list_method != '__construct'
@@ -32,6 +36,16 @@ Route::set('car_books', '(<lang>/)car_books/<id>', array(
 		'directory' => 'blog',
 		'controller' => 'list',
 		'action' => 'carbooks',
+));
+
+Route::set('blog_action', '(<lang>/)blogs/<action>(/<id>)', array(
+    'lang'     => $langs,
+    'action' => '(new|del|edit|list)',
+    'id'       => '\d+',
+))
+    ->defaults(array(
+        'directory' => 'blog',
+        'controller' => 'list',
 ));
 
 Route::set('blog_list', '(<lang>/)blogs/<list_type>', array(
@@ -55,7 +69,7 @@ Route::set('article_list', '(<lang>/)articles/<category>/<id>', array(
 		'action' => 'show',
 ));
 
-/*
+
 Route::set('blog', '(<lang>/)blog/<category>(/<id>)(/<action>)', array(
 	'lang'       => $langs,
 	'category' => '[\w_]+',
@@ -68,8 +82,8 @@ Route::set('blog', '(<lang>/)blog/<category>(/<id>)(/<action>)', array(
 		'action' => 'show',
 		'category' => NULL,
 ));
-*/
 
+/*
 Route::set('blog', '(<lang>/)blog(/<action>)(/<category>)', array(
     'lang'       => $langs,
     'category' => '[\w_]+',
@@ -82,7 +96,7 @@ Route::set('blog', '(<lang>/)blog(/<action>)(/<category>)', array(
         'action' => 'show',
         'category' => NULL,
 ));
-
+*/
 Route::set('blog_article', '(<lang>/)article(/<id>)(/<action>)', array(
 	'lang'     => $langs,
 	'id'       => '\d+',

@@ -20,7 +20,6 @@
 		<?php echo Form::textarea('post[description]', $post['post']['description'], array('id' => 'description'))?>
 	</div>
 	<div class="form-item">
-        <?php echo Form::hidden('id', $id)?>
 		<?php echo Form::button(NULL, 'Сохранить')?>
 	</div>
 	<?php echo Form::close();?>
