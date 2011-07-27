@@ -29,6 +29,7 @@ abstract class Controller_Blog_Template extends Controller_Template {
 
 		parent::before();
 		StaticCss::instance()->add('css/blog.css');
+        StaticJs::instance()->add('js/blog.js');
 	}
 
 } // End Controller_Blog_Template

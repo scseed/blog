@@ -13,7 +13,7 @@
 foreach($categories as $category):
 ?>
 	<div class="post">
-		<h4><?php echo $category->name;?></h4>
+		<h2><?php echo $category->name;?></h2>
         <p><strong>Заголовок: </strong><?php
             if ($category->name == 'car_book')
                 echo HTML::anchor(Route::url('article_list', array('category'=>$category->name, 'id'=>$category->id, 'lang' => I18n::lang())), $category->title);
@@ -22,7 +22,7 @@ foreach($categories as $category):
         ?></p>
         <p><strong>Описание: </strong><?php echo HTML::chars($category->description);?></p>
         <p><strong>Владелец: </strong><?php echo $category->user->name; ?></p>
-		<div class="operations">
+		<div id="actions">
 			<?php
                 echo HTML::anchor(
                     Route::url('blog_action', array('action' => 'edit', 'id'=>$category->id, 'lang' => I18n::lang())),

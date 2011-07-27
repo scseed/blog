@@ -61,7 +61,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
 			->order_by('date_create', 'DESC')
 			->select();
 
-        $this->template->title = 'Список борт-журналов пользователя '.$user->name;
+        $this->template->title = __('User carbooks').$user->name;
         $this->template->content = View::factory('frontend/content/blog/carbooks')
                 ->bind('carbooks', $carbooks);
     }
@@ -196,6 +196,8 @@ class Controller_Blog_List extends Controller_Blog_Template {
             $post['post'] = $post_data;
         }
         $cat = array('car_book'=>'Новый борт-журнал', 'blog'=>'Новый блог');
+
+        $this->template->title = __('New Blog Category');
         $this->template->content = View::factory('frontend/form/blog/newblog')
                 ->bind('cat', $cat)
                 ->bind('error', $error)
@@ -256,6 +258,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
             }
             $post['post'] = $post_data;
         }
+        $this->template->title = __('Edit Blog Category');
         $this->template->content = View::factory('frontend/form/blog/editblog')
                 ->bind('error', $error)
                 ->bind('post', $post)
@@ -282,7 +285,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
                     ->and_where('user', '=', $this->_user['member_id'])
                     ->select();
 
-        $this->template->title = 'Список категорий блогов';
+        $this->template->title = __('Category List');
         $this->template->content = View::factory('frontend/content/blog/bloglist')
                 ->bind('categories', $categories);
     }

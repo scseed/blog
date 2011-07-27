@@ -1,6 +1,4 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
-<h4>Редактирование статьи</h4>
-    <?php var_dump($current_category); ?>
 <div id="new_article">
 	<?php echo Form::open(Request::current())?>
 	<div class="form-item">

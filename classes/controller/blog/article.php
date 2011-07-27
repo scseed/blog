@@ -301,6 +301,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
 //			$article_data['text'] = HTML::chars($article_data['text']);
+            $article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
             $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
 
 			$article_data['author'] = $this->_user['member_id'];
@@ -333,7 +334,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			$post['tags'] = implode(',', $_tags);
 		}
 
-		$this->template->page_title = __('New Blog Article');
+		$this->template->title = __('New Blog Article');
 		$this->template->content = View::factory('frontend/form/blog/new')
 			->bind('current_category', $current_category->id)
 			->bind('categories', $categories)
@@ -384,6 +385,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
 //			$article_data['text'] = HTML::chars($article_data['text']);
+            $article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
             $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
 
 			$article->set($article_data);
@@ -411,6 +413,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 			$post['tags'] = implode(',', $_tags);
 		}
+        $this->template->title = __('Edit Blog Article');
 		$this->template->content = View::factory('frontend/form/blog/edit')
             ->set('current_category', $article->category->id)
 			->bind('categories', $categories)

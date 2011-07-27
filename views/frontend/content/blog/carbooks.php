@@ -7,7 +7,7 @@ foreach($carbooks as $blog_article):
 				));
 	$user_avatar = ($blog_article->author->has_avatar)
 		? 'media/images/avatars/'.$blog_article->author->id.'/thumb.jpg'
-		: 'i/stubs/avatar_comment.png';
+		: 'i/icons/user.gif';
 ?>
 	<div class="post">
 		<h2><?php echo HTML::anchor(
@@ -28,9 +28,9 @@ foreach($carbooks as $blog_article):
 			<div class="right">
 				<div class="badge left">
 					<?php echo HTML::image('i/icons/favorites.gif', array('alt' => ''))?>
-					<div class="title">
+					<div class="title"><span>
 						<?php echo $blog_article->score?>
-					</div>
+					</span></div>
 				</div>
 				<div class="badge left">
 					<?php echo HTML::anchor(
@@ -52,9 +52,9 @@ foreach($carbooks as $blog_article):
 				</div>
 				<div class="badge left">
 					<?php echo HTML::image('i/icons/go.gif', array('alt' => 'Дата создания'))?>
-					<div class="title" title="Дата создания">
+					<div class="title" title="Дата создания"><span>
 						<?php echo date('d.m.Y', $blog_article->date_create)?>
-					</div>
+					</span></div>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -63,4 +63,5 @@ foreach($carbooks as $blog_article):
 	</div>
 <?php endforeach;?>
 </div>
+<?php echo $pager; ?>
 <!--<a href="#" class="right more">Перейти в блоги</a>-->

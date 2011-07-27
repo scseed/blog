@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
-<h4>Новая статья</h4>
 <div id="new_article">
 	<?php echo Form::open(Request::current())?>
 	<div class="form-item">

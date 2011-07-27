@@ -1,12 +1,12 @@
 ﻿<?php defined('SYSPATH') or die('No direct access allowed.');?>
-<div>
-<?php echo HTML::anchor(
-	Route::url('blog_article', array('action' => 'new', 'category' => 'self')),
-	__('Написать статью в блог'),
-	array('class' => 'button')
-)?>
-</div>
 <div id="posts">
+    <div class="post">
+    <?php echo HTML::anchor(
+        Route::url('blog_article', array('action' => 'new', 'category' => 'self')),
+        __('Написать статью в блог'),
+        array('class' => 'button')
+    )?>
+    </div>
 <?php
 foreach($blog_articles as $blog_article):
     $article_url = Route::get('blog_article')->uri(array(
@@ -14,7 +14,7 @@ foreach($blog_articles as $blog_article):
 				));
 	$user_avatar = ($blog_article->author->has_avatar)
 		? 'media/images/avatars/'.$blog_article->author->id.'/thumb.jpg'
-		: 'i/stubs/avatar_comment.png';
+		: 'i/icons/user.gif';
 ?>
 	<div class="post">
 		<h2><?php echo HTML::anchor(
@@ -24,44 +24,45 @@ foreach($blog_articles as $blog_article):
 		</h2>
 		<div class="text">
 			<?php echo $textile->TextileThis($blog_article->intro())?>
-			<p><?php echo HTML::anchor(
+			<!--<p><?php /*echo HTML::anchor(
 				$article_url . '#article_cut',
 				'Читать дальше &rarr;',
 				array('title' => $blog_article->title)
-			)?></p>
+			)*/?></p>-->
 		</div>
 
 		<div class="badges">
 			<div class="left author">
 				<div class="badge">
-					<?php /*echo
-						HTML::anchor(
-							Route::get('profile')->uri(array(
+					<?php echo
+						HTML::anchor('#',
+							/*Route::get('profile')->uri(array(
 								'action'     => 'show',
 								'id' => $blog_article->author->id,
-							)),
+							)),*/
 							HTML::image($user_avatar, array('alt' => 'Автор')),
 							array('title' => 'Автор статьи')
-						);*/
+						);
 					?>
 					<div class="title">
-						<?php /*echo HTML::anchor(
-							Route::get('profile')->uri(array(
+						<?php echo HTML::anchor('#',
+							/*Route::get('profile')->uri(array(
 								'action'     => 'show',
 								'id' => $blog_article->author->id,
-							)),
-							$blog_article->author->fullname,
+							)),*/
+							$blog_article->author->name,
 							array('title' => $blog_article->author->name)
-						)*/?>
+						); 
+						?>
 					</div>
 				</div>
 			</div>
 			<div class="right">
 				<div class="badge left">
 					<?php echo HTML::image('i/icons/favorites.gif', array('alt' => ''))?>
-					<div class="title">
+					<div class="title"><span>
 						<?php echo $blog_article->score?>
-					</div>
+					</span></div>
 				</div>
 				<div class="badge left">
 					<?php echo HTML::anchor(
@@ -83,9 +84,9 @@ foreach($blog_articles as $blog_article):
 				</div>
 				<div class="badge left">
 					<?php echo HTML::image('i/icons/go.gif', array('alt' => 'Дата создания'))?>
-					<div class="title" title="Дата создания">
+					<div class="title" title="Дата создания"><span>
 						<?php echo date('d.m.Y', $blog_article->date_create)?>
-					</div>
+					</span></div>
 				</div>
 				<div class="clear"></div>
 			</div>
@@ -94,4 +95,4 @@ foreach($blog_articles as $blog_article):
 	</div>
 <?php endforeach;?>
 </div>
-<!--<a href="#" class="right more">Перейти в блоги</a>-->
+<?php echo $pager; ?>
