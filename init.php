@@ -28,7 +28,7 @@ foreach($blog_list_methods as $blog_list_method)
 
 $blog_lists = '('.implode($blog_lists, '|').')';
 
-Route::set('car_books', '(<lang>/)car_books/<id>', array(
+Route::set('car_books', '(<lang>/)carbooks/<id>', array(
 	'lang'     => $langs,
     'id'       => '\d+',
 ))

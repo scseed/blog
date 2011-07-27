@@ -1,5 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
 <h4>Редактор категории</h4>
+<div class="error"><?php echo $error; ?></div>
 <div id="new_article">
 	<?php echo Form::open(Request::current())?>
     <div class="form-item">

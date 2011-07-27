@@ -87,6 +87,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
                   'view'			=> 'pagination/ru'
             ));
             $demands = Jelly::query('blog_demand')->where('is_done', '=', '0')->limit(20)->offset($offset)->select();
+            $this->template->title = 'Открытые заявки на перенос';
             $this->template->content = View::factory('frontend/content/blog/moderate')
                     ->bind('demands', $demands)->bind('pager', $pager);
         }

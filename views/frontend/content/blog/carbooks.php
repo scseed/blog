@@ -1,15 +1,8 @@
-﻿<?php defined('SYSPATH') or die('No direct access allowed.');?>
-<div>
-<?php echo HTML::anchor(
-	Route::url('blog_article', array('action' => 'new', 'category' => 'self')),
-	__('Написать статью в блог'),
-	array('class' => 'button')
-)?>
-</div>
+<?php defined('SYSPATH') or die('No direct access allowed.');?>
 <div id="posts">
 <?php
-foreach($blog_articles as $blog_article):
-    $article_url = Route::get('blog_article')->uri(array(
+foreach($carbooks as $blog_article):
+	$article_url = Route::get('blog_article')->uri(array(
 					'id' => $blog_article->id
 				));
 	$user_avatar = ($blog_article->author->has_avatar)
@@ -32,30 +25,6 @@ foreach($blog_articles as $blog_article):
 		</div>
 
 		<div class="badges">
-			<div class="left author">
-				<div class="badge">
-					<?php /*echo
-						HTML::anchor(
-							Route::get('profile')->uri(array(
-								'action'     => 'show',
-								'id' => $blog_article->author->id,
-							)),
-							HTML::image($user_avatar, array('alt' => 'Автор')),
-							array('title' => 'Автор статьи')
-						);*/
-					?>
-					<div class="title">
-						<?php /*echo HTML::anchor(
-							Route::get('profile')->uri(array(
-								'action'     => 'show',
-								'id' => $blog_article->author->id,
-							)),
-							$blog_article->author->fullname,
-							array('title' => $blog_article->author->name)
-						)*/?>
-					</div>
-				</div>
-			</div>
 			<div class="right">
 				<div class="badge left">
 					<?php echo HTML::image('i/icons/favorites.gif', array('alt' => ''))?>

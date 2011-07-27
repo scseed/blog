@@ -1,6 +1,8 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
 <div id=demands">
 <?php
+$count = $demands->count();
+if (empty($count)) echo "Нет открытых заявок";
 foreach($demands as $demand):
 ?>
         <div class="demand-item">

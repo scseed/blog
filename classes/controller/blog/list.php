@@ -30,30 +30,41 @@ class Controller_Blog_List extends Controller_Blog_Template {
 			->bind('category', $category);
 	}
 
-    /// todo: доделать этот метод
+    public function mainpage()
+    {
+        return Jelly::query('blog')
+            ->on_main()
+            ->order_by('date_create', 'DESC')
+            ->select();
+    }
+
     /**
      * action for route car_books (prints list of car_books of user_id)
      *
      * @return void
      */
-    public function action_carbooks() {
+    public function action_carbooks()
+    {
         
-        $id = 2;
-        print_r(Jelly::query('blog')
+        $id       = (int) $this->request->param('id');
+        if( ! $id)
+            throw new HTTP_Exception_404();
+
+        $user = Jelly::query('user', $id)->select();
+        if ( ! $user->loaded())
+            throw new HTTP_Exception_404();
+
+        $carbooks = Jelly::query('blog')
 			->active()
             ->where('author', '=', $id)
             ->and_where(':category.name', '=', 'car_book')
 			->order_by('date_create', 'DESC')
-			->select());
-    }
-
-	public function mainpage()
-	{
-		return Jelly::query('blog')
-			->on_main()
-			->order_by('date_create', 'DESC')
 			->select();
-	}
+
+        $this->template->title = 'Список борт-журналов пользователя '.$user->name;
+        $this->template->content = View::factory('frontend/content/blog/carbooks')
+                ->bind('carbooks', $carbooks);
+    }
 
     /**
      * Deletes blog category
@@ -61,6 +72,9 @@ class Controller_Blog_List extends Controller_Blog_Template {
      */
     public function action_del()
     {
+        if (empty($this->_user['member_id']))
+            throw new HTTP_Exception_401();
+        
         if ($this->_user['member_group_id']!=$this->admin_group)
             throw new HTTP_Exception_401(); // только админ может удалять блоги
 
@@ -93,15 +107,55 @@ class Controller_Blog_List extends Controller_Blog_Template {
         }
     }
 
-    /// todo: во вьюхах сделать js чтобы при выборе car_book имя становилось car_book
-    /// todo: при сохранении проверять уникальность поля name (если это не car_book)
-    /// todo: запрет имен self, car_book
+    /**
+     * checks data before saving
+     * @param  $post_data
+     * @return boolean
+     */
+    protected function _check($post_data, $id = NULL)
+    {
+        if (is_null($id)) {     // new
+            if ($post_data['name']=='car_book') {
+                $cnt = Jelly::query('blog_category')
+                        ->where('name', '=', 'car_book')
+                        ->and_where('user', '=', $post_data['user'])
+                        ->and_where('title', '=', $post_data['title'])
+                        ->count();
+            }
+            else {
+                $cnt = Jelly::query('blog_category')
+                        ->where('name', '=', $post_data['name'])
+                        ->count();
+            }
+        }
+        else {                  // edit
+            if ($post_data['name']=='car_book') {
+                $cnt = Jelly::query('blog_category')
+                        ->where('name', '=', 'car_book')
+                        ->and_where('user', '=', $this->_user['member_id'])
+                        ->and_where('title', '=', $post_data['title'])
+                        ->and_where('id', '!=', $id)
+                        ->count();
+            }
+            else {
+                $cnt = Jelly::query('blog_category')
+                        ->where('name', '=', $post_data['name'])
+                        ->and_where('id', '!=', $id)
+                        ->count();
+            }
+        }
+        return (boolean) ( ! $cnt);
+    }
+
     /**
      * Creates new blog category or car_book
      * @return void
      */
     public function action_new()
     {
+        if (empty($this->_user['member_id']))
+            throw new HTTP_Exception_401();
+
         $post = array(
             'post' => array(
                 'cat'=>'car_book',
@@ -128,22 +182,23 @@ class Controller_Blog_List extends Controller_Blog_Template {
                 $post_data['name'] = 'car_book';
             }
             try {
+                if ( ! $this->_check($post_data))
+                    throw new Exception('Ошибка при сохранении. Нарушена уникальность данных');
                 $category->set($post_data)->save();
             }
-            catch(Jelly_Validation_Exception $e)
+            catch(Exception $e)
 			{
-				$errors = $e->errors('common_validation');
+                $error = $e->getMessage();
 			}
-            if ( ! $errors) {
+            if ( ! $error) {
                 $this->request->redirect(Route::url('blog_action', array('action' => 'list')));
-
             }
             $post['post'] = $post_data;
         }
         $cat = array('car_book'=>'Новый борт-журнал', 'blog'=>'Новый блог');
         $this->template->content = View::factory('frontend/form/blog/newblog')
                 ->bind('cat', $cat)
-                ->bind('errors', $errors)
+                ->bind('error', $error)
                 ->bind('post', $post);
     }
 
@@ -153,6 +208,9 @@ class Controller_Blog_List extends Controller_Blog_Template {
      */
     public function action_edit()
     {
+
+        if (empty($this->_user['member_id']))
+            throw new HTTP_Exception_401();
 
         $id       = (int) $this->request->param('id');
         if( ! $id)
@@ -185,27 +243,48 @@ class Controller_Blog_List extends Controller_Blog_Template {
                 $post_data[$key] = HTML_parser::factory($post_data[$key])->plaintext;
 
             try {
+                if ( ! $this->_check($post_data, $id))
+                    throw new Exception('Ошибка при сохранении. Нарушена уникальность данных');
                 $category->set($post_data)->save();
             }
-            catch(Jelly_Validation_Exception $e)
+            catch(Exception $e)
 			{
-				$errors = $e->errors('common_validation');
+                $error = $e->getMessage();
 			}
-            if ( ! $errors) {
+            if ( ! $error) {
                 $this->request->redirect(Route::url('blog_action', array('action' => 'list')));
-
             }
             $post['post'] = $post_data;
         }
         $this->template->content = View::factory('frontend/form/blog/editblog')
-                ->bind('errors', $errors)
+                ->bind('error', $error)
                 ->bind('post', $post)
                 ;
     }
-    
-    /// todo: this action
+
+    /**
+     * shows list of blog categories
+     * @throws HTTP_Exception_401
+     * @return void
+     */
     public function action_list()
     {
+        if (empty($this->_user['member_id']))
+            throw new HTTP_Exception_401();
 
+        if ($this->_user['member_group_id']==$this->admin_group)
+            $categories = Jelly::query('blog_category')
+                    ->where('is_common', '=', '0')
+                    ->select();
+        else
+            $categories = Jelly::query('blog_category')
+                    ->where('is_common', '=', '0')
+                    ->and_where('user', '=', $this->_user['member_id'])
+                    ->select();
+
+        $this->template->title = 'Список категорий блогов';
+        $this->template->content = View::factory('frontend/content/blog/bloglist')
+                ->bind('categories', $categories);
     }
+    
 } // End Controller_Blog_Blog
