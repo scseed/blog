@@ -21,7 +21,7 @@
             echo HTML::anchor(Route::get('blog_article')->uri(array(
 					'id' => $article->id,
                     'action' => 'del'
-				)), 'Удалить');
+				)), 'Удалить', array('class'=>'button-confirm'));
         }
 
         // автор может оставить заявку на замену, но если он сам админ, то смена произойдет напрямую

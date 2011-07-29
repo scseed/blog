@@ -32,7 +32,7 @@ foreach($categories as $category):
             echo HTML::anchor(
                 Route::url('blog_action', array('action' => 'del', 'id'=>$category->id, 'lang' => I18n::lang())),
                 __('Удалить'),
-                array('class' => 'button')
+                array('class' => 'button button-confirm')
             );
             ?>
 		</div>

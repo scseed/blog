@@ -169,7 +169,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
         {
             $post_data = Arr::extract($this->request->post('post'), array_keys($post['post']), NULL);
             foreach (array('name', 'title', 'description') as $key)
-                $post_data[$key] = HTML_parser::factory($post_data[$key])->plaintext;
+                $post_data[$key] = trim(HTML_parser::factory($post_data[$key])->plaintext);
             $category = Jelly::factory('blog_category');
             if ($post_data['cat']=='blog')
             {
@@ -188,7 +188,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
             }
             catch(Exception $e)
 			{
-                $error = $e->getMessage();
+                $error = __($e->getMessage());
 			}
             if ( ! $error) {
                 $this->request->redirect(Route::url('blog_action', array('action' => 'list')));
@@ -242,7 +242,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
         {
             $post_data = Arr::extract($this->request->post('post'), array_keys($post['post']), NULL);
             foreach (array('name', 'title', 'description') as $key)
-                $post_data[$key] = HTML_parser::factory($post_data[$key])->plaintext;
+                $post_data[$key] = trim(HTML_parser::factory($post_data[$key])->plaintext);
 
             try {
                 if ( ! $this->_check($post_data, $id))

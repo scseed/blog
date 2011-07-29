@@ -19,8 +19,14 @@ class Model_Blog_Category extends Jelly_Model {
 		$meta->table('blog_categories')
 			->fields(array(
 				'id' => Jelly::field('Primary'),
-				'name' => Jelly::field('String'),
-				'title' => Jelly::field('String'),
+				'name' => Jelly::field('String', array(
+                    'rules' => array(
+					    'not_empty' => NULL,
+                    ))),
+				'title' => Jelly::field('String', array(
+                    'rules' => array(
+					    'not_empty' => NULL,
+                    ))),
 				'description' => Jelly::field('Text'),
                 'is_common' => Jelly::field('Boolean'),
 				'blogs' => Jelly::field('HasMany'),

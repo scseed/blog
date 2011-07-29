@@ -6,12 +6,14 @@
 		<?php echo Form::select('article[category]', $categories->as_array('id', 'title'), $current_category, array('id' => 'blog_category'))?>
 	</div>
 	<div class="form-item">
-		<?php echo Form::label('blog_title', 'Заголовок')?>
-		<?php echo Form::input('article[title]', $post['article']['title'], array('id' => 'blog_title'))?>
+		<?php echo Form::label('blog_title', 'Заголовок (*)')?>
+        <div id="blog_title-error" class="error hide hint">Поле заголовок не может быть пустым</div>
+		<?php echo Form::input('article[title]', $post['article']['title'], array('id' => 'blog_title', 'class' => 'needle'))?>
 	</div>
 	<div class="form-item">
-		<?php echo Form::label('blog_text', 'Текст')?>
-		<?php echo Form::textarea('article[text]', $post['article']['text'], array('id' => 'blog_text'))?>
+		<?php echo Form::label('blog_text', 'Текст (*)')?>
+        <div id="blog_text-error" class="error hide hint">Поле текст не может быть пустым</div>
+		<?php echo Form::textarea('article[text]', $post['article']['text'], array('id' => 'blog_text', 'class' => 'needle'))?>
 	</div>
 	<div class="form-item">
 		<?php echo Form::label('blog_tags', 'Тэги')?>
@@ -21,4 +23,7 @@
 		<?php echo Form::button(NULL, 'Сохранить')?>
 	</div>
 	<?php echo Form::close();?>
+    <div class="hint">
+        Поля, помеченные (*) обязательны для заполнения
+    </div>
 </div>
