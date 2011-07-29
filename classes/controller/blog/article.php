@@ -43,8 +43,6 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if( ! $article->loaded())
 			throw new HTTP_Exception_404();
 
-        $article->score++;
-        $article->save();
 		$comments = Request::factory(Route::get('comments')->uri(array(
 				'action' => 'tree',
 				'object_id' => $article->id,
