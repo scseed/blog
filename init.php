@@ -115,6 +115,16 @@ Route::set('blog_stats', '(<lang>/)stats/<action>/<id>', array(
 		'controller' => 'stats',
 		'action' => 'show',
 ));
+
+Route::set('blog_images', '(<lang>/)images/<action>/<id>', array(
+	'lang'       => $langs,
+))
+	->defaults(array(
+		'directory' => 'blog',
+		'controller' => 'images',
+		'action' => 'show',
+));
+
 Route::set('tags', '(<lang>/)tags(/<type>)/<object_id>', array(
 	'lang'      => $langs,
 	'type'      => '\w+',
