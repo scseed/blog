@@ -64,7 +64,51 @@ class Controller_Blog_Images extends Controller_Blog_Template {
         if ( ! ($article->author->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id']))
             throw new HTTP_Exception_401();
 
-        
+        if($this->request->method() === HTTP_Request::POST)
+        {
+
+        }
+        else
+        {
+
+        }
+        /*
+        $action = arr::get($_POST, 'action', '');
+		$banner = Jelly::factory('banner');
+		if ($action == 'add')
+		{
+
+			foreach ($banner->meta()->fields() as $field)
+			{
+				echo $fn = $field->name;
+				if ($fn != 'id')
+					$banner->$fn = $_POST[$fn];
+			}
+
+			@mkdir('media/banners', 0777, TRUE);
+			$filename = Upload::save($_FILES['new_image'], NULL, 'media/banners');
+			if ($filename) {
+				$banner->image = 'media/banners/'.basename($filename);
+				$banner->save();
+			}
+			else
+			{
+				$this->template->content = View::factory('error_msg')
+					->bind('back', $this->url);
+				return;
+			}
+			Request::instance()->redirect('banners');
+		}
+		else
+		{
+			$content = View::factory('content/banners/edit');
+			$content->action  = Form::hidden('action', 'add');
+			$content->data = $banner;
+			$content->id = 0;
+			$content->submit  = Form::button('submit', __('edit.add'), array('type'=>'submit', 'class'=>'button1'));
+			$this->template->content = $content;
+		}         */
+
     }
 
     public function action_del()

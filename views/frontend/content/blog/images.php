@@ -43,12 +43,32 @@
 <div class="clear"></div>
 <?php
     if ( ! empty ($_user))
-    if ($_user['member_id']==$article->author->id OR $_user['member_group_id']==$admin_group)
+    if ($_user['member_id']==$article->author->id OR $_user['member_group_id']==$admin_group) {
         echo HTML::anchor(Route::get('blog_images')->uri(array(
                     'action' => 'new',
 				    'id' => $article->id
 				)), HTML::image('i/icons/add.gif',
                                            array('alt'=>'Добавить изображение',
-                                           'title'=>'Добавить изображение')));
+                                           'title'=>'Добавить изображение')),
+            array('id' => 'new-image'));
+?>
+            <div class="hide" id="new-image-block">
+            <?php echo Form::open(Request::current())?>
+                <div class="form-item">
+                    <?php echo Form::label('file', 'Картинка (*)')?>
+                    <div id="file-error" class="error hide hint">Поле файл не может быть пустым</div>
+                    <?php echo Form::file('file', array('id' => 'file', 'class' => 'needle'))?>
+                </div>
+                <div class="form-item">
+                    <?php echo Form::label('title', 'Подпись')?>
+                    <?php echo Form::input('title', NULL, array('id' => 'title'))?>
+                </div>
+                <div class="form-item">
+                    <?php echo Form::button(NULL, 'Сохранить')?>
+                </div>
+                <?php echo Form::close();?>
+            </div>
+<?php
+    }
 ?>
 <div class="clear"></div>
