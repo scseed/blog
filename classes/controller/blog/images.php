@@ -67,48 +67,50 @@ class Controller_Blog_Images extends Controller_Blog_Template {
         if($this->request->method() === HTTP_Request::POST)
         {
 
+            $error = '';
+            $validate = Validation::factory($_FILES);
+
+            // Добавление правил валидации значения 'picture'
+
+            // TODO: ??? НЕ РАБОТАЕТ!!!
+            $validate->rules('file',
+                    array(//'Upload::valid' => array(),
+                          //'Upload::not_empty' => array(),
+                          //'Upload::type' =>array('Upload::type' => array('jpg','png','gif')),
+                          //'Upload::size' => array('1M')
+                    )
+            );
+            //$validate->rule('')
+
+            if ($validate->check())
+            {
+                $image = Jelly::factory('image');
+                $mkdir = @mkdir('i/photos/'.$blog_id, 0777, TRUE);
+                $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$blog_id);
+                if ($filename) {
+                    $image->url = 'i/photos/'.$blog_id.'/'.basename($filename);
+                    $image->title = $_POST['title'];
+                    $image->blog = $blog_id;
+                    $image->save();
+                }
+                else
+                {
+                    $error = __('Error uploading file');
+                }
+            }
+            else
+            {
+                $error = __('Error validating image');
+            }
+            if (empty($error)) {
+                $this->request->redirect(Route::url('blog_article', array('id' => $blog_id)));
+            }
         }
-        else
-        {
-
-        }
-        /*
-        $action = arr::get($_POST, 'action', '');
-		$banner = Jelly::factory('banner');
-		if ($action == 'add')
-		{
-
-			foreach ($banner->meta()->fields() as $field)
-			{
-				echo $fn = $field->name;
-				if ($fn != 'id')
-					$banner->$fn = $_POST[$fn];
-			}
-
-			@mkdir('media/banners', 0777, TRUE);
-			$filename = Upload::save($_FILES['new_image'], NULL, 'media/banners');
-			if ($filename) {
-				$banner->image = 'media/banners/'.basename($filename);
-				$banner->save();
-			}
-			else
-			{
-				$this->template->content = View::factory('error_msg')
-					->bind('back', $this->url);
-				return;
-			}
-			Request::instance()->redirect('banners');
-		}
-		else
-		{
-			$content = View::factory('content/banners/edit');
-			$content->action  = Form::hidden('action', 'add');
-			$content->data = $banner;
-			$content->id = 0;
-			$content->submit  = Form::button('submit', __('edit.add'), array('type'=>'submit', 'class'=>'button1'));
-			$this->template->content = $content;
-		}         */
-
+        $this->template->title = __('New Blog Image');
+		$this->template->content = View::factory('frontend/form/blog/image')
+			->bind('error', $error)
+            ->bind('article', $blog_id)
+		;
     }
 
     public function action_del()
