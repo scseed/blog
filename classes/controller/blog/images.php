@@ -50,6 +50,16 @@ class Controller_Blog_Images extends Controller_Blog_Template {
 
     }
 
+    public function action_rand()
+    {
+        if( ! $this->_ajax)
+            throw new HTTP_Exception_404();
+        $images = Jelly::query('image')->limit(6)->order_by(DB::expr('rand()'))->select();
+        $this->template->content = View::factory('frontend/content/blog/image-block')
+            ->bind('images', $images)
+            ;
+    }
+
     public function action_new()
     {
         $blog_id = (int) $this->request->param('id');

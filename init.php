@@ -123,6 +123,7 @@ Route::set('blog_images', '(<lang>/)images/<action>/<id>', array(
 		'directory' => 'blog',
 		'controller' => 'images',
 		'action' => 'show',
+        'id' => NULL
 ));
 
 Route::set('tags', '(<lang>/)tags(/<type>)/<object_id>', array(
