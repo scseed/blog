@@ -80,17 +80,11 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             $error = '';
             $validate = Validation::factory($_FILES);
 
-            // Добавление правил валидации значения 'picture'
-
-            // TODO: ??? НЕ РАБОТАЕТ!!!
-            $validate->rules('file',
-                    array(//'Upload::valid' => array(),
-                          //'Upload::not_empty' => array(),
-                          //'Upload::type' =>array('Upload::type' => array('jpg','png','gif')),
-                          //'Upload::size' => array('1M')
-                    )
-            );
-            //$validate->rule('')
+            $validate->rule('file', 'Upload::valid')
+                ->rule('file', 'Upload::not_empty')
+                ->rule('file', 'Upload::type', array(':value', array('jpg', 'png', 'gif')))
+                ->rule('file', 'Upload::size', array(':value', '1M'))
+                ;
 
             if ($validate->check())
             {
