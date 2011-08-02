@@ -99,7 +99,7 @@ class Controller_Blog_Images extends Controller_Blog_Template {
                 $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$blog_id);
                 if ($filename) {
                     $image->url = 'i/photos/'.$blog_id.'/'.basename($filename);
-                    $image->title = $_POST['title'];
+                    $image->title = HTML::chars($_POST['title']);
                     $image->blog = $blog_id;
                     $image->save();
                 }

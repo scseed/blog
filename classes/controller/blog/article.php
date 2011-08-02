@@ -243,7 +243,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
         if( ! $article->loaded())
             throw new HTTP_Exception_404();
 
-        if($this->_user['member_id'] != $article->author->id or $this->_user['member_group_id']!=$this->admin_group)
+        if($this->_user['member_id'] != $article->author->id and $this->_user['member_group_id']!=$this->admin_group)
             throw new HTTP_Exception_401(
                 'User with id `:user_id` can\'t edit article with id `:article_id` by author with id `:author_id`',
                 array(
@@ -355,7 +355,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if( ! $article->loaded())
 			throw new HTTP_Exception_404();
 
-        if($this->_user['member_id'] != $article->author->id or $this->_user['member_group_id']!=$this->admin_group)
+        if($this->_user['member_id'] != $article->author->id and $this->_user['member_group_id']!=$this->admin_group)
 			throw new HTTP_Exception_401(
 				'User with id `:user_id` can\'t edit article with id `:article_id` by author with id `:author_id`',
 				array(
