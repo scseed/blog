@@ -144,7 +144,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
                 )
             );
 
-        $categories = Jelly::query('blog_category')->select();
+        $categories = Jelly::query('blog_category')->active()->select();
 
         $errors = NULL;
         /// определить админ или владелец статьи, в зависимости от этого обработка
@@ -270,9 +270,9 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			//throw new HTTP_Exception_404('Category is not defined');
 
         if ($this->_user['member_group_id']==$this->admin_group)
-		    $categories = Jelly::query('blog_category')->select();
+		    $categories = Jelly::query('blog_category')->active()->admin($this->_user['member_id'])->select();
         else
-            $categories = Jelly::query('blog_category')->common($this->_user['member_id'])->select();
+            $categories = Jelly::query('blog_category')->active()->common($this->_user['member_id'])->select();
 
 		$current_category = NULL;
 		foreach($categories as $category)
@@ -366,9 +366,9 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			);
 
         if ($this->_user['member_group_id']==$this->admin_group)
-		    $categories = Jelly::query('blog_category')->select();
+		    $categories = Jelly::query('blog_category')->active()->admin($this->_user['member_id'])->select();
         else
-            $categories = Jelly::query('blog_category')->common($this->_user['member_id'])->select();
+            $categories = Jelly::query('blog_category')->active()->common($this->_user['member_id'])->select();
 
 		$post = array(
 			'article' => array(
@@ -419,7 +419,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
             ->set('current_category', $article->category->id)
 			->bind('categories', $categories)
 			->bind('post', $post)
-			
+			->bind('article_id', $article->id)
 		;
 	}
 

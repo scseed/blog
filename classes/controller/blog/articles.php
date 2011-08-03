@@ -87,7 +87,7 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
             $title = 'Личный блог пользователя '.$user->name;
         }
         else {
-            $category = Jelly::query('blog_category', $id)->limit(1)->select();
+            $category = Jelly::query('blog_category', $id)->active()->limit(1)->select();
             $title = 'Борт-журнал автомобиля '.$category->title;
         }
         

@@ -41,6 +41,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 
 		$category = Jelly::query('blog_category')
 			->where('name', '=', $category_name)
+            ->active()
 			->limit(1)
 			->select();
 

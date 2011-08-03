@@ -6,9 +6,6 @@
     <h4>Фотографии</h4>
 <?php
     foreach($images as $image):
-	$article_url = Route::get('blog_article')->uri(array(
-					'id' => $image->blog->id
-				));
 ?>
 	<div class="frame">
 		<?php
@@ -21,8 +18,7 @@
                          'height' => 73,
                          'id' => 'image-'.$image->id)),
                 array('rel' => 'fancybox'));
-        if ( ! empty ($_user))
-        if ($_user['member_id']==$article->author->id OR $_user['member_group_id']==$admin_group) {
+        if ($_user['member_id']==$article->author->id OR $_user['member_group_id']==$admin_group OR is_null($article)) {
             /*echo HTML::anchor(Route::get('blog_images')->uri(array(
                     'action' => 'edit',
 				    'id' => $image->id
@@ -42,18 +38,21 @@
 <?php } ?>
 <div class="clear"></div>
 <?php
-    if ( ! empty ($_user))
-    if ($_user['member_id']==$article->author->id OR $_user['member_group_id']==$admin_group) {
+    if (is_null($article))
+        $article_id = NULL;
+    else
+        $article_id = $article->id;
+    if (is_null($article) OR $_user['member_id']==$article->author->id OR $_user['member_group_id']==$admin_group) {
         echo HTML::anchor(Route::get('blog_images')->uri(array(
                     'action' => 'new',
-				    'id' => $article->id
+				    'id' => $article_id
 				)), HTML::image('i/icons/add.gif',
                                            array('alt'=>'Добавить изображение',
                                            'title'=>'Добавить изображение')),
             array('id' => 'new-image'));
 ?>
     <div class="hide" id="new-image-block">
-    <?php echo View::factory('frontend/form/blog/image')->set('article', $article->id) ?>
+    <?php echo View::factory('frontend/form/blog/image')->set('article', $article_id) ?>
     </div>
 <?php
     }

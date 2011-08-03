@@ -3,6 +3,15 @@
 <div id="action_category">
 	<?php echo Form::open(Request::current())?>
     <div class="form-item">
+        <?php echo Form::label('cat', 'Категория')?>
+        <?php
+        if ($_user['member_group_id']!=$admin_group)
+            echo Form::select('post[cat]', $cat, NULL, array('id' => 'cat', 'disabled' => 'disabled'));
+        else
+            echo Form::select('post[cat]', $cat, NULL, array('id' => 'cat'));
+        ?>
+    </div>
+    <div class="form-item">
         <?php echo Form::label('name', 'URL (*)')?>
         <div id="name-error" class="error hide hint">Поле URL не может быть пустым</div>
         <?php

@@ -14,4 +14,9 @@ class Model_Builder_Blog_Category extends Jelly_Builder {
 		return $this->where('is_common', '=', TRUE)->or_where('user_id', '=', $user_id);
 	}
 
+    public function admin($user_id = 0)
+    {
+        return $this->where('user_id', '=', $user_id)->or_where('user_id', '=', 0);
+    }
+
 } // End Model_Builder_Blog

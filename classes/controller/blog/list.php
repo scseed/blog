@@ -82,7 +82,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
         if( ! $id)
             throw new HTTP_Exception_404();
 
-        $category = Jelly::factory('blog_category', $id);
+        $category = Jelly::query('blog_category', $id)->active()->limit(1)->select();
         if ( ! $category->loaded()) {
             throw new HTTP_Exception_404();
         }
@@ -94,7 +94,8 @@ class Controller_Blog_List extends Controller_Blog_Template {
         $error = FALSE;
         try
         {
-            $category->delete();
+            $category->is_active = false;
+            $category->save();
         }
         catch (Exception $e)
         {
@@ -117,6 +118,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
         if (is_null($id)) {     // new
             if ($post_data['name']=='car_book') {
                 $cnt = Jelly::query('blog_category')
+                        ->active()
                         ->where('name', '=', 'car_book')
                         ->and_where('user', '=', $post_data['user'])
                         ->and_where('title', '=', $post_data['title'])
@@ -124,6 +126,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
             }
             else {
                 $cnt = Jelly::query('blog_category')
+                        ->active()
                         ->where('name', '=', $post_data['name'])
                         ->count();
             }
@@ -131,6 +134,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
         else {                  // edit
             if ($post_data['name']=='car_book') {
                 $cnt = Jelly::query('blog_category')
+                        ->active()
                         ->where('name', '=', 'car_book')
                         ->and_where('user', '=', $this->_user['member_id'])
                         ->and_where('title', '=', $post_data['title'])
@@ -139,6 +143,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
             }
             else {
                 $cnt = Jelly::query('blog_category')
+                        ->active()
                         ->where('name', '=', $post_data['name'])
                         ->and_where('id', '!=', $id)
                         ->count();
@@ -181,6 +186,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
             {
                 $post_data['name'] = 'car_book';
             }
+            $post_data['is_active'] = TRUE;
             try {
                 if ( ! $this->_check($post_data))
                     throw new Exception('Ошибка при сохранении. Нарушена уникальность данных');
@@ -218,7 +224,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
         if( ! $id)
             throw new HTTP_Exception_404();
 
-        $category = Jelly::factory('blog_category', $id);
+        $category = Jelly::query('blog_category', $id)->active()->limit(1)->select();
         if ( ! $category->loaded()) {
             throw new HTTP_Exception_404();
         }
@@ -233,6 +239,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
 
         $post = array(
             'post' => array(
+                'cat'=>($category->name=='car_book')? 'car_book': 'blog',
                 'name'=>$category->name,
                 'title'=>$category->title,
                 'description'=>$category->description,
@@ -259,7 +266,9 @@ class Controller_Blog_List extends Controller_Blog_Template {
             $post['post'] = $post_data;
         }
         $this->template->title = __('Edit Blog Category');
+        $cat = array('car_book'=>'борт-журнал', 'blog'=>'блог');
         $this->template->content = View::factory('frontend/form/blog/editblog')
+                ->bind('cat', $cat)
                 ->bind('error', $error)
                 ->bind('post', $post)
                 ;
@@ -277,10 +286,12 @@ class Controller_Blog_List extends Controller_Blog_Template {
 
         if ($this->_user['member_group_id']==$this->admin_group)
             $categories = Jelly::query('blog_category')
+                    ->active()
                     ->where('is_common', '=', '0')
                     ->select();
         else
             $categories = Jelly::query('blog_category')
+                    ->active()
                     ->where('is_common', '=', '0')
                     ->and_where('user', '=', $this->_user['member_id'])
                     ->select();

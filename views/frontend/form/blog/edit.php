@@ -26,4 +26,10 @@
     <div class="hint">
         Поля, помеченные (*) обязательны для заполнения
     </div>
+    <?php
+        echo Request::factory(Route::get('blog_images')->uri(array(
+                'action' => 'show',
+                'id' => $article_id
+            )))->execute()->body();
+    ?>
 </div>

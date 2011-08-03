@@ -29,6 +29,7 @@ class Model_Blog_Category extends Jelly_Model {
                     ))),
 				'description' => Jelly::field('Text'),
                 'is_common' => Jelly::field('Boolean'),
+                'is_active' => Jelly::field('Boolean'),
 				'blogs' => Jelly::field('HasMany'),
                 'user' => Jelly::field('BelongsTo', array(
                     'foreign' => 'user'

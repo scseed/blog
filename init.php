@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-$langs = NULL;
+$langs = 'ru';
 if(class_exists('Page'))
 {
 	/**
@@ -116,7 +116,7 @@ Route::set('blog_stats', '(<lang>/)stats/<action>/<id>', array(
 		'action' => 'show',
 ));
 
-Route::set('blog_images', '(<lang>/)images/<action>/<id>', array(
+Route::set('blog_images', '(<lang>/)images/<action>(/<id>)', array(
 	'lang'       => $langs,
 ))
 	->defaults(array(
