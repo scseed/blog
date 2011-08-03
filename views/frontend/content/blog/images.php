@@ -1,9 +1,9 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
+<h4>Фотографии</h4>
 <?php
     if ($images->count()) {
 ?>
 <div class="frames" id="photos">
-    <h4>Фотографии</h4>
 <?php
     foreach($images as $image):
 ?>

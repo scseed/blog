@@ -48,7 +48,7 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             // загружаем картинки по id пользователя
             $images = Jelly::query('image')
                     ->where('user', '=', $this->_user['member_id'])
-                    ->and_where('blog', 'is', NULL)
+                    ->and_where('blog', '=', 0)
                     ->select();
             $this->template->content = View::factory('frontend/content/blog/images')
                 ->set('article', NULL)
@@ -178,9 +178,10 @@ class Controller_Blog_Images extends Controller_Blog_Template {
         $image = Jelly::query('image', $image_id)->select();
         if ($image->loaded()) {
             $blog_id = $image->blog->id;
+            $user_id = $image->user->id;
 
             $article = Jelly::query('blog', $blog_id)->select();
-            if ($article->author->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id'])
+            if ($user_id == $this->_user['member_id'] OR $article->author->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id'])
             {
                 //@unlink(DOCROOT.$image->url);
                 $image->delete();

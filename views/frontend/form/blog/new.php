@@ -16,6 +16,14 @@
 		<?php echo Form::textarea('article[text]', $post['article']['text'], array('id' => 'blog_text', 'class' => 'needle'))?>
 	</div>
 	<div class="form-item">
+        <?php
+            echo Request::factory(Route::get('blog_images')->uri(array(
+                    'action' => 'show',
+                    'id' => NULL
+                )))->execute()->body();
+        ?>
+    </div>
+    <div class="form-item">
 		<?php echo Form::label('blog_tags', 'Тэги')?>
 		<?php echo Form::input('tags', $post['tags'], array('id' => 'blog_tags'))?>
 	</div>
