@@ -31,9 +31,13 @@ class Model_Blog_Category extends Jelly_Model {
                 'is_common' => Jelly::field('Boolean'),
                 'is_active' => Jelly::field('Boolean'),
 				'blogs' => Jelly::field('HasMany'),
+
+// TODO: car book belongs to car but not to user ???
+
                 'user' => Jelly::field('BelongsTo', array(
                     'foreign' => 'user'
                 )),
+                'car' => Jelly::field('BelongsTo'),
 			));
 	}
 } // End Model_Blog_Type
