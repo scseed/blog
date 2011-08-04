@@ -52,7 +52,7 @@
             array('id' => 'new-image'));
 ?>
     <div class="hide" id="new-image-block">
-    <?php echo View::factory('frontend/form/blog/image')->set('article', $article_id) ?>
+    <?php echo Request::factory(Route::url('blog_images', array('action'=>'new', 'id'=>$article_id)))->execute()->body();//View::factory('frontend/form/blog/image')->set('article', $article_id) ?>
     </div>
 <?php
     }

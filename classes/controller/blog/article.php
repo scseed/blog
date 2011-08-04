@@ -409,8 +409,10 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 				$_tags[] = $_tags;
 			}
 
-			if( ! $errors)
+			if( ! $errors) {
+                //$this->_save_images($article->id);
 				$this->_save_tags($article, $_tags);
+            }
 
 			$post['article'] = $article_data;
 
@@ -433,11 +435,12 @@ class Controller_Blog_Article extends Controller_Blog_Template {
      * @return void
      */
     protected function _save_images($article_id) {
+
+//        throw new Exception(print_r($_FILES, TRUE));
         DB::update('images')->set(array('blog_id'=>$article_id))
                 ->where('blog_id', '=', 0)
                 ->and_where('user_id', '=', $this->_user['member_id'])
                 ->execute();
-
     }
 	/**
 	 * Saving post tags

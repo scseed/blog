@@ -71,105 +71,68 @@ class Controller_Blog_Images extends Controller_Blog_Template {
 
     public function action_new()
     {
+        /*if( ! $this->_ajax)
+            throw new HTTP_Exception_404();*/
         $blog_id = (int) $this->request->param('id');
         $user_id = $this->_user['member_id'];
+        $blog_path = '';
         if($blog_id) {
-
+            $blog_path = '/'.$blog_id;
             $article = Jelly::query('blog', $blog_id)->select();
             if( ! $article->loaded())
                 throw new HTTP_Exception_404();
 
             if ( ! ($article->author->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id']))
                 throw new HTTP_Exception_401();
+        }
 
-            if($this->request->method() === HTTP_Request::POST)
+        if($this->request->method() === HTTP_Request::POST)
+        {
+
+            $error = '';
+            $validate = Validation::factory($_FILES);
+
+            $validate->rule('file', 'Upload::valid')
+                ->rule('file', 'Upload::not_empty')
+                ->rule('file', 'Upload::type', array(':value', array('jpg', 'png', 'gif')))
+                ->rule('file', 'Upload::size', array(':value', '1M'))
+                ;
+
+            if ($validate->check())
             {
-
-                $error = '';
-                $validate = Validation::factory($_FILES);
-
-                $validate->rule('file', 'Upload::valid')
-                    ->rule('file', 'Upload::not_empty')
-                    ->rule('file', 'Upload::type', array(':value', array('jpg', 'png', 'gif')))
-                    ->rule('file', 'Upload::size', array(':value', '1M'))
-                    ;
-
-                if ($validate->check())
-                {
-                    $image = Jelly::factory('image');
-                    $mkdir = @mkdir('i/photos/'.$user_id.'/'.$blog_id, 0777, TRUE);
-                    $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$user_id.'/'.$blog_id);
-                    if ($filename) {
-                        $image->url = 'i/photos/'.$user_id.'/'.$blog_id.'/'.basename($filename);
-                        $image->title = HTML::chars($_POST['title']);
-                        $image->blog = $blog_id;
-                        $image->user = $user_id;
-                        $image->save();
-                    }
-                    else
-                    {
-                        $error = __('Error uploading file');
-                    }
+                $image = Jelly::factory('image');
+                @mkdir('i/photos/'.$user_id.$blog_path, 0777, TRUE);
+                $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$user_id.$blog_path);
+                if ($filename) {
+                    $image->url = 'i/photos/'.$user_id.$blog_path.'/'.basename($filename);
+                    $image->title = HTML::chars($_POST['title']);
+                    $image->blog = $blog_id;
+                    $image->user = $user_id;
+                    $image->save();
                 }
                 else
                 {
-                    $error = __('Error validating image');
-                }
-                if (empty($error)) {
-                    $this->request->redirect(Route::url('blog_article', array('id' => $blog_id)));
+                    $error = __('Error uploading file');
                 }
             }
-            $this->template->title = __('New Blog Image');
-            $this->template->content = View::factory('frontend/form/blog/image')
-                ->bind('error', $error)
-                ->bind('article', $blog_id)
-            ;
-        }
-        else {
-            // create image for user id
-            if($this->request->method() === HTTP_Request::POST)
+            else
             {
-
-                $error = '';
-                $validate = Validation::factory($_FILES);
-
-                $validate->rule('file', 'Upload::valid')
-                    ->rule('file', 'Upload::not_empty')
-                    ->rule('file', 'Upload::type', array(':value', array('jpg', 'png', 'gif')))
-                    ->rule('file', 'Upload::size', array(':value', '1M'))
-                    ;
-
-                if ($validate->check())
-                {
-                    $image = Jelly::factory('image');
-                    $mkdir = @mkdir('i/photos/'.$user_id, 0777, TRUE);
-                    $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$user_id);
-                    if ($filename) {
-                        $image->url = 'i/photos/'.$user_id.'/'.basename($filename);
-                        $image->title = HTML::chars($_POST['title']);
-                        $image->blog = NULL;
-                        $image->user = $user_id;
-                        $image->save();
-                    }
-                    else
-                    {
-                        $error = __('Error uploading file');
-                    }
-                }
-                else
-                {
-                    $error = __('Error validating image');
-                }
-                if (empty($error)) {
-                    $this->request->redirect(Route::url('blog_article', array('id' => $blog_id)));
-                }
+                $error = __('Error validating image');
             }
-            $this->template->title = __('New Blog Image');
-            $this->template->content = View::factory('frontend/form/blog/image')
-                ->bind('error', $error)
-                ->set('article', NULL)
-            ;
+            if (empty($error)) {
+                /*$this->template->content = '<div class="frame">'.
+            '<a href="'.$image->url.'" rel="fancybox">'.
+            '<img src="'.$image->url.'" width="100" height="73" title="'.$image->title.'" alt="'.$image->title.'"/>'.
+            '</a></div>';*/
+                /*$this->template->content = StaticJs::instance()
+                        ->add("append_image('$image->url', '$image->title')", NULL, 'inline')->get_all();*/
+                $this->request->redirect(Route::url('blog_article', array('id' => $blog_id)));
+            }
         }
+        $this->template->content = View::factory('frontend/form/blog/image')
+            ->bind('error', $error)
+            ->bind('article', $blog_id)
+        ;
     }
 
     public function action_del()
@@ -183,7 +146,7 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             $article = Jelly::query('blog', $blog_id)->select();
             if ($user_id == $this->_user['member_id'] OR $article->author->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id'])
             {
-                //@unlink(DOCROOT.$image->url);
+                @unlink(DOCROOT.$image->url);
                 $image->delete();
                 if( ! $this->_ajax) {
                     $this->request->redirect(Route::url('blog_article', array('id' => $blog_id )));
