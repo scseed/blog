@@ -32,10 +32,10 @@
     </div>
     <div class="form-item">
         <?php
-            /*echo Request::factory(Route::get('blog_images')->uri(array(
+            echo Request::factory(Route::get('blog_images')->uri(array(
                     'action' => 'show',
                     'id' => NULL
-                )))->execute()->body();*/
+                )))->execute()->body();
         ?>
     </div>
 </div>

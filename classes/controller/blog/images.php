@@ -120,12 +120,13 @@ class Controller_Blog_Images extends Controller_Blog_Template {
                 $error = __('Error validating image');
             }
             if (empty($error)) {
-                /*$this->template->content = '<div class="frame">'.
-            '<a href="'.$image->url.'" rel="fancybox">'.
-            '<img src="'.$image->url.'" width="100" height="73" title="'.$image->title.'" alt="'.$image->title.'"/>'.
-            '</a></div>';*/
-                /*$this->template->content = StaticJs::instance()
-                        ->add("append_image('$image->url', '$image->title')", NULL, 'inline')->get_all();*/
+                echo '<div class="frame">'.
+                        HTML::anchor($image->url,
+                            HTML::image($image->url, array('width'=>100,
+                                                     'height'=>73,
+                                                     'alt'=>$image->title,
+                                                     'title'=>$image->title)), array('rel'=>'fancybox')).'</div>';
+                exit();
                 $this->request->redirect(Route::url('blog_article', array('id' => $blog_id)));
             }
         }
