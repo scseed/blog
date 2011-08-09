@@ -62,6 +62,63 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
      */
     public function action_new()
     {
+        /*
+        $post = array(
+            'article' => array(
+                'category' => NULL,
+                'title'    => NULL,
+                'text'     => NULL,
+            ),
+            'tags'     => NULL,
+        );
+        $errors = NULL;
+
+        if($this->request->method() === HTTP_Request::POST)
+        {
+            $article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
+
+//			$article_data['text'] = HTML::chars($article_data['text']);
+            $article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
+            $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
+
+            $article_data['author'] = $this->_user['member_id'];
+
+            $article = Jelly::factory('blog');
+
+            $article->set($article_data);
+
+            try
+            {
+                $article->save();
+            }
+            catch(Jelly_Validation_Exception $e)
+            {
+                $errors = $e->errors('common_validation');
+            }
+
+            $_tags = explode(',', preg_replace('/([,;][\s]?)/', ',', Arr::get($this->request->post(), 'tags')));
+
+            if(is_string($_tags))
+            {
+                $_tags[] = $_tags;
+            }
+
+            if( ! $errors) {
+                $this->_save_images($article->id);
+                $this->_save_tags($article, $_tags);
+            }
+
+            $post['article'] = $article_data;
+
+            $post['tags'] = implode(',', $_tags);
+        }
+*/
+        $this->template->title = __('New Car');
+        $this->template->content = View::factory('frontend/form/car/new')
+            /*->bind('current_category', $current_category->id)
+            ->bind('categories', $categories)*/
+            ->bind('post', $post)
+        ;
 
     }
 
@@ -72,6 +129,79 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
      */
     public function action_edit()
     {
+        $id = (int) $this->request->param('id');
+        $car = Jelly::query('car', $id)->active()->select();
+
+        if( ! $car->loaded())
+            throw new HTTP_Exception_404();
+
+        if($this->_user['member_id'] != $car->user->id and $this->_user['member_group_id']!=$this->admin_group)
+            throw new HTTP_Exception_401(
+                'User with id `:user_id` can\'t edit car with id `:article_id` by author with id `:author_id`',
+                array(
+                    ':user_id' => $this->_user['member_id'],
+                    ':article_id' => $car->id,
+                    ':author_id' => $car->user->id
+                )
+            );
+
+        /*
+        $post = array(
+            'article' => array(
+                'category' => NULL,
+                'title'    => NULL,
+                'text'     => NULL,
+            ),
+            'tags'     => NULL,
+        );
+        $errors = NULL;
+
+        if($this->request->method() === HTTP_Request::POST)
+        {
+            $article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
+
+//			$article_data['text'] = HTML::chars($article_data['text']);
+            $article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
+            $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
+
+            $article_data['author'] = $this->_user['member_id'];
+
+            $article = Jelly::factory('blog');
+
+            $article->set($article_data);
+
+            try
+            {
+                $article->save();
+            }
+            catch(Jelly_Validation_Exception $e)
+            {
+                $errors = $e->errors('common_validation');
+            }
+
+            $_tags = explode(',', preg_replace('/([,;][\s]?)/', ',', Arr::get($this->request->post(), 'tags')));
+
+            if(is_string($_tags))
+            {
+                $_tags[] = $_tags;
+            }
+
+            if( ! $errors) {
+                $this->_save_images($article->id);
+                $this->_save_tags($article, $_tags);
+            }
+
+            $post['article'] = $article_data;
+
+            $post['tags'] = implode(',', $_tags);
+        }
+*/
+        $this->template->title = __('Edit Car');
+        $this->template->content = View::factory('frontend/form/car/edit')
+            /*->bind('current_category', $current_category->id)
+            ->bind('categories', $categories)*/
+            ->bind('post', $post)
+        ;
 
     }
 
@@ -83,10 +213,6 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
     public function action_del()
     {
         $id = (int) $this->request->param('id');
-
-        if( ! $id)
-            throw new HTTP_Exception_404();
-
         $car = Jelly::query('car', $id)->active()->select();
 
         if( ! $car->loaded())
