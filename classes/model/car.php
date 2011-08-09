@@ -19,18 +19,19 @@ class Model_Car extends Jelly_Model {
 		$meta->table('cars')
 			->fields(array(
 				'id' => Jelly::field('Primary'),
-				'owner' => Jelly::field('BelongsTo', array(
+				'user' => Jelly::field('BelongsTo', array(
 					'foreign' => 'user'
 				)),
                 'model' => Jelly::field('BelongsTo', array(
                     'foreign' => 'model'
                 )),
+                'description' => Jelly::field('Text'),
 				'year' => Jelly::field('Integer'),
                 'is_active' => Jelly::field('Boolean', array(
                     'default' => TRUE,
                 )),
 			))
-			->load_with(array('model', 'owner'));
+			->load_with(array('model', 'user'));
 
 	}
 } // End Model_Blog

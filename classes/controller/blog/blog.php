@@ -51,7 +51,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
         $articles_count = Jelly::query('blog')
                 ->active()
                 ->where('category', '=', $category->id)
-                ->and_where('author_id', '=', $this->_user['member_id'])
+                /*->and_where('author_id', '=', $this->_user['member_id'])*/
                 ->count();
         $page = max(1, arr::get($_GET, 'page', 1));
         $offset = 20 * ($page-1);
@@ -71,7 +71,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		$articles = Jelly::query('blog')
 			->active()
 			->where('category', '=', $category->id)
-            ->and_where('author_id', '=', $this->_user['member_id'])
+            /*->and_where('author_id', '=', $this->_user['member_id'])*/
 			->order_by('date_create', 'DESC')
             ->limit(20)
             ->offset($offset)

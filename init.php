@@ -58,6 +58,17 @@ Route::set('blog_list', '(<lang>/)blogs/<list_type>', array(
 		'action' => 'show',
 ));
 
+Route::set('blog_cars', '(<lang>/)cars/<action>(/<id>)', array(
+	'lang'     => $langs,
+    'action'   => '[\w_]+',
+    'id'       => '\d+',
+))
+	->defaults(array(
+		'directory' => 'blog',
+		'controller' => 'cars',
+		'action' => 'show',
+));
+
 Route::set('article_list', '(<lang>/)articles/<category>/<id>', array(
 	'lang'     => $langs,
     'category' => '[\w_]+',

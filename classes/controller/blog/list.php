@@ -43,6 +43,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
      *
      * @return void
      */
+
     public function action_carbooks()
     {
         
@@ -65,6 +66,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
         $this->template->content = View::factory('frontend/content/blog/carbooks')
                 ->bind('carbooks', $carbooks);
     }
+
 
     /**
      * Deletes blog category
@@ -115,8 +117,10 @@ class Controller_Blog_List extends Controller_Blog_Template {
      */
     protected function _check($post_data, $id = NULL)
     {
+        if ($post_data['name']=='car_book')
+            return FALSE;
         if (is_null($id)) {     // new
-            if ($post_data['name']=='car_book') {
+            /*if ($post_data['name']=='car_book') {
                 $cnt = Jelly::query('blog_category')
                         ->active()
                         ->where('name', '=', 'car_book')
@@ -124,7 +128,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
                         ->and_where('title', '=', $post_data['title'])
                         ->count();
             }
-            else {
+            else*/ {
                 $cnt = Jelly::query('blog_category')
                         ->active()
                         ->where('name', '=', $post_data['name'])
@@ -132,7 +136,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
             }
         }
         else {                  // edit
-            if ($post_data['name']=='car_book') {
+            /*if ($post_data['name']=='car_book') {
                 $cnt = Jelly::query('blog_category')
                         ->active()
                         ->where('name', '=', 'car_book')
@@ -141,7 +145,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
                         ->and_where('id', '!=', $id)
                         ->count();
             }
-            else {
+            else*/ {
                 $cnt = Jelly::query('blog_category')
                         ->active()
                         ->where('name', '=', $post_data['name'])
@@ -153,7 +157,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
     }
 
     /**
-     * Creates new blog category or car_book
+     * Creates new blog category ///or car_book
      * @return void
      */
     public function action_new()
@@ -161,13 +165,16 @@ class Controller_Blog_List extends Controller_Blog_Template {
         if (empty($this->_user['member_id']))
             throw new HTTP_Exception_401();
 
+        if ($this->_user['member_group_id']!=$this->admin_group)
+            throw new HTTP_Exception_401(); // только админ может создать новый тип блога
+
         $post = array(
             'post' => array(
-                'cat'=>'car_book',
-                'name'=>'car_book',
+                /*'cat'=>'car_book',*/
+                'name'=>'',
                 'title'=>'',
                 'description'=>'',
-                'user'=>$this->_user['member_id'],
+                /*'user'=>$this->_user['member_id'],*/
             )
         );
         if($this->request->method() === HTTP_Request::POST)
@@ -176,6 +183,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
             foreach (array('name', 'title', 'description') as $key)
                 $post_data[$key] = trim(HTML_parser::factory($post_data[$key])->plaintext);
             $category = Jelly::factory('blog_category');
+            /*
             if ($post_data['cat']=='blog')
             {
                 if ($this->_user['member_group_id']!=$this->admin_group)
@@ -186,6 +194,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
             {
                 $post_data['name'] = 'car_book';
             }
+            */
             $post_data['is_active'] = TRUE;
             try {
                 if ( ! $this->_check($post_data))
@@ -201,11 +210,11 @@ class Controller_Blog_List extends Controller_Blog_Template {
             }
             $post['post'] = $post_data;
         }
-        $cat = array('car_book'=>'Новый борт-журнал', 'blog'=>'Новый блог');
+        //$cat = array('car_book'=>'Новый борт-журнал', 'blog'=>'Новый блог');
 
         $this->template->title = __('New Blog Category');
         $this->template->content = View::factory('frontend/form/blog/newblog')
-                ->bind('cat', $cat)
+        //        ->bind('cat', $cat)
                 ->bind('error', $error)
                 ->bind('post', $post);
     }
@@ -219,6 +228,9 @@ class Controller_Blog_List extends Controller_Blog_Template {
 
         if (empty($this->_user['member_id']))
             throw new HTTP_Exception_401();
+        
+        if ($this->_user['member_group_id']!=$this->admin_group)
+            throw new HTTP_Exception_401(); // только админ может править тип блога
 
         $id       = (int) $this->request->param('id');
         if( ! $id)
@@ -233,13 +245,13 @@ class Controller_Blog_List extends Controller_Blog_Template {
             throw new Exception('Нельзя модифицировать общедоступную категорию');
         }
 
-        if ($this->_user['member_group_id']!=$this->admin_group)
+        /*if ($this->_user['member_group_id']!=$this->admin_group)
             if ($category->user->id != $this->_user['member_id'])
                 throw new HTTP_Exception_401();
-
+*/
         $post = array(
             'post' => array(
-                'cat'=>($category->name=='car_book')? 'car_book': 'blog',
+//                'cat'=>($category->name=='car_book')? 'car_book': 'blog',
                 'name'=>$category->name,
                 'title'=>$category->title,
                 'description'=>$category->description,
@@ -266,9 +278,9 @@ class Controller_Blog_List extends Controller_Blog_Template {
             $post['post'] = $post_data;
         }
         $this->template->title = __('Edit Blog Category');
-        $cat = array('car_book'=>'борт-журнал', 'blog'=>'блог');
+        //$cat = array('car_book'=>'борт-журнал', 'blog'=>'блог');
         $this->template->content = View::factory('frontend/form/blog/editblog')
-                ->bind('cat', $cat)
+                //->bind('cat', $cat)
                 ->bind('error', $error)
                 ->bind('post', $post)
                 ;
@@ -279,23 +291,28 @@ class Controller_Blog_List extends Controller_Blog_Template {
      * @throws HTTP_Exception_401
      * @return void
      */
+    /// todo: this action
     public function action_list()
     {
         if (empty($this->_user['member_id']))
             throw new HTTP_Exception_401();
 
-        if ($this->_user['member_group_id']==$this->admin_group)
+        /*if ($this->_user['member_group_id']!=$this->admin_group)
+            throw new HTTP_Exception_401(); // только админ может просматривать список блогов
+*/
+        
+        //if ($this->_user['member_group_id']==$this->admin_group)
             $categories = Jelly::query('blog_category')
                     ->active()
                     ->where('is_common', '=', '0')
                     ->select();
-        else
+        /*else
             $categories = Jelly::query('blog_category')
                     ->active()
                     ->where('is_common', '=', '0')
                     ->and_where('user', '=', $this->_user['member_id'])
                     ->select();
-
+*/
         $this->template->title = __('Category List');
         $this->template->content = View::factory('frontend/content/blog/bloglist')
                 ->bind('categories', $categories);
