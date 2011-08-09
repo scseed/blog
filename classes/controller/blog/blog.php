@@ -48,10 +48,16 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		if( ! $category->loaded())
 			throw new HTTP_Exception_404('There is no such blog category: :category', array(':category' => $category_name));
 
-        $articles_count = Jelly::query('blog')
+        if ($category->is_common)
+            $articles_count = Jelly::query('blog')
                 ->active()
                 ->where('category', '=', $category->id)
-                /*->and_where('author_id', '=', $this->_user['member_id'])*/
+                ->and_where('author_id', '=', $this->_user['member_id'])
+                ->count();
+        else
+            $articles_count = Jelly::query('blog')
+                ->active()
+                ->where('category', '=', $category->id)
                 ->count();
         $page = max(1, arr::get($_GET, 'page', 1));
         $offset = 20 * ($page-1);
@@ -68,14 +74,23 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
               'view'			=> 'pagination/ru'
         ));
 
-		$articles = Jelly::query('blog')
-			->active()
-			->where('category', '=', $category->id)
-            /*->and_where('author_id', '=', $this->_user['member_id'])*/
-			->order_by('date_create', 'DESC')
-            ->limit(20)
-            ->offset($offset)
-			->select();
+        if ($category->is_common)
+		    $articles = Jelly::query('blog')
+                ->active()
+                ->where('category', '=', $category->id)
+                ->and_where('author_id', '=', $this->_user['member_id'])
+                ->order_by('date_create', 'DESC')
+                ->limit(20)
+                ->offset($offset)
+                ->select();
+        else
+            $articles = Jelly::query('blog')
+                ->active()
+                ->where('category', '=', $category->id)
+                ->order_by('date_create', 'DESC')
+                ->limit(20)
+                ->offset($offset)
+                ->select();
 
 		$this->template->title = $category->title .' / '.__('Блоги');
 		$this->template->content = View::factory('frontend/content/blog/list')

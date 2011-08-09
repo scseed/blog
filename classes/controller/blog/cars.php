@@ -9,6 +9,23 @@
  */
 class Controller_Blog_Cars extends Controller_Blog_Template {
 
+    public function before()
+    {
+        parent::before();
+
+        if($this->request->action() == 'new' OR
+           $this->request->action() == 'edit')
+        {
+            StaticCss::instance()
+                ->add('/js/libs/markitup/markitup/skins/markitup/style.css')
+                ->add('/js/libs/textile/style.css');
+            StaticJs::instance()
+                ->add('/js/libs/markitup/markitup/jquery.markitup.js')
+                ->add('/js/libs/textile/set.js');
+        }
+
+    }
+
 	/**
 	 * Displays the specified cars garage of user id
 	 *
@@ -62,62 +79,55 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
      */
     public function action_new()
     {
-        /*
+
         $post = array(
-            'article' => array(
-                'category' => NULL,
-                'title'    => NULL,
-                'text'     => NULL,
+            'car' => array(
+                'model' => NULL,
+                'year'    => NULL,
+                'description'     => NULL,
             ),
-            'tags'     => NULL,
         );
         $errors = NULL;
-
+        
+        $models = Jelly::query('model')->select();
         if($this->request->method() === HTTP_Request::POST)
         {
-            $article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
-
-//			$article_data['text'] = HTML::chars($article_data['text']);
-            $article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
-            $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
-
-            $article_data['author'] = $this->_user['member_id'];
-
-            $article = Jelly::factory('blog');
-
-            $article->set($article_data);
-
+            $car_data = Arr::extract($this->request->post('car'), array_keys($post['car']));
+            $car_data['description'] = HTML_parser::factory($car_data['description'])->plaintext;
+            $car_data['user'] = $this->_user['member_id'];
+            $car_data['is_active'] = TRUE;
+            $car = Jelly::factory('car');
+            $car->set($car_data);
             try
             {
-                $article->save();
+                $car->save();
             }
             catch(Jelly_Validation_Exception $e)
             {
                 $errors = $e->errors('common_validation');
             }
-
-            $_tags = explode(',', preg_replace('/([,;][\s]?)/', ',', Arr::get($this->request->post(), 'tags')));
-
-            if(is_string($_tags))
-            {
-                $_tags[] = $_tags;
+            $post['car'] = $car_data;
+            if (! $errors) {
+                $car_book = Jelly::factory('blog_category');
+                $car_book_data['name'] = ' ';   // void name to avoid direct access ( via blog/<name>)
+                $car_book_data['car'] = $car->id;
+                $car_book_data['title'] = $this->_user['members_display_name'].' :: '.$car->model->name.
+                                   ' '.$car->year.' (борт-журнал)';
+                $car_book_data['is_common'] = FALSE;
+                $car_book_data['user'] = $this->_user['member_id'];
+                $car_book_data['is_active'] = TRUE;
+                $car_book->set($car_book_data);
+                $car_book->save();
+                $this->request->redirect(Route::url('blog_cars', array('action' => 'list')));
             }
-
-            if( ! $errors) {
-                $this->_save_images($article->id);
-                $this->_save_tags($article, $_tags);
-            }
-
-            $post['article'] = $article_data;
-
-            $post['tags'] = implode(',', $_tags);
         }
-*/
         $this->template->title = __('New Car');
-        $this->template->content = View::factory('frontend/form/car/new')
-            /*->bind('current_category', $current_category->id)
-            ->bind('categories', $categories)*/
+        $this->template->content = View::factory('frontend/form/car/edit')
+            ->set('current_model', NULL)
+            ->set('action', 'Создать')
+            ->bind('models', $models)
             ->bind('post', $post)
+            ->bind('errors', $errors)
         ;
 
     }
@@ -145,62 +155,42 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
                 )
             );
 
-        /*
         $post = array(
-            'article' => array(
-                'category' => NULL,
-                'title'    => NULL,
-                'text'     => NULL,
+            'car' => array(
+                'model' => $car->model,
+                'year'    => $car->year,
+                'description'     => $car->description,
             ),
-            'tags'     => NULL,
         );
         $errors = NULL;
 
+        $models = Jelly::query('model')->select();
         if($this->request->method() === HTTP_Request::POST)
         {
-            $article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
-
-//			$article_data['text'] = HTML::chars($article_data['text']);
-            $article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
-            $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
-
-            $article_data['author'] = $this->_user['member_id'];
-
-            $article = Jelly::factory('blog');
-
-            $article->set($article_data);
-
+            $car_data = Arr::extract($this->request->post('car'), array_keys($post['car']));
+            $car_data['description'] = HTML_parser::factory($car_data['description'])->plaintext;
+            $car->set($car_data);
             try
             {
-                $article->save();
+                $car->save();
             }
             catch(Jelly_Validation_Exception $e)
             {
                 $errors = $e->errors('common_validation');
             }
-
-            $_tags = explode(',', preg_replace('/([,;][\s]?)/', ',', Arr::get($this->request->post(), 'tags')));
-
-            if(is_string($_tags))
-            {
-                $_tags[] = $_tags;
+            if (! $errors) {
+                $this->request->redirect(Route::url('blog_cars', array('action' => 'list')));
             }
-
-            if( ! $errors) {
-                $this->_save_images($article->id);
-                $this->_save_tags($article, $_tags);
-            }
-
-            $post['article'] = $article_data;
-
-            $post['tags'] = implode(',', $_tags);
+            $post['car'] = $car_data;
         }
-*/
+
         $this->template->title = __('Edit Car');
         $this->template->content = View::factory('frontend/form/car/edit')
-            /*->bind('current_category', $current_category->id)
-            ->bind('categories', $categories)*/
-            ->bind('post', $post)
+                ->set('current_model', $car->model->id)
+                ->set('action', 'Сохранить')
+                ->bind('models', $models)
+                ->bind('post', $post)
+                ->bind('errors', $errors)
         ;
 
     }
@@ -304,8 +294,9 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
                 ->order_by('date_create', 'DESC')
                 ->select();
 
-        $this->template->content = View::factory('frontend/content/blog/carbooks2')
-                ->bind('articles', $articles)
+        $this->template->title = $category->title;
+        $this->template->content = View::factory('frontend/content/blog/carbooks')
+                ->bind('carbooks', $articles)
                 ->bind('pager', $pager)
                 ;
     }

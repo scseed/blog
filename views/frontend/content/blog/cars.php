@@ -11,7 +11,7 @@
 	<div class="post">
 		<h3><?php echo $car->model->name.' '.$car->year ?></h3>
         <p>
-            <?php echo HTML::chars($car->description) ?>
+            <?php echo $textile->TextileThis($car->description) ?>
         </p>
         <p><?php echo HTML::anchor(
                 Route::get('blog_cars')->uri(array(
