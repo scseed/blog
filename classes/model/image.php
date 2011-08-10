@@ -7,6 +7,8 @@
  * @package Blog
  * @author Sergei Toporkov <stopkin0@gmail.com>
  */
+
+/// TODO: переделать image с blog на car
 class Model_Image extends Jelly_Model {
 
 	/**
@@ -19,15 +21,15 @@ class Model_Image extends Jelly_Model {
 		$meta->table('images')
 			->fields(array(
 				'id' => Jelly::field('Primary'),
-				'blog' => Jelly::field('BelongsTo', array(
-					'foreign' => 'blog'
+				'car' => Jelly::field('BelongsTo', array(
+					'foreign' => 'car'
 				)),
                 'url' => Jelly::field('String'),
                 'title' => Jelly::field('String'),
                 'user' => Jelly::field('BelongsTo', array(
                     'foreign' => 'user'
                 )),
-			))
+			))->load_with(array('blog'))
 			;
 
 	}

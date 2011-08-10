@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
-<div class="frames" id="photos">
+<div class="frames" id="photos-right-box">
 <?php
     foreach($images as $image):
 ?>

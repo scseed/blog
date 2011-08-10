@@ -328,7 +328,6 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			}
 
 			if( ! $errors) {
-                $this->_save_images($article->id);
 				$this->_save_tags($article, $_tags);
             }
 
@@ -410,7 +409,6 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			}
 
 			if( ! $errors) {
-                //$this->_save_images($article->id);
 				$this->_save_tags($article, $_tags);
             }
 

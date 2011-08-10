@@ -1,5 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
+
+// TODO: IMAGES!!!
 /**
  * Controller blog_cars
  *
@@ -90,6 +92,10 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         $errors = NULL;
         
         $models = Jelly::query('model')->select();
+        $years = array();
+        for ($i=date("Y"); $i>=1986; $i--) {
+            $years[$i] = $i;
+        }
         if($this->request->method() === HTTP_Request::POST)
         {
             $car_data = Arr::extract($this->request->post('car'), array_keys($post['car']));
@@ -124,8 +130,10 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         $this->template->title = __('New Car');
         $this->template->content = View::factory('frontend/form/car/edit')
             ->set('current_model', NULL)
+            ->set('current_year', NULL)
             ->set('action', 'Создать')
             ->bind('models', $models)
+            ->bind('years', $years)
             ->bind('post', $post)
             ->bind('errors', $errors)
         ;
@@ -164,6 +172,11 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         );
         $errors = NULL;
 
+        $years = array();
+        for ($i=date("Y"); $i>=1986; $i--) {
+            $years[$i] = $i;
+        }
+
         $models = Jelly::query('model')->select();
         if($this->request->method() === HTTP_Request::POST)
         {
@@ -188,7 +201,9 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         $this->template->content = View::factory('frontend/form/car/edit')
                 ->set('current_model', $car->model->id)
                 ->set('action', 'Сохранить')
+                ->set('current_year', $car->year)
                 ->bind('models', $models)
+                ->bind('years', $years)
                 ->bind('post', $post)
                 ->bind('errors', $errors)
         ;
@@ -228,6 +243,8 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         
         $category = Jelly::query('blog_category')->where('car', '=', $id)->limit(1)->select();
         if ($category->loaded()) {
+            $category->is_active = FALSE;
+            $category->save();
             DB::update('blogs')->set(array('category_id'=>'2'))->where('category_id', '=', $category->id)->execute();
         }
         $this->request->redirect(Route::get('blog_cars')->uri(array('action' => 'list')));
@@ -235,24 +252,28 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
     }
 
     /**
-     * shows car info
-     *
-     * @return void
-     */
-    /*public function action_show()
-    {
-        
-    }
-*/
-    
-    /**
      * shows car gallery
      * 
      * @return void
      */
     public function action_gallery()
     {
+        $id = (int) $this->request->param('id');
+        $car = Jelly::query('car', $id)->active()->select();
 
+        if( ! $car->loaded())
+            throw new HTTP_Exception_404();
+
+        $category = Jelly::query('blog_category')->active()->where('car', '=', $id)->limit(1)->select();
+        if ( ! $category->loaded())
+            throw new HTTP_Exception_404();
+        
+        $images = Jelly::query('image')->where(':blog.category', '=', $category->id)->select();
+        $this->template->content =
+                View::factory('frontend/content/blog/images')
+                    ->set('images', $images)
+                    ->set('type', 'car')
+                ;
     }
 
     /**

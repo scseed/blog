@@ -1,8 +1,9 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
+<?php if ($images->count()) { ?>
 <h4>Фотографии</h4>
-<?php
-    if ($images->count()) {
-?>
+<?php } else { ?>
+<h4>Фотографии не загружены</h4>
+<?php } ?>
 <div class="frames" id="photos">
 <?php
     foreach($images as $image):
@@ -18,13 +19,7 @@
                          'height' => 73,
                          'id' => 'image-'.$image->id)),
                 array('rel' => 'fancybox'));
-        if ($_user['member_id']==$article->author->id OR $_user['member_group_id']==$admin_group OR is_null($article)) {
-            /*echo HTML::anchor(Route::get('blog_images')->uri(array(
-                    'action' => 'edit',
-				    'id' => $image->id
-				)), HTML::image('i/icons/user.gif',
-                array('title' => 'Подписать', 'alt' => 'Подписать')),
-                              array ('id' => 'edit-image-'.$image->id, 'class' => 'edit-image'));*/
+        if ($_user['member_id']==$car->user->id OR $_user['member_group_id']==$admin_group OR is_null($car)) {
             echo HTML::anchor(Route::get('blog_images')->uri(array(
                     'action' => 'del',
 				    'id' => $image->id
@@ -35,24 +30,23 @@
 	</div>
 <?php endforeach;?>
 </div>
-<?php } ?>
 <div class="clear"></div>
 <?php
-    if (is_null($article))
-        $article_id = NULL;
+    if (is_null($car))
+        $car_id = NULL;
     else
-        $article_id = $article->id;
-    if (is_null($article) OR $_user['member_id']==$article->author->id OR $_user['member_group_id']==$admin_group) {
+        $car_id = $car->id;
+    if (is_null($car) OR $_user['member_id']==$car->user->id OR $_user['member_group_id']==$admin_group) {
         echo HTML::anchor(Route::get('blog_images')->uri(array(
                     'action' => 'new',
-				    'id' => $article_id
-				)), HTML::image('i/icons/add.gif',
+                    'id' => $car_id
+                )), HTML::image('i/icons/add.gif',
                                            array('alt'=>'Добавить изображение',
                                            'title'=>'Добавить изображение')),
             array('id' => 'new-image'));
 ?>
     <div class="hide" id="new-image-block">
-    <?php echo Request::factory(Route::url('blog_images', array('action'=>'new', 'id'=>$article_id)))->execute()->body();//View::factory('frontend/form/blog/image')->set('article', $article_id) ?>
+    <?php echo Request::factory(Route::url('blog_images', array('action'=>'new', 'id'=>$car_id)))->execute()->body();?>
     </div>
 <?php
     }

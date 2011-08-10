@@ -29,18 +29,18 @@ class Controller_Blog_Images extends Controller_Blog_Template {
 		if( ! $this->_ajax)
 			throw new HTTP_Exception_404();
 
-		$blog_id = (int) $this->request->param('id');
+		$car_id = (int) $this->request->param('id');
 
-		if($blog_id) {
-            // загружаем картинки по id статьи
+		if($car_id) {
+            // загружаем картинки по id авто
 
-            $article = Jelly::query('blog', $blog_id)->select();
-            if( ! $article->loaded())
+            $car = Jelly::query('car', $car_id)->select();
+            if( ! $car->loaded())
                 throw new HTTP_Exception_404();
 
-            $images = Jelly::query('image')->where('blog', '=', $blog_id)->select();
+            $images = Jelly::query('image')->where('car', '=', $car_id)->select();
             $this->template->content = View::factory('frontend/content/blog/images')
-                ->bind('article', $article)
+                ->bind('car', $car)
                 ->bind('images', $images)
                 ;
         }
@@ -48,10 +48,10 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             // загружаем картинки по id пользователя
             $images = Jelly::query('image')
                     ->where('user', '=', $this->_user['member_id'])
-                    ->and_where('blog', '=', 0)
+                    ->and_where('car', '=', 0)
                     ->select();
             $this->template->content = View::factory('frontend/content/blog/images')
-                ->set('article', NULL)
+                ->set('car', NULL)
                 ->bind('images', $images)
                 ;
         }
@@ -67,22 +67,18 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             ;
     }
 
-    // TODO: add picture with ajax
-
     public function action_new()
     {
-        /*if( ! $this->_ajax)
-            throw new HTTP_Exception_404();*/
-        $blog_id = (int) $this->request->param('id');
+        $car_id = (int) $this->request->param('id');
         $user_id = $this->_user['member_id'];
-        $blog_path = '';
-        if($blog_id) {
-            $blog_path = '/'.$blog_id;
-            $article = Jelly::query('blog', $blog_id)->select();
-            if( ! $article->loaded())
+        $car_path = '';
+        if($car_id) {
+            $car_path = '/'.$car_id;
+            $car = Jelly::query('car', $car_id)->select();
+            if( ! $car->loaded())
                 throw new HTTP_Exception_404();
 
-            if ( ! ($article->author->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id']))
+            if ( ! ($car->user->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id']))
                 throw new HTTP_Exception_401();
         }
 
@@ -101,12 +97,12 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             if ($validate->check())
             {
                 $image = Jelly::factory('image');
-                @mkdir('i/photos/'.$user_id.$blog_path, 0777, TRUE);
-                $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$user_id.$blog_path);
+                @mkdir('i/photos/'.$user_id.$car_path, 0777, TRUE);
+                $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$user_id.$car_path);
                 if ($filename) {
-                    $image->url = 'i/photos/'.$user_id.$blog_path.'/'.basename($filename);
+                    $image->url = 'i/photos/'.$user_id.$car_path.'/'.basename($filename);
                     $image->title = HTML::chars($_POST['title']);
-                    $image->blog = $blog_id;
+                    $image->car = $car_id;
                     $image->user = $user_id;
                     $image->save();
                 }
@@ -120,19 +116,14 @@ class Controller_Blog_Images extends Controller_Blog_Template {
                 $error = __('Error validating image');
             }
             if (empty($error)) {
-                echo '<div class="frame">'.
-                        HTML::anchor($image->url,
-                            HTML::image($image->url, array('width'=>100,
-                                                     'height'=>73,
-                                                     'alt'=>$image->title,
-                                                     'title'=>$image->title)), array('rel'=>'fancybox')).'</div>';
-                exit();
-                $this->request->redirect(Route::url('blog_article', array('id' => $blog_id)));
+                $this->request->redirect(Route::url('blog_cars', array(
+                                                                   'action' => 'gallery',
+                                                                      'id' => $car_id)));
             }
         }
         $this->template->content = View::factory('frontend/form/blog/image')
             ->bind('error', $error)
-            ->bind('article', $blog_id)
+            ->bind('car', $car_id)
         ;
     }
 
@@ -141,22 +132,22 @@ class Controller_Blog_Images extends Controller_Blog_Template {
         $image_id = (int) $this->request->param('id');
         $image = Jelly::query('image', $image_id)->select();
         if ($image->loaded()) {
-            $blog_id = $image->blog->id;
+            $car_id = $image->car->id;
             $user_id = $image->user->id;
 
-            $article = Jelly::query('blog', $blog_id)->select();
-            if ($user_id == $this->_user['member_id'] OR $article->author->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id'])
+            $car = Jelly::query('car', $car_id)->select();
+            if ($user_id == $this->_user['member_id'] OR $car->user->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id'])
             {
                 @unlink(DOCROOT.$image->url);
                 $image->delete();
                 if( ! $this->_ajax) {
-                    $this->request->redirect(Route::url('blog_article', array('id' => $blog_id )));
+                    $this->request->redirect(Route::url('blog_cars', array('action'=>'gallery', 'id' => $car_id )));
                 }
                 $this->template->content = 'OK';
             }
             else {
                 if( ! $this->_ajax) {
-                    $this->request->redirect(Route::url('blog_article', array('id' => $blog_id )));
+                    $this->request->redirect(Route::url('blog_cars', array('action'=>'gallery', 'id' => $car_id )));
                 }
                 $this->template->content = '404';
             }

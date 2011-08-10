@@ -30,12 +30,4 @@
     <div class="hint">
         Поля, помеченные (*) обязательны для заполнения
     </div>
-    <div class="form-item">
-        <?php
-            echo Request::factory(Route::get('blog_images')->uri(array(
-                    'action' => 'show',
-                    'id' => NULL
-                )))->execute()->body();
-        ?>
-    </div>
 </div>

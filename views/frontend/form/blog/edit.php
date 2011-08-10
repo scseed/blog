@@ -15,10 +15,6 @@
         <div id="blog_text-error" class="error hide hint">Поле текст не может быть пустым</div>
 		<?php echo Form::textarea('article[text]', $post['article']['text'], array('id' => 'blog_text', 'class' => 'needle'))?>
 	</div>
-    <!--<div class="form-item">
-		<?php //echo Form::label('blog_images', 'Изображения')?>
-		<?php //echo Form::file('images[]', array('id' => 'blog_images', 'class'=>'multi', 'accept'=>'gif|jpg|png'))?>
-	</div>-->
     <div class="form-item">
 		<?php echo Form::label('blog_tags', 'Тэги')?>
 		<?php echo Form::input('tags', $post['tags'], array('id' => 'blog_tags'))?>
@@ -29,13 +25,5 @@
 	<?php echo Form::close();?>
     <div class="hint">
         Поля, помеченные (*) обязательны для заполнения
-    </div>
-    <div class="form-item">
-        <?php
-            /*echo Request::factory(Route::get('blog_images')->uri(array(
-                    'action' => 'show',
-                    'id' => $article_id
-                )))->execute()->body();*/
-        ?>
     </div>
 </div>
