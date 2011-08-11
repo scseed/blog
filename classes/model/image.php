@@ -8,7 +8,6 @@
  * @author Sergei Toporkov <stopkin0@gmail.com>
  */
 
-/// TODO: переделать image с blog на car
 class Model_Image extends Jelly_Model {
 
 	/**
@@ -29,9 +28,9 @@ class Model_Image extends Jelly_Model {
                 'user' => Jelly::field('BelongsTo', array(
                     'foreign' => 'user'
                 )),
-			))->load_with(array('blog'))
+			))->load_with(array('car'))
 			;
 
 	}
 
-} // End Model_Score
+} // End Model_Image

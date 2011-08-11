@@ -6,36 +6,31 @@
 */
 class Controller_Ajax_Image extends Controller_Ajax_Template  {
 
-    /// TODO: mb XML ????
-    public function action_new()
+    public function action_new($id = NULL)
     {
-
-        $response = array();
-
-
-        $car_id = (int) Arr::get($_GET, 'id', 0);
-        $user_id = $this->_user['member_id'];
-        $car_path = '';
-        if($car_id) {
-            $car_path = '/'.$car_id;
-            $car = Jelly::query('car', $car_id)->select();
-            try
-            {
-                if( ! $car->loaded())
-                    throw new HTTP_Exception_404();
-
-                if ( ! ($car->user->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id']))
-                    throw new HTTP_Exception_401();
-            }
-            catch(Exception $e) {
-                $error = $e->getMessage();
-            }
-        }
+        $content = '';
 
         if($this->request->method() === HTTP_Request::POST)
         {
-
             $error = '';
+            $car_id = (int)Arr::get($_POST, 'car');
+            $user_id = $this->_user['member_id'];
+            $car_path = '';
+            if($car_id) {
+                $car_path = '/'.$car_id;
+                $car = Jelly::query('car', $car_id)->select();
+                try
+                {
+                    if( ! $car->loaded())
+                        throw new HTTP_Exception_404();
+
+                    if ( ! ($car->user->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id']))
+                        throw new HTTP_Exception_401();
+                }
+                catch(Exception $e) {
+                    $error = $e->getMessage();
+                }
+            }
             $validate = Validation::factory($_FILES);
 
             $validate->rule('file', 'Upload::valid')
@@ -65,17 +60,23 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
             {
                 $error = __('Error validating image');
             }
+
             if (empty($error)) {
-                $response['error'] = '';
-                $response['success'] = 1;
-                $response['url'] = $image->url;
-                $response['title'] = $image->title;
+                $content = View::factory('/frontend/content/response/image-add')
+                        ->set('error', '')
+                        ->set('success', '1')
+                        ->set('url', $image->url)
+                        ->set('title', $image->title)
+                        ->set('image_id', $image->id)
+                        ;
             }
             else {
-                $response['error'] = $error;
-                $response['success'] = 0;
+                $content = View::factory('/frontend/content/response/image-add')
+                        ->set('error', $error)
+                        ->set('success', '0')
+                        ;
             }
         }
-        $this->response->body(json_encode($response));
+        $this->response->body($content);
     }
 } // End Controller_Ajax_Image

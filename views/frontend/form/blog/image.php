@@ -2,7 +2,7 @@
 <div class="error"><?php echo $error; ?></div>
 <?php echo Form::open(Route::get('blog_images')->uri(array(
         'action' => 'new',
-        'id' => $article
+        'id' => $car
     )), array('enctype'=>'multipart/form-data', 'id'=>'form-image-loader'))?>
     <div class="form-item">
         <?php echo Form::label('file', 'Картинка (*)')?>
@@ -14,6 +14,7 @@
         <?php echo Form::input('title', NULL, array('id' => 'title'))?>
     </div>
     <div class="form-item">
+        <?php echo Form::hidden('car', $car)?>
         <?php echo Form::button(NULL, 'Добавить', array('id'=>'new-image-button'))?>
     </div>
 <?php echo Form::close();?>

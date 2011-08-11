@@ -15,12 +15,15 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if($this->request->action() == 'new' OR
 		   $this->request->action() == 'edit')
 		{
-			StaticCss::instance()
+/*			StaticCss::instance()
 				->add('/js/libs/markitup/markitup/skins/markitup/style.css')
-				->add('/js/libs/textile/style.css');
+				->add('/js/libs/textile/style.css');*/
 			StaticJs::instance()
-				->add('/js/libs/markitup/markitup/jquery.markitup.js')
-				->add('/js/libs/textile/set.js');
+                    ->add('/js/libs/tiny_mce/tiny_mce.js')
+                    ->add('/js/tiny_mce_set.js')
+/*				->add('/js/libs/markitup/markitup/jquery.markitup.js')
+				->add('/js/libs/textile/set.js')*/
+            ;
 		}
 
 	}
@@ -200,7 +203,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
                 $demand->set( array (
                     'blog' => $id,
                     'category' => $article_data['category'],
-                    'message' => HTML_parser::factory($article_data['message'])->plaintext,
+                    'message' => $article_data['message'],
                     'is_done' => 0
                 ));
                 try
@@ -387,9 +390,9 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
 //			$article_data['text'] = HTML::chars($article_data['text']);
-            $article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
+            /*$article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
             $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
-
+*/
 			$article->set($article_data);
 
 			try

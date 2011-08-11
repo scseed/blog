@@ -23,7 +23,8 @@ foreach($carbooks as $blog_article):
 				array('title' => $blog_article->title))?>
 		</h2>
 		<div class="text">
-			<?php echo $textile->TextileThis($blog_article->intro())?>
+			<?php //echo $textile->TextileThis($blog_article->intro())?>
+            <?php echo $blog_article->intro()?>
 			<p><?php echo HTML::anchor(
 				$article_url . '#article_cut',
 				'Читать дальше &rarr;',

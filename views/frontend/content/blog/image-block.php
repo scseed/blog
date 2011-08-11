@@ -13,7 +13,7 @@
                          'width' => 100,
                          'height' => 73,
                          'id' => 'image-'.$image->id)),
-                array('rel' => 'fancybox'));
+                array('rel' => 'fancybox-right'));
         ?>
 	</div>
 <?php endforeach;?>

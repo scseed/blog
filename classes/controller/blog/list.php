@@ -180,7 +180,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
         if($this->request->method() === HTTP_Request::POST)
         {
             $post_data = Arr::extract($this->request->post('post'), array_keys($post['post']), NULL);
-            foreach (array('name', 'title', 'description') as $key)
+            foreach (array('name', 'title') as $key)
                 $post_data[$key] = trim(HTML_parser::factory($post_data[$key])->plaintext);
             $category = Jelly::factory('blog_category');
             /*
@@ -260,7 +260,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
         if($this->request->method() === HTTP_Request::POST)
         {
             $post_data = Arr::extract($this->request->post('post'), array_keys($post['post']), NULL);
-            foreach (array('name', 'title', 'description') as $key)
+            foreach (array('name', 'title') as $key)
                 $post_data[$key] = trim(HTML_parser::factory($post_data[$key])->plaintext);
 
             try {

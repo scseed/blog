@@ -45,7 +45,9 @@ class Controller_Blog_Images extends Controller_Blog_Template {
                 ;
         }
         else {
+            $this->template->content = '';
             // загружаем картинки по id пользователя
+            /*
             $images = Jelly::query('image')
                     ->where('user', '=', $this->_user['member_id'])
                     ->and_where('car', '=', 0)
@@ -54,6 +56,7 @@ class Controller_Blog_Images extends Controller_Blog_Template {
                 ->set('car', NULL)
                 ->bind('images', $images)
                 ;
+            */
         }
 	}
 
@@ -154,7 +157,7 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             return;
         }
         if( ! $this->_ajax) {
-            $this->request->redirect(Route::url('blog', array('category' => 'self')));
+            $this->request->redirect(Route::url('blog_cars', array('action' => 'list')));
         }
         $this->template->content = 'Not found';
     }

@@ -21,7 +21,7 @@
         <?php
             echo Request::factory(Route::get('blog_images')->uri(array(
                     'action' => 'show',
-                    'id' => NULL
+                    'id' => $car
                 )))->execute()->body();
         ?>
     </div>

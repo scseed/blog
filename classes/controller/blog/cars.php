@@ -18,12 +18,16 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         if($this->request->action() == 'new' OR
            $this->request->action() == 'edit')
         {
-            StaticCss::instance()
+
+/*            StaticCss::instance()
                 ->add('/js/libs/markitup/markitup/skins/markitup/style.css')
-                ->add('/js/libs/textile/style.css');
+                ->add('/js/libs/textile/style.css');*/
             StaticJs::instance()
-                ->add('/js/libs/markitup/markitup/jquery.markitup.js')
-                ->add('/js/libs/textile/set.js');
+                ->add('/js/libs/tiny_mce/tiny_mce.js')
+                ->add('/js/tiny_mce_set.js')
+//                ->add('/js/libs/markitup/markitup/jquery.markitup.js')
+  //              ->add('/js/libs/textile/set.js')
+            ;
         }
 
     }
@@ -99,7 +103,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         if($this->request->method() === HTTP_Request::POST)
         {
             $car_data = Arr::extract($this->request->post('car'), array_keys($post['car']));
-            $car_data['description'] = HTML_parser::factory($car_data['description'])->plaintext;
+            //$car_data['description'] = HTML_parser::factory($car_data['description'])->plaintext;
             $car_data['user'] = $this->_user['member_id'];
             $car_data['is_active'] = TRUE;
             $car = Jelly::factory('car');
@@ -131,6 +135,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         $this->template->content = View::factory('frontend/form/car/edit')
             ->set('current_model', NULL)
             ->set('current_year', NULL)
+            ->set('car', NULL)
             ->set('action', 'Создать')
             ->bind('models', $models)
             ->bind('years', $years)
@@ -181,7 +186,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         if($this->request->method() === HTTP_Request::POST)
         {
             $car_data = Arr::extract($this->request->post('car'), array_keys($post['car']));
-            $car_data['description'] = HTML_parser::factory($car_data['description'])->plaintext;
+            //$car_data['description'] = HTML_parser::factory($car_data['description'])->plaintext;
             $car->set($car_data);
             try
             {
@@ -201,6 +206,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         $this->template->content = View::factory('frontend/form/car/edit')
                 ->set('current_model', $car->model->id)
                 ->set('action', 'Сохранить')
+                ->set('car', $id)
                 ->set('current_year', $car->year)
                 ->bind('models', $models)
                 ->bind('years', $years)
@@ -264,15 +270,13 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         if( ! $car->loaded())
             throw new HTTP_Exception_404();
 
-        $category = Jelly::query('blog_category')->active()->where('car', '=', $id)->limit(1)->select();
-        if ( ! $category->loaded())
-            throw new HTTP_Exception_404();
-        
-        $images = Jelly::query('image')->where(':blog.category', '=', $category->id)->select();
+        $images = Jelly::query('image')->where('car', '=', $car->id)->select();
+        $this->template->title = 
+                'Acura '.$car->model->name.' '.$car->year.' / '.__('Image Gallery');
         $this->template->content =
                 View::factory('frontend/content/blog/images')
                     ->set('images', $images)
-                    ->set('type', 'car')
+                    ->set('car', $car)
                 ;
     }
 
