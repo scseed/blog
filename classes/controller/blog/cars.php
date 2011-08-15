@@ -103,7 +103,13 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         if($this->request->method() === HTTP_Request::POST)
         {
             $car_data = Arr::extract($this->request->post('car'), array_keys($post['car']));
-            //$car_data['description'] = HTML_parser::factory($car_data['description'])->plaintext;
+            $parser = HTML_parser::factory($car_data['description']);
+
+            foreach(Kohana::config('tags.striptags') as $tag)
+                foreach($parser->find($tag) as $elem)
+                    $elem->outertext = '';
+
+            $car_data['description'] = $parser->innertext;
             $car_data['user'] = $this->_user['member_id'];
             $car_data['is_active'] = TRUE;
             $car = Jelly::factory('car');
@@ -186,7 +192,14 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         if($this->request->method() === HTTP_Request::POST)
         {
             $car_data = Arr::extract($this->request->post('car'), array_keys($post['car']));
-            //$car_data['description'] = HTML_parser::factory($car_data['description'])->plaintext;
+
+            $parser = HTML_parser::factory($car_data['description']);
+
+            foreach(Kohana::config('tags.striptags') as $tag)
+                foreach($parser->find($tag) as $elem)
+                    $elem->outertext = '';
+
+            $car_data['description'] = $parser->innertext;
             $car->set($car_data);
             try
             {

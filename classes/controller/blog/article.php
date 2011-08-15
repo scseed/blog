@@ -197,9 +197,19 @@ class Controller_Blog_Article extends Controller_Blog_Template {
                 $article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
                 $demand = Jelly::query('blog_demand')->where('blog', '=', $id)
                         ->and_where('is_done', '=', 0)->limit(1)->select();
+
                 /*if ($demand->loaded()) {
                     throw new Exception('Открытая заявка на перенос данной статьи уже существует');
                 }*/
+
+                $parser = HTML_parser::factory($article_data['message']);
+
+                foreach(Kohana::config('tags.striptags') as $tag)
+                    foreach($parser->find($tag) as $elem)
+                        $elem->outertext = '';
+
+                $article_data['message'] = $parser->innertext;
+                
                 $demand->set( array (
                     'blog' => $id,
                     'category' => $article_data['category'],
@@ -304,9 +314,14 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		{
 			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
-//			$article_data['text'] = HTML::chars($article_data['text']);
-            $article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
-            $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
+            $article_data['title'] = HTML::chars($article_data['title']);
+            $parser = HTML_parser::factory($article_data['text']);
+
+            foreach(Kohana::config('tags.striptags') as $tag)
+                foreach($parser->find($tag) as $elem)
+                    $elem->outertext = '';
+
+            $article_data['text'] = $parser->innertext;
 
 			$article_data['author'] = $this->_user['member_id'];
 
@@ -389,10 +404,15 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		{
 			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
-//			$article_data['text'] = HTML::chars($article_data['text']);
-            /*$article_data['title'] = HTML_parser::factory($article_data['title'])->plaintext;
-            $article_data['text'] = HTML_parser::factory($article_data['text'])->plaintext;
-*/
+			$article_data['title'] = HTML::chars($article_data['title']);
+            $parser = HTML_parser::factory($article_data['text']);
+
+            foreach(Kohana::config('tags.striptags') as $tag)
+                foreach($parser->find($tag) as $elem)
+                    $elem->outertext = '';
+
+            $article_data['text'] = $parser->innertext;
+
 			$article->set($article_data);
 
 			try

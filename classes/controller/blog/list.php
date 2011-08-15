@@ -181,7 +181,16 @@ class Controller_Blog_List extends Controller_Blog_Template {
         {
             $post_data = Arr::extract($this->request->post('post'), array_keys($post['post']), NULL);
             foreach (array('name', 'title') as $key)
-                $post_data[$key] = trim(HTML_parser::factory($post_data[$key])->plaintext);
+                $post_data[$key] = trim(HTML::chars($post_data[$key]));
+
+            $parser = HTML_parser::factory($post_data['description']);
+
+            foreach(Kohana::config('tags.striptags') as $tag)
+                foreach($parser->find($tag) as $elem)
+                    $elem->outertext = '';
+
+            $post_data['description'] = $parser->innertext;
+
             $category = Jelly::factory('blog_category');
             /*
             if ($post_data['cat']=='blog')
@@ -261,7 +270,15 @@ class Controller_Blog_List extends Controller_Blog_Template {
         {
             $post_data = Arr::extract($this->request->post('post'), array_keys($post['post']), NULL);
             foreach (array('name', 'title') as $key)
-                $post_data[$key] = trim(HTML_parser::factory($post_data[$key])->plaintext);
+                $post_data[$key] = trim(HTML::chars($post_data[$key]));
+
+            $parser = HTML_parser::factory($post_data['description']);
+
+            foreach(Kohana::config('tags.striptags') as $tag)
+                foreach($parser->find($tag) as $elem)
+                    $elem->outertext = '';
+
+            $post_data['description'] = $parser->innertext;
 
             try {
                 if ( ! $this->_check($post_data, $id))
