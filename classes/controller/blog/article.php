@@ -46,11 +46,15 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if( ! $article->loaded())
 			throw new HTTP_Exception_404();
 
-		$comments = Request::factory(Route::get('comments')->uri(array(
-				'action' => 'tree',
-				'object_id' => $article->id,
-				'visibility' => ($article->allow_comments) ? 'show' : 'hide'
-			)))->execute()->body();
+		$comments = Request::factory(
+			Route::url('comments', array(
+//					'lang'    => I18n::lang(),
+					'action'    => 'tree',
+					'type'      => 'blog',
+					'object_id' => $article->id,
+				)
+			)
+		)->execute()->body();
 
 		$this->template->title = $article->title;
 		$this->template->content = View::factory('frontend/content/blog/article')
