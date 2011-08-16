@@ -1,5 +1,4 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
-<h1><?php echo $article->title?></h1>
 <?php //echo str_replace('~~~', '<a name="article_cut"></a>', $textile->TextileThis($article->text))?>
 <?php echo str_replace('~~~', '<a name="article_cut"></a>', $article->text)?>
 <div id="stats">

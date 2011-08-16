@@ -52,21 +52,14 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         $cars_count = Jelly::query('car')->active()->where('user', '=', $id)->count();
 
         $page = max(1, arr::get($_GET, 'page', 1));
-        $offset = 20 * ($page-1);
+        $offset = 10 * ($page-1);
 
         $pager = new Pagination(array(
              'total_items'		=> $cars_count,
-              'items_per_page'  => 20,
-              'current_page'    => array
-              (
-                  'source'		=> 'query_string',
-                  'key'         => 'page'
-              ),
-              'auto_hide'       => TRUE,
               'view'			=> 'pagination/ru'
         ));
 
-        $cars = Jelly::query('car')->active()->where('user', '=', $id)->limit(20)->offset($offset)->select();
+        $cars = Jelly::query('car')->active()->where('user', '=', $id)->limit(10)->offset($offset)->select();
         if ($id == $this->_user['member_id'])
             $this->template->title = __('Мой гараж');
         else
@@ -312,22 +305,15 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         $articles_count = Jelly::query('blog')->active()->where('category', '=', $category->id)->count();
         
         $page = max(1, arr::get($_GET, 'page', 1));
-        $offset = 20 * ($page-1);
+        $offset = 10 * ($page-1);
 
         $pager = new Pagination(array(
              'total_items'		=> $articles_count,
-              'items_per_page'  => 20,
-              'current_page'    => array
-              (
-                  'source'		=> 'query_string',
-                  'key'         => 'page'
-              ),
-              'auto_hide'       => TRUE,
               'view'			=> 'pagination/ru'
         ));
 
         $articles = Jelly::query('blog')->active()->where('category', '=', $category->id)
-                ->limit(20)
+                ->limit(10)
                 ->offset($offset)
                 ->order_by('date_create', 'DESC')
                 ->select();

@@ -67,21 +67,14 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
         $articles_count = Jelly::query('blog')->active()->where($name, '=', $id)->count();
 
         $page = max(1, arr::get($_GET, 'page', 1));
-        $offset = 20 * ($page-1);
+        $offset = 10 * ($page-1);
 
         $pager = new Pagination(array(
              'total_items'		=> $articles_count,
-              'items_per_page'  => 20,
-              'current_page'    => array
-              (
-                  'source'		=> 'query_string',
-                  'key'         => 'page'
-              ),
-              'auto_hide'       => TRUE,
               'view'			=> 'pagination/ru'
         ));
 
-        $articles = Jelly::query('blog')->active()->where($name, '=', $id)->limit(20)->offset($offset)->select();
+        $articles = Jelly::query('blog')->active()->where($name, '=', $id)->limit(10)->offset($offset)->select();
         if ($name=='author') {
             $user = Jelly::query('user', $id)->limit(1)->select();
             $title = 'Личный блог пользователя '.$user->name;

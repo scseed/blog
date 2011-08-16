@@ -60,17 +60,10 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
                 ->where('category', '=', $category->id)
                 ->count();
         $page = max(1, arr::get($_GET, 'page', 1));
-        $offset = 20 * ($page-1);
+        $offset = 10 * ($page-1);
 
         $pager = new Pagination(array(
              'total_items'		=> $articles_count,
-              'items_per_page'  => 20,
-              'current_page'    => array
-              (
-                  'source'		=> 'query_string',
-                  'key'         => 'page'
-              ),
-              'auto_hide'       => TRUE,
               'view'			=> 'pagination/ru'
         ));
 
@@ -80,7 +73,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
                 ->where('category', '=', $category->id)
                 ->and_where('author_id', '=', $this->_user['member_id'])
                 ->order_by('date_create', 'DESC')
-                ->limit(20)
+                ->limit(10)
                 ->offset($offset)
                 ->select();
         else
@@ -88,7 +81,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
                 ->active()
                 ->where('category', '=', $category->id)
                 ->order_by('date_create', 'DESC')
-                ->limit(20)
+                ->limit(10)
                 ->offset($offset)
                 ->select();
 

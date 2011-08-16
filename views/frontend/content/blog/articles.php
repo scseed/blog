@@ -19,36 +19,34 @@ foreach($articles as $blog_article):
 		<div class="text">
 			<?php //echo $textile->TextileThis($blog_article->intro())?>
             <?php echo $blog_article->intro()?>
-			<!--<p><?php /*echo HTML::anchor(
+			<p><?php echo HTML::anchor(
 				$article_url . '#article_cut',
 				'Читать дальше &rarr;',
 				array('title' => $blog_article->title)
-			)*/?></p>-->
+			)?></p>
 		</div>
 
 		<div class="badges">
 			<div class="left author">
 				<div class="badge">
-					<?php echo
-						HTML::anchor('#',
-							/*Route::get('profile')->uri(array(
-								'action'     => 'show',
-								'id' => $blog_article->author->id,
-							)),*/
-							HTML::image($user_avatar, array('alt' => 'Автор')),
-							array('title' => 'Автор статьи')
-						);
-					?>
-					<div class="title">
-						<?php echo HTML::anchor('#',
-							/*Route::get('profile')->uri(array(
-								'action'     => 'show',
-								'id' => $blog_article->author->id,
-							)),*/
-							$blog_article->author->name,
-							array('title' => $blog_article->author->name)
-						)?>
-					</div>
+                    <?php echo
+                        HTML::anchor(Route::url('forum',
+                                       array('app' => 'user',
+                                            'module' => $blog_article->author->id . '-' . $blog_article->author->name)),
+                            HTML::image($user_avatar, array('alt' => 'Автор')),
+                            array('title' => 'Автор статьи')
+                        );
+                    ?>
+                    <div class="title">
+                        <?php echo HTML::anchor(
+                            Route::url('forum',
+                                       array('app' => 'user',
+                                            'module' => $blog_article->author->id . '-' . $blog_article->author->name)),
+                            $blog_article->author->name,
+                            array('title' => $blog_article->author->name)
+                        );
+                        ?>
+                    </div>
 				</div>
 			</div>
 			<div class="right">
@@ -66,12 +64,14 @@ foreach($articles as $blog_article):
 						);
 					?>
 					<div class="title">
-						<?php echo HTML::anchor(
+						<?php
+                            $comments_root = Jelly::query('comment')->where(':type.name', '=', 'blog')
+                                    ->where('object_id', '=', $blog_article->id)
+                                    ->where('level', '=', NULL)->limit(1)->select();
+                            $number_of_comments = $comments_root->right/2 - 1;
+                        echo HTML::anchor(
 							$article_url . '#comments',
-							Jelly::query('comment')
-								->where('type', '=', 'blog')
-								->where('object_id', '=', $blog_article->id)
-								->count(),
+							$number_of_comments,
 							array('title' => 'Комментарии')
 						)?>
 					</div>

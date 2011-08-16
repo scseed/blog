@@ -43,16 +43,21 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
             {
                 $image = Jelly::factory('image');
                 @mkdir('i/photos/'.$user_id.$car_path, 0777, TRUE);
-                $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$user_id.$car_path);
-                if ($filename) {
-                    $image->url = 'i/photos/'.$user_id.$car_path.'/'.basename($filename);
-                    $image->title = HTML::chars($_POST['title']);
-                    $image->car = $car_id;
-                    $image->user = $user_id;
-                    $image->save();
+                try {
+                    $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$user_id.$car_path);
+                    if ($filename) {
+                        $image->url = 'i/photos/'.$user_id.$car_path.'/'.basename($filename);
+                        $image->title = HTML::chars($_POST['title']);
+                        $image->car = $car_id;
+                        $image->user = $user_id;
+                        $image->save();
+                    }
+                    else
+                    {
+                        $error = __('Error uploading file');
+                    }
                 }
-                else
-                {
+                catch (Exception $e) {
                     $error = __('Error uploading file');
                 }
             }
