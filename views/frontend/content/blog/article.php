@@ -30,6 +30,9 @@
     if (! empty($_user)) {
         if ($_user['member_group_id']==$admin_group or $_user['member_id']==$article->author->id) {
             echo HTML::anchor(Route::get('blog_article')->uri(array(
+                    'action' => 'new'
+				)), 'Новая статья');
+            echo HTML::anchor(Route::get('blog_article')->uri(array(
 					'id' => $article->id,
                     'action' => 'edit'
 				)), 'Правка');

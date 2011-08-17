@@ -64,16 +64,14 @@ class Model_Blog extends Jelly_Model {
 	{
         $cut_pos = mb_strpos($this->text, '~~~');
         if ($cut_pos === FALSE) {
+            $cut_pos = mb_strpos($this->text, '</p>');
+        }
+        if ($cut_pos === FALSE) {
             $cut = mb_substr($this->text, 0, 70);
         }
         else {
             $cut = mb_substr($this->text, 0, $cut_pos);
         }
-		//$cut = strstr($this->text, '~~~');
-		/*if($cut == FALSE)
-		{
-			$cut = $this->text;
-		}*/
 
 		return $cut;
 	}

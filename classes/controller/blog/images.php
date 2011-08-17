@@ -100,10 +100,10 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             if ($validate->check())
             {
                 $image = Jelly::factory('image');
-                @mkdir('i/photos/'.$user_id.$car_path, 0777, TRUE);
-                $filename = Upload::save($_FILES['file'], NULL, 'i/photos/'.$user_id.$car_path);
+                @mkdir('media/cars'.$car_path, 0777, TRUE);
+                $filename = Upload::save($_FILES['file'], NULL, 'media/cars'.$car_path);
                 if ($filename) {
-                    $image->url = 'i/photos/'.$user_id.$car_path.'/'.basename($filename);
+                    $image->url = 'media/cars'.$car_path.'/'.basename($filename);
                     $image->title = HTML::chars($_POST['title']);
                     $image->car = $car_id;
                     $image->user = $user_id;

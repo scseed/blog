@@ -71,7 +71,7 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
 
         $pager = new Pagination(array(
              'total_items'		=> $articles_count,
-              'view'			=> 'pagination/ru'
+              //'view'			=> 'pagination/ru'
         ));
 
         $articles = Jelly::query('blog')->active()->where($name, '=', $id)->limit(10)->offset($offset)->select();
