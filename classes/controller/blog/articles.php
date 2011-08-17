@@ -31,7 +31,7 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
                 break;
 
             // статьи борт-журнала с категорией id
-            case 'car_book':
+            case 'carbook':
                 $this->_car_book($id);
                 break;
             default:
@@ -64,28 +64,44 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
 
     protected function _list($id, $name)
     {
-        $articles_count = Jelly::query('blog')->active()->where($name, '=', $id)->count();
+        if ($name=='author')
+            $articles_count = Jelly::query('blog')->active()
+                    ->where($name, '=', $id)
+                    ->where(':category.name', '=', 'self')
+                    ->count();
+        else
+            $articles_count = Jelly::query('blog')->active()
+                    ->where(':category.car', '=', $id)
+                    ->count();
 
         $page = max(1, arr::get($_GET, 'page', 1));
         $offset = 10 * ($page-1);
 
         $pager = new Pagination(array(
              'total_items'		=> $articles_count,
-              //'view'			=> 'pagination/ru'
+              'view'			=> 'pagination/ru'
         ));
 
-        $articles = Jelly::query('blog')->active()->where($name, '=', $id)->limit(10)->offset($offset)->select();
+        if ($name=='author')
+            $articles = Jelly::query('blog')->active()->where($name, '=', $id)
+                    ->where(':category.name', '=', 'self')
+                    ->limit(10)->offset($offset)
+                    ->order_by('date_create', 'desc')->select();
+        else
+            $articles = Jelly::query('blog')->active()->where(':category.car', '=', $id)
+                    ->limit(10)->offset($offset)
+                    ->order_by('date_create', 'desc')->select();
         if ($name=='author') {
             $user = Jelly::query('user', $id)->limit(1)->select();
             $title = 'Личный блог пользователя '.$user->name;
         }
         else {
-            $category = Jelly::query('blog_category', $id)->active()->limit(1)->select();
-            $title = 'Борт-журнал автомобиля '.$category->title;
+            $category = Jelly::query('blog_category')->active()->where('car', '=', $id)->limit(1)->select();
+            $title = 'Автомобиль '.$category->title;
         }
         
         $this->template->title = $title .' / '.__('Блоги');
-        $this->template->content = View::factory('frontend/content/blog/articles')
+        $this->template->content = View::factory('frontend/content/blog/list')
                 ->bind('articles', $articles)
                 ->bind('pager', $pager)
                 ->bind('caption', $title);

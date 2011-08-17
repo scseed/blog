@@ -87,7 +87,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 
 		$this->template->title = $category->title .' / '.__('Блоги');
 		$this->template->content = View::factory('frontend/content/blog/list')
-			->bind('blog_articles', $articles)
+			->bind('articles', $articles)
 			->bind('category', $category)
             ->bind('pager', $pager)
         ;

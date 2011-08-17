@@ -8,7 +8,7 @@
     )?>
     </div>
 <?php
-foreach($blog_articles as $blog_article):
+foreach($articles as $blog_article):
     $article_url = Route::get('blog_article')->uri(array(
 					'id' => $blog_article->id
 				));

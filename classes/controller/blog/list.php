@@ -39,7 +39,7 @@ class Controller_Blog_List extends Controller_Blog_Template {
     }
 
     /**
-     * action for route car_books (prints list of car_books of user_id)
+     * action for route carbooks (prints list of car_books of user_id)
      *
      * @return void
      */
