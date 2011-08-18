@@ -1,5 +1,8 @@
 <?php defined('SYSPATH') or die('No direct access allowed.'); ?>
-<?php if ($success) { ?>
+<?php
+if ($success) {
+    if ($step==2) {
+?>
 <div class="frame">
     <?php
         echo HTML::anchor($url,
@@ -18,14 +21,11 @@
                           array('class' => 'delete-image', 'id' => 'delete-image-'.$image_id));
     ?>
 </div>
-<script type="text/javascript">
-    $('a[rel=fancybox]').fancybox({
-        overlayColor: '#000',
-        showNavArrows: true
-    });
-</script>
-<?php } else { ?>
-<div class="error">
-    <?php echo $error; ?>
-</div>
-<?php }  ?>
+<?php
+    } else {
+        echo HTML::image($filename, array('width'=>'300'));
+        echo Form::hidden('filename', $filename);
+    }
+} else {
+    echo "ERROR:".$error;
+}
