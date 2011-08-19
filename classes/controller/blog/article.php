@@ -275,6 +275,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 	public function action_new()
 	{
 		$category_name = HTML::chars($this->request->param('category'));
+        Cookie::set_simple('mc_rootpath', '');
 
 		if(! $category_name) $category_name = 'self';
 			//throw new HTTP_Exception_404('Category is not defined');
@@ -343,6 +344,8 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			}
 
 			if( ! $errors) {
+                
+                @mkdir('media/content/'.$article->id, 0777, TRUE);
 				$this->_save_tags($article, $_tags);
             }
 
@@ -366,6 +369,8 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if( ! $id)
 			throw new HTTP_Exception_404();
 
+        Cookie::set_simple('mc_rootpath', '/'.$id);
+        @mkdir('media/content/'.$id, 0777, TRUE);
 		$article = Jelly::query('blog', $id)->active()->select();
 
 		if( ! $article->loaded())
@@ -429,6 +434,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			}
 
 			if( ! $errors) {
+
 				$this->_save_tags($article, $_tags);
             }
 
