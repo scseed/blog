@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.'); ?>
 <?php
 if ($success) {
-    if ($step==2) {
+    if ($step==2) { echo "STEP2:";
 ?>
 <div class="frame">
     <?php
@@ -23,6 +23,7 @@ if ($success) {
 </div>
 <?php
     } else {
+        echo "STEP1:";
         echo HTML::image($filename, array('width'=>'300'));
         echo Form::hidden('filename', $filename);
     }
