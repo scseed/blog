@@ -275,7 +275,6 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 	public function action_new()
 	{
 		$category_name = HTML::chars($this->request->param('category'));
-        Cookie::set_simple('mc_rootpath', '');
 
 		if(! $category_name) $category_name = 'self';
 			//throw new HTTP_Exception_404('Category is not defined');
@@ -297,6 +296,11 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if( ! $current_category)
 			throw new HTTP_Exception_404('Category is not exists');
 
+        if($this->request->method() !== HTTP_Request::POST) {
+            $uniq = uniqid();
+            Cookie::set_simple('mc_rootpath', $uniq);
+            @mkdir('media/content/'.$uniq, 0777, TRUE);
+        }
 
 		$post = array(
 			'article' => array(
@@ -326,6 +330,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			$article = Jelly::factory('blog');
 
 			$article->set($article_data);
+            $article->uniq = Cookie::get_simple('mc_rootpath');
 
 			try
 			{
@@ -345,7 +350,6 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 			if( ! $errors) {
                 
-                @mkdir('media/content/'.$article->id, 0777, TRUE);
 				$this->_save_tags($article, $_tags);
             }
 
@@ -369,8 +373,6 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if( ! $id)
 			throw new HTTP_Exception_404();
 
-        Cookie::set_simple('mc_rootpath', '/'.$id);
-        @mkdir('media/content/'.$id, 0777, TRUE);
 		$article = Jelly::query('blog', $id)->active()->select();
 
 		if( ! $article->loaded())
@@ -385,6 +387,9 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 					':author_id' => $article->author->id
 				)
 			);
+
+        Cookie::set_simple('mc_rootpath', $article->uniq);
+        @mkdir('media/content/'.$article->uniq, 0777, TRUE);
 
         if ($this->_user['member_group_id']==$this->admin_group)
 		    $categories = Jelly::query('blog_category')->active()->admin($this->_user['member_id'])->select();
