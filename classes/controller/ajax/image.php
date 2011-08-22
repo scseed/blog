@@ -166,7 +166,10 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                             $img = Image::factory($_POST['filename']);
                             $scale = $img->width/300;
                             $img->crop($w*$scale, $h*$scale, $x1*$scale, $y1*$scale);
-                            $img->save();
+                            $img->resize(100);
+                            $last_dot = strrpos($_POST['filename'], '.');
+                            $thumb = substr($_POST['filename'], 0, $last_dot) . 'thumb' . substr($_POST['filename'], $last_dot);
+                            $img->save($thumb);
                         }
                         if (empty($error)) {
                             $content = View::factory('/frontend/content/response/image-add')
@@ -174,6 +177,7 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                                     ->set('success', '1')
                                     ->set('step', '2')
                                     ->set('url', $image->url)
+                                    ->set('thumb', $thumb)
                                     ->set('title', $image->title)
                                     ->set('image_id', $image->id)
                                     ;

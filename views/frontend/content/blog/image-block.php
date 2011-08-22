@@ -5,9 +5,13 @@
 ?>
 	<div class="frame">
 		<?php
+
+            $last_dot = strrpos($image->url, '.');
+            $thumb = substr($image->url, 0, $last_dot) . 'thumb' . substr($image->url, $last_dot);
+
             echo HTML::anchor($image->url,
                 HTML::image(
-				    $image->url,
+				    $thumb,
                     array('title' => $image->title,
                          'alt' => $image->title,
                          'width' => 100,

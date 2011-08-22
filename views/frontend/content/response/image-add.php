@@ -7,7 +7,7 @@ if ($success) {
     <?php
         echo HTML::anchor($url,
             HTML::image(
-                $url,
+                $thumb,
                 array('title' => $title,
                      'alt' => $title,
                      'width' => 100,
@@ -24,6 +24,7 @@ if ($success) {
 <?php
     } else {
         echo "STEP1:";
+        echo "<h3>Создание аватарки</h3>";
         echo HTML::image($filename, array('width'=>'300'));
         echo Form::hidden('filename', $filename);
     }
