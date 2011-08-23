@@ -17,6 +17,10 @@
         <?php echo Form::input('title', NULL, array('id' => 'title'))?>
     </div>
     <div class="form-item">
+        <?php echo Form::label('avatar', 'Сделать главной')?>
+        <?php echo Form::checkbox('avatar', '1', FALSE, array('id' => 'avatar'))?>
+    </div>
+    <div class="form-item">
         <?php echo Form::hidden('x1')?>
         <?php echo Form::hidden('y1')?>
         <?php echo Form::hidden('w', 100)?>

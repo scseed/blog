@@ -142,6 +142,9 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             if ($user_id == $this->_user['member_id'] OR $car->user->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id'])
             {
                 @unlink(DOCROOT.$image->url);
+                $last_dot = strrpos($image->url, '.');
+                $thumb = substr($image->url, 0, $last_dot) . 'thumb' . substr($image->url, $last_dot);
+                @unlink(DOCROOT.$thumb);
                 $image->delete();
                 if( ! $this->_ajax) {
                     $this->request->redirect(Route::url('blog_cars', array('action'=>'gallery', 'id' => $car_id )));
@@ -160,5 +163,39 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             $this->request->redirect(Route::url('blog_cars', array('action' => 'list')));
         }
         $this->template->content = 'Not found';
+    }
+
+    /**
+     * makes default avatar for car_id
+     * @return void
+     */
+    public function action_avatar()
+    {
+        $image_id = (int) Arr::get($_GET, 'image');
+        $car_id = (int) Arr::get($_GET, 'car');
+        $image = Jelly::query('image', $image_id)->select();
+        $car = Jelly::query('car', $car_id)->select();
+        $error = '';
+        try {
+            if ( ! $image->loaded())
+                throw new HTTP_Exception_404();
+            if( ! $car->loaded())
+                throw new HTTP_Exception_404();
+            $car->avatar = $image_id;
+            $car->save();
+        }
+        catch (Exception $e) {
+            $error = $e->getMessage();
+        }
+
+        if( ! $this->_ajax) {
+            $this->request->redirect(Route::url('blog_cars', array('action'=>'gallery', 'id' => $car_id )));
+        }
+        else {
+            if ($error)
+                $this->template->content = $error;
+            else
+                $this->template->content = 'OK';
+        }
     }
 } // End Controller_Blog_Stats

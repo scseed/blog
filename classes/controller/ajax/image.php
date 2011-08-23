@@ -17,6 +17,7 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
         {
             $error = '';
             $car_id = (int)Arr::get($_POST, 'car');
+            $avatar = (int)Arr::get($_POST, 'avatar');
             $user_id = $this->_user['member_id'];
             $car_path = '/'.$car_id;
             try
@@ -80,6 +81,10 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                         $image->car = $car_id;
                         $image->user = $user_id;
                         $image->save();
+                        if ($avatar OR ! $car->avatar) {
+                            $car->avatar = $image->id;
+                            $car->save();
+                        }
                             
                         $w = (int)Arr::get($_POST, 'w', 100);
                         $h = (int)Arr::get($_POST, 'h', 73);
@@ -113,6 +118,8 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                                     ->set('thumb', $thumb)
                                     ->set('title', $image->title)
                                     ->set('image_id', $image->id)
+                                    ->set('car_id', $car->id)
+                                    ->set('avatar', $avatar)
                                     ;
                         }
                         else {

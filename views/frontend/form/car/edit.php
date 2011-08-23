@@ -19,10 +19,15 @@
 	<?php echo Form::close();?>
     <div class="form-item">
         <?php
-            echo Request::factory(Route::get('blog_images')->uri(array(
+            /*echo Request::factory(Route::get('blog_images')->uri(array(
                     'action' => 'show',
                     'id' => $car
-                )))->execute()->body();
+                )))->execute()->body();*/
+            if ($car) {
+                echo HTML::anchor(Route::get('blog_cars')->uri(array(
+                    'action' => 'gallery',
+                    'id' => $car)), 'Галерея');
+            }
         ?>
     </div>
 </div>
