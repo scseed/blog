@@ -101,7 +101,8 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             {
                 $image = Jelly::factory('image');
                 @mkdir('media/cars'.$car_path, 0777, TRUE);
-                $filename = Upload::save($_FILES['file'], NULL, 'media/cars'.$car_path);
+                $ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+                $filename = Upload::save($_FILES['file'], uniqid().".".$ext, 'media/cars'.$car_path);
                 if ($filename) {
                     $image->url = 'media/cars'.$car_path.'/'.basename($filename);
                     $image->title = HTML::chars($_POST['title']);
@@ -142,9 +143,9 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             if ($user_id == $this->_user['member_id'] OR $car->user->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id'])
             {
                 @unlink(DOCROOT.$image->url);
-                $last_dot = strrpos($image->url, '.');
-                $thumb = substr($image->url, 0, $last_dot) . 'thumb' . substr($image->url, $last_dot);
-                @unlink(DOCROOT.$thumb);
+                /*$last_dot = strrpos($image->url, '.');
+                $thumb = substr($image->url, 0, $last_dot) . 'thumb' . substr($image->url, $last_dot);*/
+                @unlink(DOCROOT. Utils::get_thumb($image->url));
                 $image->delete();
                 if( ! $this->_ajax) {
                     $this->request->redirect(Route::url('blog_cars', array('action'=>'gallery', 'id' => $car_id )));

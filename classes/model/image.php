@@ -30,7 +30,12 @@ class Model_Image extends Jelly_Model {
                 )),
 			))->load_with(array('car'))
 			;
-
 	}
+    
+    /*public function get_thumb()
+    {
+        $last_dot = strrpos($this->url, '.');
+        return substr($this->url, 0, $last_dot) . 'thumb' . substr($this->url, $last_dot);
+    }*/
 
 } // End Model_Image

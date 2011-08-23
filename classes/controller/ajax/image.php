@@ -47,7 +47,8 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                         {
                             try {
                                 @mkdir('media/cars'.$car_path, 0777, TRUE);
-                                $filename = Upload::save($_FILES['file'], NULL, 'media/cars'.$car_path);
+                                $ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+                                $filename = Upload::save($_FILES['file'], uniqid().".".$ext, 'media/cars'.$car_path);
                                 if (! $filename) {
                                     $error = __('Error uploading file');
                                 }
@@ -105,8 +106,9 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                             $scale = $img->width/300;
                             $img->crop($w*$scale, $h*$scale, $x1*$scale, $y1*$scale);
                             $img->resize(100);
-                            $last_dot = strrpos($_POST['filename'], '.');
-                            $thumb = substr($_POST['filename'], 0, $last_dot) . 'thumb' . substr($_POST['filename'], $last_dot);
+                            $thumb = Utils::get_thumb($_POST['filename']);
+                            /*$last_dot = strrpos($_POST['filename'], '.');
+                            $thumb = substr($_POST['filename'], 0, $last_dot) . 'thumb' . substr($_POST['filename'], $last_dot);*/
                             $img->save($thumb);
                         }
                         if (empty($error)) {

@@ -6,12 +6,12 @@
 	<div class="frame">
 		<?php
 
-            $last_dot = strrpos($image->url, '.');
-            $thumb = substr($image->url, 0, $last_dot) . 'thumb' . substr($image->url, $last_dot);
+            /*$last_dot = strrpos($image->url, '.');
+            $thumb = substr($image->url, 0, $last_dot) . 'thumb' . substr($image->url, $last_dot);*/
 
             echo HTML::anchor($image->url,
                 HTML::image(
-				    $thumb,
+				    Utils::get_thumb($image->url),
                     array('title' => $image->title,
                          'alt' => $image->title,
                          'width' => 100,

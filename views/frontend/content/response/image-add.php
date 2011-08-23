@@ -38,6 +38,11 @@ if ($success) {
         echo "<h3>Создание аватарки</h3>";
         echo HTML::image($filename, array('width'=>'300'));
         echo Form::hidden('filename', $filename);
+        $im = Image::factory($filename);
+        $h = $im->height;
+        $w = $im->width;
+        $toh =  (int)($h * 300 / $w);
+        echo Form::hidden('toh', $toh, array('id'=>'toh'));
     }
 } else {
     echo "ERROR:".$error;
