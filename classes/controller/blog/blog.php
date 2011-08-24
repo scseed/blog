@@ -34,7 +34,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		}
 	}
 
-
+    // todo: filters
 	protected function _list()
 	{
 		$category_name = HTML::chars($this->request->param('category', NULL));

@@ -62,6 +62,7 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
         $this->_list($id, 'category');
     }
 
+    // todo: filters
     protected function _list($id, $name)
     {
         if ($name=='author')

@@ -127,6 +127,15 @@ Route::set('blog_stats', '(<lang>/)stats/<action>/<id>', array(
 		'action' => 'show',
 ));
 
+Route::set('blog_filter', '(<lang>/)filter/<action>', array(
+	'lang'       => $langs,
+))
+	->defaults(array(
+		'directory' => 'blog',
+		'controller' => 'filter',
+		'action' => 'show',
+));
+
 Route::set('blog_images', '(<lang>/)images/<action>(/<id>)', array(
 	'lang'       => $langs,
 ))

@@ -1,4 +1,7 @@
 ﻿<?php defined('SYSPATH') or die('No direct access allowed.');?>
+<?php echo Request::factory(Route::get('blog_filter')->uri(array(
+    'action' => 'show',
+)))->execute()->body()?>
 <div id="posts">
     <div class="post">
     <?php echo HTML::anchor(
@@ -8,7 +11,8 @@
     )?>
     </div>
 <?php
-foreach($articles as $blog_article):
+    if (! empty($articles))
+    foreach($articles as $blog_article):
     $article_url = Route::get('blog_article')->uri(array(
 					'id' => $blog_article->id
 				));
