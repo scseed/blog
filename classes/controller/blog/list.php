@@ -35,18 +35,17 @@ class Controller_Blog_List extends Controller_Blog_Template {
         $filter = Arr::get($_GET, 'filter', 'all');
         switch ($filter) {
             case 'discussed':
-                return Jelly::query('blog')
-                    ->on_main()
-                    ->order_by('date_create', 'DESC')
-                    ->select();
-/*                return Jelly::query('blog')
-                    ->join('comments')
-                    ->on('blog.id', '=', 'comments.object_id')
+                return Jelly::query('blog') 
+                    ->join(array('comments', 'c'), LEFT)
+                    ->on('blog.id', '=', 'c.object_id')
                     ->where('type_id', '=', 1)
-                    ->order_by(DB::expr('count(comments.*)'), 'desc')
+                    ->and_where('lvl', 'is', DB::expr('NULL'))
+                    ->and_where('lft', '=', '1')
+                    ->and_where('c.text', '=', '-')
+                    ->order_by('rgt', 'desc')
+                    ->order_by('date_create', 'DESC')
                     ->on_main()
                     ->select();
-*/
                 break;
             case 'popular':
                 return Jelly::query('blog')
