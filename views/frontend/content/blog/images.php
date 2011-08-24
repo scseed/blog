@@ -27,19 +27,19 @@
             echo HTML::anchor(Route::get('blog_images')->uri(array(
                     'action' => 'del',
 				    'id' => $image->id
-				)), HTML::image('i/icons/user.gif', array('title' => 'Удалить', 'alt' => 'Удалить')),
+				)), HTML::image('i/icons/delete.gif', array('title' => 'Удалить', 'alt' => 'Удалить')),
                               array('class' => 'delete-image', 'id' => 'delete-image-'.$image->id));
             
             if ($car->avatar->id != $image->id)
                 echo HTML::anchor(Route::get('blog_images')->uri(array(
                         'action' => 'avatar',
                     )).'?image='.$image->id.'&car='.$car->id,
-                                  HTML::image('i/icons/user.gif',
+                                  HTML::image('i/icons/check.gif',
                                               array('title' => 'Сделать главной', 'alt' => 'Сделать главной')),
                           array('class' => 'avatar-image avatar', 'id' => 'avatar-image-'.$image->id.'-'.$car->id));
             else
                 echo '<div class="avatar-main">'
-                     .HTML::image('i/icons/add.gif', array('title' => 'Главная', 'alt' => 'Главная'))
+                     .HTML::image('i/icons/check-ok.gif', array('title' => 'Главная', 'alt' => 'Главная'))
                      .'</div>';
         }
         ?>

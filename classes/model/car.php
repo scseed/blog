@@ -33,6 +33,7 @@ class Model_Car extends Jelly_Model {
                 'is_active' => Jelly::field('Boolean', array(
                     'default' => TRUE,
                 )),
+                'uniq' => Jelly::field('String'),
 			))
 			->load_with(array('model', 'user'));
 

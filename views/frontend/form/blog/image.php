@@ -29,5 +29,5 @@
         <?php echo Form::hidden('step', 1, array('id'=>'step'))?>
         <?php echo Form::button(NULL, 'Загрузить', array('id'=>'new-image-button'))?>
     </div>
-    <div id="img-container" style="width: 300px; min-height: 300px;"></div>
+    <div id="img-container" style="width: 300px;"></div>
 <?php echo Form::close();?>

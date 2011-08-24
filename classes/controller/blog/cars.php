@@ -93,6 +93,14 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         for ($i=date("Y"); $i>=1986; $i--) {
             $years[$i] = $i;
         }
+
+        if($this->request->method() !== HTTP_Request::POST) {
+            $uniq = uniqid();
+            Cookie::set_simple('mc_rootpath', $uniq);
+            @mkdir('media/content/'.$uniq, 0777, TRUE);
+        }
+
+
         if($this->request->method() === HTTP_Request::POST)
         {
             $car_data = Arr::extract($this->request->post('car'), array_keys($post['car']));
@@ -107,6 +115,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
             $car_data['is_active'] = TRUE;
             $car = Jelly::factory('car');
             $car->set($car_data);
+            $car->uniq = Cookie::get_simple('mc_rootpath');
             try
             {
                 $car->save();
@@ -182,6 +191,10 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         }
 
         $models = Jelly::query('model')->select();
+
+        Cookie::set_simple('mc_rootpath', $car->uniq);
+        @mkdir('media/content/'.$car->uniq, 0777, TRUE);
+
         if($this->request->method() === HTTP_Request::POST)
         {
             $car_data = Arr::extract($this->request->post('car'), array_keys($post['car']));
@@ -247,7 +260,6 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         try {
             $car->is_active = FALSE;
             $car->save();
-            //$car->delete();
         }
         catch (Exception $e) {
             throw new Database_Exception(-100, 'Delete failed?');

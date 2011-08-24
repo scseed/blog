@@ -11,6 +11,6 @@ class Utils {
 
     public static function get_thumb($url) {
         $last_dot = strrpos($url, '.');
-        return substr($url, 0, $last_dot) . 'thumb' . substr($url, $last_dot);
+        return substr($url, 0, $last_dot) . '.thumb' . substr($url, $last_dot);
     }
 }

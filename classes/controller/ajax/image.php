@@ -40,7 +40,7 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                         $validate->rule('file', 'Upload::valid')
                             ->rule('file', 'Upload::not_empty')
                             ->rule('file', 'Upload::type', array(':value', array('jpg', 'png', 'gif')))
-                            ->rule('file', 'Upload::size', array(':value', '1M'))
+                            ->rule('file', 'Upload::size', array(':value', '2.5M'))
                             ;
 
                         if ($validate->check())
