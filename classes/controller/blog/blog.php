@@ -34,7 +34,6 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		}
 	}
 
-    // todo: filters
 	protected function _list()
 	{
 		$category_name = HTML::chars($this->request->param('category', NULL));
@@ -67,23 +66,82 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
               'view'			=> 'pagination/ru'
         ));
 
-        if ($category->is_common)
-		    $articles = Jelly::query('blog')
-                ->active()
-                ->where('category', '=', $category->id)
-                ->and_where('author_id', '=', $this->_user['member_id'])
-                ->order_by('date_create', 'DESC')
-                ->limit(10)
-                ->offset($offset)
-                ->select();
-        else
-            $articles = Jelly::query('blog')
-                ->active()
-                ->where('category', '=', $category->id)
-                ->order_by('date_create', 'DESC')
-                ->limit(10)
-                ->offset($offset)
-                ->select();
+        $filter = Arr::get($_GET, 'filter', 'all');
+        switch ($filter) {
+            case 'discussed':
+                if ($category->is_common)
+                    $articles = Jelly::query('blog')
+                        ->join(array('comments', 'c'), LEFT)
+                        ->on('blog.id', '=', 'c.object_id')
+                        ->where('type_id', '=', 1)
+                        ->and_where('lvl', 'is', DB::expr('NULL'))
+                        ->and_where('lft', '=', '1')
+                        ->and_where('c.text', '=', '-')
+                        ->active()
+                        ->where('category', '=', $category->id)
+                        ->and_where('author_id', '=', $this->_user['member_id'])
+                        ->order_by('rgt', 'desc')
+                        ->order_by('date_create', 'DESC')
+                        ->limit(10)
+                        ->offset($offset)
+                        ->select();
+                else
+                    $articles = Jelly::query('blog')
+                        ->join(array('comments', 'c'), LEFT)
+                        ->on('blog.id', '=', 'c.object_id')
+                        ->where('type_id', '=', 1)
+                        ->and_where('lvl', 'is', DB::expr('NULL'))
+                        ->and_where('lft', '=', '1')
+                        ->and_where('c.text', '=', '-')
+                        ->active()
+                        ->where('category', '=', $category->id)
+                        ->order_by('rgt', 'desc')
+                        ->order_by('date_create', 'DESC')
+                        ->limit(10)
+                        ->offset($offset)
+                        ->select();
+                break;
+            case 'popular':
+                if ($category->is_common)
+                    $articles = Jelly::query('blog')
+                        ->active()
+                        ->where('category', '=', $category->id)
+                        ->and_where('author_id', '=', $this->_user['member_id'])
+                        ->order_by('score', 'DESC')
+                        ->order_by('date_create', 'DESC')
+                        ->limit(10)
+                        ->offset($offset)
+                        ->select();
+                else
+                    $articles = Jelly::query('blog')
+                        ->active()
+                        ->where('category', '=', $category->id)
+                        ->order_by('score', 'DESC')
+                        ->order_by('date_create', 'DESC')
+                        ->limit(10)
+                        ->offset($offset)
+                        ->select();
+                break;
+            default:
+                if ($category->is_common)
+                    $articles = Jelly::query('blog')
+                        ->active()
+                        ->where('category', '=', $category->id)
+                        ->and_where('author_id', '=', $this->_user['member_id'])
+                        ->order_by('date_create', 'DESC')
+                        ->limit(10)
+                        ->offset($offset)
+                        ->select();
+                else
+                    $articles = Jelly::query('blog')
+                        ->active()
+                        ->where('category', '=', $category->id)
+                        ->order_by('date_create', 'DESC')
+                        ->limit(10)
+                        ->offset($offset)
+                        ->select();
+                break;
+        }
 
 		$this->template->title = $category->title .' / '.__('Блоги');
 		$this->template->content = View::factory('frontend/content/blog/list')

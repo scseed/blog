@@ -32,7 +32,7 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
 
             // статьи борт-журнала с категорией id
             case 'carbook':
-                $this->_car_book($id);
+                $this->_carbook($id);
                 break;
             default:
                 throw new HTTP_Exception_404();
@@ -57,7 +57,7 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
      * @param  $id
      * @return void
      */
-    protected function _car_book($id)
+    protected function _carbook($id)
     {
         $this->_list($id, 'category');
     }
@@ -82,16 +82,60 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
              'total_items'		=> $articles_count,
               'view'			=> 'pagination/ru'
         ));
-
-        if ($name=='author')
-            $articles = Jelly::query('blog')->active()->where($name, '=', $id)
-                    ->where(':category.name', '=', 'self')
-                    ->limit(10)->offset($offset)
-                    ->order_by('date_create', 'desc')->select();
-        else
-            $articles = Jelly::query('blog')->active()->where(':category.car', '=', $id)
-                    ->limit(10)->offset($offset)
-                    ->order_by('date_create', 'desc')->select();
+        $filter = Arr::get($_GET, 'filter', 'all');
+        switch ($filter) {
+            case 'discussed':
+                if ($name=='author')
+                    $articles = Jelly::query('blog')
+                            ->join(array('comments', 'c'), LEFT)
+                            ->on('blog.id', '=', 'c.object_id')
+                            ->where('type_id', '=', 1)
+                            ->and_where('lvl', 'is', DB::expr('NULL'))
+                            ->and_where('lft', '=', '1')
+                            ->and_where('c.text', '=', '-')
+                            ->active()->where($name, '=', $id)
+                            ->where(':category.name', '=', 'self')
+                            ->limit(10)->offset($offset)
+                            ->order_by('rgt', 'desc')
+                            ->order_by('date_create', 'desc')->select();
+                else
+                    $articles = Jelly::query('blog')
+                            ->join(array('comments', 'c'), LEFT)
+                            ->on('blog.id', '=', 'c.object_id')
+                            ->where('type_id', '=', 1)
+                            ->and_where('lvl', 'is', DB::expr('NULL'))
+                            ->and_where('lft', '=', '1')
+                            ->and_where('c.text', '=', '-')
+                            ->active()->where(':category.car', '=', $id)
+                            ->limit(10)->offset($offset)
+                            ->order_by('rgt', 'desc')
+                            ->order_by('date_create', 'desc')->select();
+                break;
+            case 'popular':
+                if ($name=='author')
+                    $articles = Jelly::query('blog')->active()->where($name, '=', $id)
+                            ->where(':category.name', '=', 'self')
+                            ->limit(10)->offset($offset)
+                            ->order_by('score', 'desc')
+                            ->order_by('date_create', 'desc')->select();
+                else
+                    $articles = Jelly::query('blog')->active()->where(':category.car', '=', $id)
+                            ->limit(10)->offset($offset)
+                            ->order_by('score', 'desc')
+                            ->order_by('date_create', 'desc')->select();
+                break;
+            default:
+                if ($name=='author')
+                    $articles = Jelly::query('blog')->active()->where($name, '=', $id)
+                            ->where(':category.name', '=', 'self')
+                            ->limit(10)->offset($offset)
+                            ->order_by('date_create', 'desc')->select();
+                else
+                    $articles = Jelly::query('blog')->active()->where(':category.car', '=', $id)
+                            ->limit(10)->offset($offset)
+                            ->order_by('date_create', 'desc')->select();
+                break;
+        }
         if ($name=='author') {
             $user = Jelly::query('user', $id)->limit(1)->select();
             $title = 'Личный блог пользователя '.$user->name;
