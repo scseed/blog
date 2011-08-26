@@ -113,15 +113,25 @@ class Controller_Blog_Articles extends Controller_Blog_Template {
                 break;
             case 'popular':
                 if ($name=='author')
-                    $articles = Jelly::query('blog')->active()->where($name, '=', $id)
+                    $articles = Jelly::query('blog')->select_column(DB::expr('count(l.id)'), 'likes')
+                            ->join(array('likes', 'l'), LEFT)
+                            ->on('blogs.id', '=', 'l.object_id')
+                            ->on('type_id', '=', DB::expr(1))
+                            ->active()->where($name, '=', $id)
                             ->where(':category.name', '=', 'self')
                             ->limit(10)->offset($offset)
-                            ->order_by('score', 'desc')
+                            ->group_by('blogs.id')
+                            ->order_by('likes', 'desc')
                             ->order_by('date_create', 'desc')->select();
                 else
-                    $articles = Jelly::query('blog')->active()->where(':category.car', '=', $id)
+                    $articles = Jelly::query('blog')->select_column(DB::expr('count(l.id)'), 'likes')
+                            ->join(array('likes', 'l'), LEFT)
+                            ->on('blogs.id', '=', 'l.object_id')
+                            ->on('type_id', '=', DB::expr(1))
+                            ->active()->where(':category.car', '=', $id)
                             ->limit(10)->offset($offset)
-                            ->order_by('score', 'desc')
+                            ->group_by('blogs.id')
+                            ->order_by('likes', 'desc')
                             ->order_by('date_create', 'desc')->select();
                 break;
             default:

@@ -45,6 +45,7 @@ class Model_Blog extends Jelly_Model {
 					'default' => 0,
 				)),
                 'uniq' => Jelly::field('String'),
+
 				'tags' => Jelly::field('ManyToMany', array(
 					'trough' => 'blogs_tags',
 				)),

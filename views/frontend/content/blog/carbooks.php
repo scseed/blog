@@ -34,12 +34,11 @@ foreach($carbooks as $blog_article):
 
 		<div class="badges">
 			<div class="right">
-				<div class="badge left">
-					<?php echo HTML::image('i/icons/favorites.gif', array('alt' => ''))?>
-					<div class="title"><span>
-						<?php echo $blog_article->score?>
-					</span></div>
-				</div>
+                <?php echo Request::factory(Route::get('likes')->uri(array(
+                    'action' => 'count',
+                    'type' => 'blog',
+                    'object' => $blog_article->id
+                )))->execute()->body()?>
 				<div class="badge left">
 					<?php echo HTML::anchor(
 							$article_url. '#comments',

@@ -49,8 +49,13 @@ class Controller_Blog_List extends Controller_Blog_Template {
                 break;
             case 'popular':
                 return Jelly::query('blog')
+                    ->select_column(DB::expr('count(l.id)'), 'likes')
+                    ->join(array('likes', 'l'), LEFT)
+                    ->on('blogs.id', '=', 'l.object_id')
+                    ->on('type_id', '=', DB::expr(1))
                     ->on_main()
-                    ->order_by('score', 'DESC')
+                    ->group_by('blogs.id')
+                    ->order_by('likes', 'DESC')
                     ->order_by('date_create', 'DESC')
                     ->select();
                 break;

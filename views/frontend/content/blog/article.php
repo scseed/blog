@@ -9,21 +9,12 @@
 	)))->execute()->body()?>
 </div>
 <div id="tags"><?php echo $tags?></div>
-<?php
-    if (! empty($_user)) {
-        $score = Jelly::query('score')
-                ->where('blog', '=', $article->id)
-                ->and_where('user', '=', $_user['member_id'])
-                ->count();
-        if ($score == 0) {
-?>
-<!--<div class="right" id="like">
-    <a title="" href="#">Мне нравится!</a><img class="ico right" alt="" src="/i/icons/add.gif">
-</div>-->
-<?php
-        }
-    }
-?>
+<?php echo Request::factory(Route::get('likes')->uri(array(
+    'action' => 'show',
+    'type' => 'blog',
+    'object' => $article->id
+)))->execute()->body()?>
+
 <div id="comments"><?php echo $comments?></div>
 <div id="actions">
 <?php
