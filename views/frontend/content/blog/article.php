@@ -1,20 +1,28 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
 <?php //echo str_replace('~~~', '<a name="article_cut"></a>', $textile->TextileThis($article->text))?>
 <?php echo str_replace('~~~', '<a name="article_cut"></a>', $article->text)?>
-<div id="stats">
+<!--<div id="stats">
 	<span>Информация:</span>
-	<?php echo Request::factory(Route::get('blog_stats')->uri(array(
+	<?php /*echo Request::factory(Route::get('blog_stats')->uri(array(
 		'action' => 'show',
 		'id' => $article->id
-	)))->execute()->body()?>
-</div>
+	)))->execute()->body()*/?>
+</div>-->
 <div id="tags"><?php echo $tags?></div>
-<?php echo Request::factory(Route::get('likes')->uri(array(
+<?php /*echo Request::factory(Route::get('likes')->uri(array(
     'action' => 'show',
     'type' => 'blog',
     'object' => $article->id
-)))->execute()->body()?>
+)))->execute()->body()*/
+$user_avatar = ($article->author->has_avatar)
+    ? 'media/images/avatars/'.$article->author->id.'/thumb.jpg'
+    : 'i/icons/user.gif';
 
+echo View::factory('frontend/content/blog/badges')
+        ->set('article', $article)
+        ->set('user_avatar', $user_avatar)
+        ->set('article_url', $article_url);
+?>
 <div id="comments"><?php echo $comments?></div>
 <div id="actions">
 <?php
