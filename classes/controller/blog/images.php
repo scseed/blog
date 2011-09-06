@@ -9,14 +9,14 @@
  */
 class Controller_Blog_Images extends Controller_Blog_Template {
 
-	public function after()
+	/*public function after()
 	{
 		if($this->_user == NULL)
 		{
 			$this->template->content = NULL;
 		}
 		parent::after();
-	}
+	}*/
 
 	/**
 	 * Shows blog images
