@@ -24,7 +24,7 @@
     </div>
     <div class="right">
         <?php echo Request::factory(Route::get('likes')->uri(array(
-            'action' => 'count',
+            'action' => empty($like_action)? 'count': $like_action,
             'type' => 'blog',
             'object' => $article->id
         )))->execute()->body()?>
