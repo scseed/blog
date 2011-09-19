@@ -40,7 +40,7 @@ Route::set('car_books', '(<lang>/)carbooks/<id>', array(
 
 Route::set('blog_action', '(<lang>/)blogs/<action>(/<id>)', array(
     'lang'     => $langs,
-    'action' => '(new|del|edit|list)',
+    'action' => '(new|del|edit|list|activity)',
     'id'       => '\d+',
 ))
     ->defaults(array(

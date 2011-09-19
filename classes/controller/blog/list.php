@@ -30,6 +30,21 @@ class Controller_Blog_List extends Controller_Blog_Template {
 			->bind('category', $category);
 	}
 
+    public function action_activity() {
+        
+        if( ! $this->_ajax) {
+            $this->template->content = '';
+            return;
+        }
+        $articles = Jelly::query('blog')
+                ->active()
+                ->and_where(':category.name', '=', 'activity')
+                ->order_by('date_create', 'DESC')
+                ->limit(5)
+                ->select();
+        $this->template->content = View::factory('frontend/content/blog/activity')->set('articles', $articles);
+    }
+
     public function mainpage()
     {
         $filter = Arr::get($_GET, 'filter', 'all');
