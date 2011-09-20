@@ -146,6 +146,16 @@ Route::set('blog_images', '(<lang>/)images/<action>(/<id>)', array(
         'id' => NULL
 ));
 
+Route::set('blog_members', '(<lang>/)members/<action>(/<id>)', array(
+	'lang'       => $langs,
+))
+	->defaults(array(
+		'directory' => 'blog',
+		'controller' => 'members',
+		'action' => 'show',
+        'id' => NULL
+));
+
 Route::set('tags', '(<lang>/)tags(/<type>)/<object_id>', array(
 	'lang'      => $langs,
 	'type'      => '\w+',

@@ -1,4 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
+<h5>Фотографии</h5>
+<div id="photos-wrapper">
 <div class="frames" id="photos-right-box">
 <?php
     $i = 0;
@@ -27,3 +29,5 @@
 <?php } } ?>
 <div class="clear"></div>
 </div>
+</div>
+<!--<a href="#" title="" class="more right">Все фотографии</a>-->
