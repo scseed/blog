@@ -38,6 +38,8 @@ if ($success) {
         echo "<h3>Создание аватарки</h3>";
         echo HTML::image($filename, array('width'=>'300'));
         echo Form::hidden('filename', $filename);
+        echo Form::hidden('url', $url);
+        echo Form::hidden('ext', $ext);
         $im = Image::factory($filename);
         $h = $im->height;
         $w = $im->width;

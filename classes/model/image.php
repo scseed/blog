@@ -24,6 +24,7 @@ class Model_Image extends Jelly_Model {
 					'foreign' => 'car'
 				)),
                 'url' => Jelly::field('String'),
+                'ext' => Jelly::field('String'),
                 'title' => Jelly::field('String'),
                 'user' => Jelly::field('BelongsTo', array(
                     'foreign' => 'user'

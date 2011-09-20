@@ -9,6 +9,14 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
     private $_max_width = 1024;
     private $_max_height = 800;
 
+    private $path_prefix = 'media/cars';
+
+    public function before() {
+        parent::before();
+        if (@isset (Kohana::config('images')->gallery_path))
+            $this->path_prefix = Kohana::config('images')->gallery_path;
+    }
+
     public function action_new($id = NULL)
     {
         $content = '';
@@ -46,9 +54,10 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                         if ($validate->check())
                         {
                             try {
-                                @mkdir('media/cars'.$car_path, 0777, TRUE);
+                                @mkdir($this->path_prefix.$car_path, 0777, TRUE);
                                 $ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
-                                $filename = Upload::save($_FILES['file'], uniqid().".".$ext, 'media/cars'.$car_path);
+                                $url = uniqid();
+                                $filename = Upload::save($_FILES['file'], $url.".".$ext, $this->path_prefix.$car_path);
                                 if (! $filename) {
                                     $error = __('Error uploading file');
                                 }
@@ -65,7 +74,9 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                             $content = View::factory('/frontend/content/response/image-add')
                                     ->set('error', '')
                                     ->set('success', '1')
-                                    ->set('filename', 'media/cars'.$car_path.'/'.basename($filename))
+                                    ->set('filename', $this->path_prefix.$car_path.'/'.basename($filename))
+                                    ->set('url', $url)
+                                    ->set('ext', $ext)
                                     ->set('step', '1')
                                     ;
                         } else {
@@ -77,7 +88,8 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                         break;
                     case 2:
                         $image = Jelly::factory('image');
-                        $image->url = $_POST['filename'];
+                        $image->url = $_POST['url'];
+                        $image->ext = $_POST['ext'];
                         $image->title = HTML::chars($_POST['title']);
                         $image->car = $car_id;
                         $image->user = $user_id;
@@ -107,8 +119,6 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                             $img->crop($w*$scale, $h*$scale, $x1*$scale, $y1*$scale);
                             $img->resize(100);
                             $thumb = Utils::get_thumb($_POST['filename']);
-                            /*$last_dot = strrpos($_POST['filename'], '.');
-                            $thumb = substr($_POST['filename'], 0, $last_dot) . 'thumb' . substr($_POST['filename'], $last_dot);*/
                             $img->save($thumb);
                         }
                         if (empty($error)) {

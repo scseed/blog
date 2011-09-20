@@ -11,10 +11,14 @@
  */
 class Controller_Blog_Cars extends Controller_Blog_Template {
 
+    private $path_prefix = 'media/cars';
+
     public function before()
     {
         parent::before();
 
+        if (@isset (Kohana::config('images')->gallery_path))
+            $this->path_prefix = Kohana::config('images')->gallery_path;
         if($this->request->action() == 'new' OR
            $this->request->action() == 'edit')
         {
@@ -295,6 +299,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
                 View::factory('frontend/content/blog/images')
                     ->set('images', $images)
                     ->set('car', $car)
+                    ->set('path', $this->path_prefix)
                 ;
     }
 

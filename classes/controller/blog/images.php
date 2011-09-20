@@ -9,14 +9,13 @@
  */
 class Controller_Blog_Images extends Controller_Blog_Template {
 
-	/*public function after()
-	{
-		if($this->_user == NULL)
-		{
-			$this->template->content = NULL;
-		}
-		parent::after();
-	}*/
+    private $path_prefix = 'media/cars';
+
+    public function before() {
+        parent::before();
+        if (@isset (Kohana::config('images')->gallery_path))
+            $this->path_prefix = Kohana::config('images')->gallery_path;
+    }
 
 	/**
 	 * Shows blog images
@@ -42,6 +41,7 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             $this->template->content = View::factory('frontend/content/blog/images')
                 ->bind('car', $car)
                 ->bind('images', $images)
+                ->set('path', $this->path_prefix)
                 ;
         }
         else {
@@ -67,6 +67,7 @@ class Controller_Blog_Images extends Controller_Blog_Template {
         $images = Jelly::query('image')->order_by(DB::expr('rand()'))->select();
         $this->template->content = View::factory('frontend/content/blog/image-block')
             ->bind('images', $images)
+            ->set('path', $this->path_prefix)
             ;
     }
 
@@ -100,11 +101,13 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             if ($validate->check())
             {
                 $image = Jelly::factory('image');
-                @mkdir('media/cars'.$car_path, 0777, TRUE);
+                @mkdir($this->path_prefix.$car_path, 0777, TRUE);
                 $ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
-                $filename = Upload::save($_FILES['file'], uniqid().".".$ext, 'media/cars'.$car_path);
+                $url = uniqid();
+                $filename = Upload::save($_FILES['file'], $url.".".$ext, $this->path_prefix.$car_path);
                 if ($filename) {
-                    $image->url = 'media/cars'.$car_path.'/'.basename($filename);
+                    $image->url = $url; //$this->path_prefix.$car_path.'/'.basename($filename);
+                    $image->ext = $ext;
                     $image->title = HTML::chars($_POST['title']);
                     $image->car = $car_id;
                     $image->user = $user_id;
@@ -142,10 +145,8 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             $car = Jelly::query('car', $car_id)->select();
             if ($user_id == $this->_user['member_id'] OR $car->user->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id'])
             {
-                @unlink(DOCROOT.$image->url);
-                /*$last_dot = strrpos($image->url, '.');
-                $thumb = substr($image->url, 0, $last_dot) . 'thumb' . substr($image->url, $last_dot);*/
-                @unlink(DOCROOT. Utils::get_thumb($image->url));
+                @unlink(DOCROOT. $this->path_prefix.'/'.$car_id.'/'.$image->url.'.'.$image->ext);
+                @unlink(DOCROOT. $this->path_prefix.'/'.$car_id.'/'.$image->url.'.thumb.'.$image->ext);
                 $image->delete();
                 if( ! $this->_ajax) {
                     $this->request->redirect(Route::url('blog_cars', array('action'=>'gallery', 'id' => $car_id )));

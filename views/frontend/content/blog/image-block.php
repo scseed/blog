@@ -3,16 +3,16 @@
 <?php
     $i = 0;
     foreach($images as $image) {
-        if (file_exists(DOCROOT . $image->url)) {
+        if (file_exists(DOCROOT . $path . '/' . $image->car->id . '/' . $image->url . '.' . $image->ext)) {
             $i++;
             if ($i>6) break;
 ?>
 	<div class="frame">
 		<?php
 
-            echo HTML::anchor($image->url,
+            echo HTML::anchor($path . '/' . $image->car->id . '/' . $image->url . '.' . $image->ext,
                 HTML::image(
-                    Utils::get_thumb($image->url),
+                    $path . '/' . $image->car->id . '/' . $image->url . '.thumb.' . $image->ext,
                     array('title' => $image->title,
                          'alt' => $image->title,
                          'width' => 100,

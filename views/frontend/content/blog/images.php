@@ -11,12 +11,9 @@
 	<div class="frame" id="frame-<?php echo $car->id."-".$image->id;?>">
 		<?php
                 
-            /*$last_dot = strrpos($image->url, '.');
-            $thumb = substr($image->url, 0, $last_dot) . 'thumb' . substr($image->url, $last_dot);
-            */
-            echo HTML::anchor($image->url,
+            echo HTML::anchor($path . '/' . $image->car->id . '/' . $image->url . '.' . $image->ext,
                 HTML::image(
-                    Utils::get_thumb($image->url),
+                    $path . '/' . $image->car->id . '/' . $image->url . '.thumb.' . $image->ext,
                     array('title' => $image->title,
                          'alt' => $image->title,
                          'width' => 100,
