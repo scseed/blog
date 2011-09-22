@@ -13,7 +13,7 @@
 
                     $intro = HTML_Parser::factory($article->intro())->plaintext;
                     echo HTML::anchor(Route::get('blog_article')->uri(array('id'=>$article->id)),
-                        $intro, array('class'=>'description'));
+                        $intro, array('class'=>'description', 'title'=>$article->title));
                     echo '</li>';
                 }
             ?>
