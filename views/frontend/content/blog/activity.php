@@ -1,4 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
+<?php if(count($articles)):?>
 <div id="events">
     <div class="title left">Мероприятия</div>
     <ul class="paginator left">
@@ -20,3 +21,4 @@
         </ul>
     </div>
 </div>
+<?php endif?>
