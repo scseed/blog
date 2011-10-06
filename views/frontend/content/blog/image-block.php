@@ -20,31 +20,19 @@
                          'width' => 100,
                          'height' => 73,
                          'id' => 'image-'.$image->id)),
-                array('rel' => 'fancybox-right', 'title' =>  $image->title));
+                array('rel' => 'fancybox-right', 'title' =>  $image->title, 'id' => $image->url));
 
         ?>
-        <div style="display: none;">
-        <?php
-            $im = Image::factory($path . '/' . $image->car->id . '/' . $image->url . '.' . $image->ext);
-            $style = '';
-            if ($im->height<800)
-                $style .= 'height: '.$im->height . ';';
-            if ($im->width<1000)
-                $style .= 'width: '.$im->width . ';';
-            $img_atr = array();
-            if ($im->height>=800 or $im->width>=1000)
-                $img_atr = array('width'=>'100%', 'height'=>'100%');
-
-        ?>
-            <div id="<?php echo $image->url?>" style="<?php echo $style;?>">
-            <?php
-                echo HTML::image($path . '/' . $image->car->id . '/' . $image->url . '.' . $image->ext, $img_atr); ?>
-                <div style="width: 100%; position: absolute; top: 0px; text-align: center;">
-                <?php echo HTML::anchor(Route::get('blog_cars')->uri(array('action'=>'gallery', 'id'=>$image->car->id)),
+            <div class="<?php echo $image->url?>" style="display: none;">
+	            <span class="fancybox-title-float-wrap">
+		            <span class="fancybox-title-float-left"></span>
+		            <span class="fancybox-title-float-main">
+			            <?php echo HTML::anchor(Route::get('blog_cars')->uri(array('action'=>'gallery', 'id'=>$image->car->id)),
                             'Перейти в галерею'); ?>
-                </div>
+		            </span>
+		            <span class="fancybox-title-float-right"></span>
+	            </span>
             </div>
-        </div>
 	</div>
 <?php } } ?>
 <div class="clear"></div>
