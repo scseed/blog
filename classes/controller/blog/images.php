@@ -81,13 +81,12 @@ class Controller_Blog_Images extends Controller_Blog_Template {
             $car = Jelly::query('car', $car_id)->select();
             if( ! $car->loaded())
                 throw new HTTP_Exception_404();
-
-            if ( ! ($car->user->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id']))
-                throw new HTTP_Exception_401();
         }
 
         if($this->request->method() === HTTP_Request::POST)
         {
+	        if ( ! ($car->user->id == $this->_user['member_id'] OR $admin_group == $this->_user['member_group_id']))
+                throw new HTTP_Exception_401();
 
             $error = '';
             $validate = Validation::factory($_FILES);

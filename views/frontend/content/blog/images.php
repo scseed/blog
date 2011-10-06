@@ -20,7 +20,8 @@
                          'height' => 73,
                          'id' => 'image-'.$image->id)),
                 array('rel' => 'fancybox'));
-        if ($_user['member_id']==$car->user->id OR $_user['member_group_id']==$admin_group OR is_null($car)) {
+        if ($_user['member_id']==$car->user->id OR $_user['member_group_id']==$admin_group OR is_null($car))
+        {
 
 	        if ($car->avatar->id != $image->id)
 	        {
@@ -37,12 +38,13 @@
 		        .HTML::image('i/icons/check-ok.gif', array('title' => 'Главная', 'alt' => 'Главная'))
 		        .'</div>';
 	        }
-        }
-		echo HTML::anchor(Route::get('blog_images')->uri(array(
+            echo HTML::anchor(Route::get('blog_images')->uri(array(
 				'action' => 'del',
 				'id' => $image->id
 			)), HTML::image('i/icons/delete.gif', array('title' => 'Удалить', 'alt' => 'Удалить')),
 			array('class' => 'delete-image', 'id' => 'delete-image-'.$image->id));
+        }
+
 		?>
 	</div>
 <?php endforeach;?>
