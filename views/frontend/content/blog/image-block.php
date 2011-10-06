@@ -12,7 +12,7 @@
 	<div class="frame">
 		<?php
 
-            echo HTML::anchor('#'.$image->url /*$path . '/' . $image->car->id . '/' . $image->url . '.' . $image->ext*/,
+            echo HTML::anchor($path . '/' . $image->car->id . '/' . $image->url . '.' . $image->ext,
                 HTML::image(
                     $path . '/' . $image->car->id . '/' . $image->url . '.thumb.' . $image->ext,
                     array('title' => $image->title,
