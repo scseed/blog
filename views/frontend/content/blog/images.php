@@ -10,7 +10,7 @@
 ?>
 	<div class="frame" id="frame-<?php echo $car->id."-".$image->id;?>">
 		<?php
-                
+
             echo HTML::anchor($path . '/' . $image->car->id . '/' . $image->url . '.' . $image->ext,
                 HTML::image(
                     $path . '/' . $image->car->id . '/' . $image->url . '.thumb.' . $image->ext,
@@ -26,14 +26,14 @@
 				    'id' => $image->id
 				)), HTML::image('i/icons/delete.gif', array('title' => 'Удалить', 'alt' => 'Удалить')),
                               array('class' => 'delete-image', 'id' => 'delete-image-'.$image->id));
-            
+
             if ($car->avatar->id != $image->id)
                 echo HTML::anchor(Route::get('blog_images')->uri(array(
                         'action' => 'avatar',
                     )).'?image='.$image->id.'&car='.$car->id,
                                   HTML::image('i/icons/check.gif',
                                               array('title' => 'Сделать главной', 'alt' => 'Сделать главной')),
-                          array('class' => 'avatar-image avatar', 'id' => 'avatar-image-'.$image->id.'-'.$car->id));
+                          array('class' => 'avatar-image', 'id' => 'avatar-image-'.$image->id.'-'.$car->id));
             else
                 echo '<div class="avatar-main">'
                      .HTML::image('i/icons/check-ok.gif', array('title' => 'Главная', 'alt' => 'Главная'))
