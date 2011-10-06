@@ -47,7 +47,7 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
 
                         $validate->rule('file', 'Upload::valid')
                             ->rule('file', 'Upload::not_empty')
-                            ->rule('file', 'Upload::type', array(':value', array('jpg', 'png', 'gif')))
+                            ->rule('file', 'Upload::type', array(':value', array('jpg', 'jpeg', 'png', 'gif')))
                             ->rule('file', 'Upload::size', array(':value', '2.5M'))
                             ;
 
@@ -98,7 +98,7 @@ class Controller_Ajax_Image extends Controller_Ajax_Template  {
                             $car->avatar = $image->id;
                             $car->save();
                         }
-                            
+
                         $w = (int)Arr::get($_POST, 'w', 100);
                         $h = (int)Arr::get($_POST, 'h', 73);
                         $x1 = (int)Arr::get($_POST, 'x1');

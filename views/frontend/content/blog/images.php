@@ -21,25 +21,29 @@
                          'id' => 'image-'.$image->id)),
                 array('rel' => 'fancybox'));
         if ($_user['member_id']==$car->user->id OR $_user['member_group_id']==$admin_group OR is_null($car)) {
-            echo HTML::anchor(Route::get('blog_images')->uri(array(
-                    'action' => 'del',
-				    'id' => $image->id
-				)), HTML::image('i/icons/delete.gif', array('title' => 'Удалить', 'alt' => 'Удалить')),
-                              array('class' => 'delete-image', 'id' => 'delete-image-'.$image->id));
 
-            if ($car->avatar->id != $image->id)
-                echo HTML::anchor(Route::get('blog_images')->uri(array(
-                        'action' => 'avatar',
-                    )).'?image='.$image->id.'&car='.$car->id,
-                                  HTML::image('i/icons/check.gif',
-                                              array('title' => 'Сделать главной', 'alt' => 'Сделать главной')),
-                          array('class' => 'avatar-image', 'id' => 'avatar-image-'.$image->id.'-'.$car->id));
-            else
-                echo '<div class="avatar-main">'
-                     .HTML::image('i/icons/check-ok.gif', array('title' => 'Главная', 'alt' => 'Главная'))
-                     .'</div>';
+	        if ($car->avatar->id != $image->id)
+	        {
+		        echo HTML::anchor(Route::get('blog_images')->uri(array(
+				        'action' => 'avatar',
+			        )).'?image='.$image->id.'&car='.$car->id,
+			        HTML::image('i/icons/check.gif',
+				        array('title' => 'Сделать главной', 'alt' => 'Сделать главной')),
+			        array('class' => 'avatar-image', 'id' => 'avatar-image-'.$image->id.'-'.$car->id));
+	        }
+	        else
+	        {
+		        echo '<div class="avatar-main">'
+		        .HTML::image('i/icons/check-ok.gif', array('title' => 'Главная', 'alt' => 'Главная'))
+		        .'</div>';
+	        }
         }
-        ?>
+		echo HTML::anchor(Route::get('blog_images')->uri(array(
+				'action' => 'del',
+				'id' => $image->id
+			)), HTML::image('i/icons/delete.gif', array('title' => 'Удалить', 'alt' => 'Удалить')),
+			array('class' => 'delete-image', 'id' => 'delete-image-'.$image->id));
+		?>
 	</div>
 <?php endforeach;?>
 </div>
