@@ -15,14 +15,11 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		if($this->request->action() == 'new' OR
 		   $this->request->action() == 'edit')
 		{
-/*			StaticCss::instance()
-				->add('/js/libs/markitup/markitup/skins/markitup/style.css')
-				->add('/js/libs/textile/style.css');*/
 			StaticJs::instance()
-                    ->add('/js/libs/tiny_mce/tiny_mce.js')
-                    ->add('/js/tiny_mce_set.js')
-/*				->add('/js/libs/markitup/markitup/jquery.markitup.js')
-				->add('/js/libs/textile/set.js')*/
+//                    ->add('/js/libs/tiny_mce/tiny_mce.js')
+//                    ->add('/js/tiny_mce_set.js')
+				->add('js/libs/ckeditor/ckeditor.min.js')
+				->add('js/libs/ckeditor/adapters/jquery.js')
             ;
 		}
 
@@ -206,7 +203,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
                         $elem->outertext = '';
 
                 $article_data['message'] = $parser->innertext;
-                
+
                 $demand->set( array (
                     'blog' => $id,
                     'category' => $article_data['category'],
@@ -349,7 +346,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			}
 
 			if( ! $errors) {
-                
+
 				$this->_save_tags($article, $_tags);
             }
 
@@ -404,7 +401,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			),
 			'tags'  => implode(', ', Arr::pluck($article->tags->as_array(), 'name')),
 		);
-		
+
 		$errors = NULL;
 
 		if($this->request->method() === HTTP_Request::POST)
@@ -473,7 +470,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
     }
 	/**
 	 * Saving post tags
-	 * 
+	 *
 	 * @param Jelly_Model $article
 	 * @param array $_tags
 	 * @return void
@@ -482,7 +479,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 	{
 		$tags   = array();
 		$errors = NULL;
-		
+
 		foreach($_tags as $_tag)
 		{
 			$_tag = HTML::chars(trim($_tag));

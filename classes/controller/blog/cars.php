@@ -22,15 +22,11 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         if($this->request->action() == 'new' OR
            $this->request->action() == 'edit')
         {
-
-/*            StaticCss::instance()
-                ->add('/js/libs/markitup/markitup/skins/markitup/style.css')
-                ->add('/js/libs/textile/style.css');*/
             StaticJs::instance()
-                ->add('/js/libs/tiny_mce/tiny_mce.js')
-                ->add('/js/tiny_mce_set.js')
-//                ->add('/js/libs/markitup/markitup/jquery.markitup.js')
-  //              ->add('/js/libs/textile/set.js')
+//                ->add('/js/libs/tiny_mce/tiny_mce.js')
+//                ->add('/js/tiny_mce_set.js')
+		        ->add('js/libs/ckeditor/ckeditor.min.js')
+				->add('js/libs/ckeditor/adapters/jquery.js')
             ;
         }
 
@@ -91,7 +87,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
             ),
         );
         $errors = NULL;
-        
+
         $models = Jelly::query('model')->select();
         $years = array();
         for ($i=date("Y"); $i>=1986; $i--) {
@@ -268,7 +264,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         catch (Exception $e) {
             throw new Database_Exception(-100, 'Delete failed?');
         }
-        
+
         $category = Jelly::query('blog_category')->where('car', '=', $id)->limit(1)->select();
         if ($category->loaded()) {
             $category->is_active = FALSE;
@@ -281,7 +277,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
 
     /**
      * shows car gallery
-     * 
+     *
      * @return void
      */
     public function action_gallery()
@@ -293,7 +289,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
             throw new HTTP_Exception_404();
 
         $images = Jelly::query('image')->where('car', '=', $car->id)->select();
-        $this->template->title = 
+        $this->template->title =
                 'Acura '.$car->model->name.' '.$car->year.' / '.__('Image Gallery');
         $this->template->content =
                 View::factory('frontend/content/blog/images')
@@ -320,7 +316,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
             throw new HTTP_Exception_404();
         }
         $articles_count = Jelly::query('blog')->active()->where('category', '=', $category->id)->count();
-        
+
         $page = max(1, arr::get($_GET, 'page', 1));
         $offset = 10 * ($page-1);
 
