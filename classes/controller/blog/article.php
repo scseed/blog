@@ -296,14 +296,14 @@ class Controller_Blog_Article extends Controller_Blog_Template {
         if($this->request->method() !== HTTP_Request::POST) {
             $uniq = uniqid();
             Cookie::set_simple('mc_rootpath', $uniq);
-            @mkdir('media/content/'.$uniq, 0777, TRUE);
+            @mkdir(DOCROOT.'media'.DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR.$uniq, 0777, TRUE);
         }
 
 		$post = array(
 			'article' => array(
 				'category' => NULL,
 				'title'    => NULL,
-				'text'     => NULL,
+				'text'     => '',
 			),
 			'tags'     => NULL,
 		);
@@ -314,11 +314,16 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
             $article_data['title'] = HTML::chars($article_data['title']);
+
             $parser = HTML_parser::factory($article_data['text']);
 
-            foreach(Kohana::config('tags.striptags') as $tag)
-                foreach($parser->find($tag) as $elem)
-                    $elem->outertext = '';
+            foreach(Kohana::config('tags')->striptags as $tag)
+            {
+	            foreach($parser->find($tag) as $elem)
+	            {
+		            $elem->outertext = '';
+	            }
+            }
 
             $article_data['text'] = $parser->innertext;
 
@@ -327,6 +332,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			$article = Jelly::factory('blog');
 
 			$article->set($article_data);
+
             $article->uniq = Cookie::get_simple('mc_rootpath');
 
 			try
@@ -360,6 +366,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			->bind('current_category', $current_category->id)
 			->bind('categories', $categories)
 			->bind('post', $post)
+			->bind('errors', $errors)
 		;
 	}
 
