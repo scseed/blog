@@ -28,7 +28,9 @@ class Model_Car extends Jelly_Model {
                 'description' => Jelly::field('Text'),
 				'year' => Jelly::field('Integer'),
                 'avatar' => Jelly::field('BelongsTo', array(
-                    'foreign' => 'image'
+                    'foreign' => 'image',
+	                'default' => NULL,
+	                'convert_empty' => TRUE,
                 )),
                 'is_active' => Jelly::field('Boolean', array(
                     'default' => TRUE,

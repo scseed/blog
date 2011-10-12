@@ -21,11 +21,11 @@ class Model_Blog_Category extends Jelly_Model {
 				'id' => Jelly::field('Primary'),
 				'name' => Jelly::field('String', array(
                     'rules' => array(
-					    'not_empty' => NULL,
+					    array('not_empty'),
                     ))),
 				'title' => Jelly::field('String', array(
                     'rules' => array(
-					    'not_empty' => NULL,
+					    array('not_empty'),
                     ))),
 				'description' => Jelly::field('Text'),
                 'is_common' => Jelly::field('Boolean'),

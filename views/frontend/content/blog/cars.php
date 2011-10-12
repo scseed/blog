@@ -1,52 +1,87 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
-<div id="posts">
-    <div class="post">
-    <?php
-        if ($my) {
-            echo HTML::anchor(Route::get('blog_cars')->uri(array(
+<div id="posts" class="cars">
+	<?php if ($my): ?>
+		<div id="add_car">
+			<?php echo HTML::anchor(Route::get('blog_cars')->uri(array(
                         'action' => 'new'
-                    )), 'Новый автомобиль');
-        }
-    ?>
-    </div>
+                    )), 'Новый автомобиль',
+					array('class' => 'button_link'));
+			?>
+		</div>
+	<?php endif ?>
 <?php
     foreach($cars as $car):
 ?>
 	<div class="post">
-		<h3><?php echo $car->model->name.' '.$car->year ?></h3>
+		<div class="info">
+			<div class="avatar">
+				<?php echo (!empty($car->avatar->url)) ?
+					HTML::image(
+						'media/cars/'.$car->id.'/'.$car->avatar->url.'.thumb.'.$car->avatar->ext,
+						array('alt' => $car->model->name)
+					) :
+					HTML::image(
+						'i/cars/placeholder.jpg',
+						array('alt' => $car->model->name)
+					)
+				?>
+			</div>
+			<div class="additional">
+				<?php  if ($my) { ?>
+					<div class="actions">
+						<?php
+						echo HTML::anchor(Route::get('blog_cars')->uri(array(
+									'action' => 'edit',
+									'id' => $car->id
+								)), HTML::image(
+										'i/icons/edit.gif',
+										array('alt' => 'Редактировать', 'class' => 'ico')
+								),  array('class' => 'icon_link'));
+						echo HTML::anchor(Route::get('blog_cars')->uri(array(
+									'action' => 'edit',
+									'id' => $car->id
+								)), 'Редактировать',
+								array('class' => 'text_link'));
+
+						echo HTML::anchor(Route::get('blog_cars')->uri(array(
+									'action' => 'del',
+									'id' => $car->id
+								)), HTML::image(
+										'i/icons/delete.gif',
+										array('alt' => 'Удалить', 'class' => 'ico')
+								),  array('class' => 'icon_link'));
+						echo HTML::anchor(Route::get('blog_cars')->uri(array(
+									'action' => 'del',
+									'id' => $car->id
+								)), 'Удалить',
+								array('class' => 'text_link last'));
+						?>
+					</div>
+				<?php } ?>
+
+				<h3><?php echo $car->model->name.' '.$car->year ?></h3>
+<!--				--><?php //echo HTML::anchor(
+//					Route::get('blog_cars')->uri(array(
+//						'action' => 'journal',
+//						 'id' => $car->id
+//					)),
+//					'Борт-журнал &rarr;'
+//					)
+//				?><!--<br/>-->
+				<?php echo HTML::anchor(
+					Route::get('blog_cars')->uri(array(
+						'action' => 'gallery',
+						 'id' => $car->id
+					)),
+					'Галерея  &rarr;'
+					)
+				?>
+			</div>
+			<div class="clear"></div>
+		</div>
         <p>
-            <?php //echo $textile->TextileThis($car->description) ?>
-            <?php echo $car->description ?>
+            <?php echo strip_tags($car->description) ?>
         </p>
-        <p align="right" style="margin-top: -20px"><?php echo HTML::anchor(
-                Route::get('blog_cars')->uri(array(
-                    'action' => 'journal',
-                     'id' => $car->id
-                )),
-                'Борт-журнал'
-                )?>
-        </p>
-        <p align="right"><?php echo HTML::anchor(
-				Route::get('blog_cars')->uri(array(
-					'action' => 'gallery',
-                     'id' => $car->id
-				)),
-				'Галерея'
-				)?></p>
-        <?php  if ($my) { ?>
-            <div id="actions">
-                <?php
-                echo HTML::anchor(Route::get('blog_cars')->uri(array(
-                            'action' => 'edit',
-                            'id' => $car->id
-                        )), 'Редактировать');
-                echo HTML::anchor(Route::get('blog_cars')->uri(array(
-                            'action' => 'del',
-                            'id' => $car->id
-                        )), 'Удалить', array('class' => 'button-confirm'));
-                ?>
-            </div>
-        <?php } ?>
 	</div>
 <?php endforeach;?>
 </div>

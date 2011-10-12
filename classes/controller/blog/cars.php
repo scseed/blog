@@ -44,8 +44,10 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         if ( ! $id)
             $id = $this->_user['member_id'];
 
-        if ($id != $this->_user['member_id']) {
+        if ($id != $this->_user['member_id'])
+        {
             $user = Jelly::query('user', $id)->limit(1)->select();
+
             if ( ! $user->loaded())
                 throw new HTTP_Exception_401();
         }
@@ -60,6 +62,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
         ));
 
         $cars = Jelly::query('car')->active()->where('user', '=', $id)->limit(10)->offset($offset)->select();
+
         if ($id == $this->_user['member_id'])
             $this->template->title = __('Мой гараж');
         else
@@ -312,6 +315,7 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
             throw new HTTP_Exception_404();
 
         $category = Jelly::query('blog_category')->active()->where('car', '=', $id)->limit(1)->select();
+
         if ( ! $category->loaded()) {
             throw new HTTP_Exception_404();
         }
