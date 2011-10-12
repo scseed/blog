@@ -293,7 +293,12 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
 
         $images = Jelly::query('image')->where('car', '=', $car->id)->select();
         $this->template->title =
-                'Acura '.$car->model->name.' '.$car->year.' / '.__('Image Gallery');
+                HTML::anchor(
+	                Route::url('blog_cars', array('action' => 'list')),
+	                'Acura '.$car->model->name.' '.$car->year
+                ).' / '.__('Image Gallery')
+
+        ;
         $this->template->content =
                 View::factory('frontend/content/blog/images')
                     ->set('images', $images)
@@ -335,8 +340,13 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
                 ->order_by('date_create', 'DESC')
                 ->select();
 
-        $this->template->title = $category->title;
+        $this->template->title = HTML::anchor(
+		        Route::url('blog_cars', array('action' => 'list')),
+		        'Acura '.$category->car->model->name.' '.$category->car->year
+            ).' / Борт-Журнал'
+        ;
         $this->template->content = View::factory('frontend/content/blog/carbooks')
+                ->bind('category', $category)
                 ->bind('carbooks', $articles)
                 ->bind('pager', $pager)
                 ;

@@ -60,14 +60,14 @@
 				<?php } ?>
 
 				<h3><?php echo $car->model->name.' '.$car->year ?></h3>
-<!--				--><?php //echo HTML::anchor(
-//					Route::get('blog_cars')->uri(array(
-//						'action' => 'journal',
-//						 'id' => $car->id
-//					)),
-//					'Борт-журнал &rarr;'
-//					)
-//				?><!--<br/>-->
+				<?php echo HTML::anchor(
+					Route::get('blog_cars')->uri(array(
+						'action' => 'journal',
+						 'id' => $car->id
+					)),
+					'Борт-журнал &rarr;'
+					)
+				?><br/>
 				<?php echo HTML::anchor(
 					Route::get('blog_cars')->uri(array(
 						'action' => 'gallery',

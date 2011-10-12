@@ -2,7 +2,7 @@
 <div id="posts">
     <div class="post">
     <?php echo HTML::anchor(
-        Route::url('blog_article', array('action' => 'new', 'category' => 'self')),
+        Route::url('blog_article', array('action' => 'new', 'id' => $category->id)),
         __('Написать статью в блог'),
         array('class' => 'button')
     )?>

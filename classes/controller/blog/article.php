@@ -272,19 +272,32 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 	public function action_new()
 	{
 		$category_name = HTML::chars($this->request->param('category'));
+		$category_id = (int) $this->request->param('id');
 
-		if(! $category_name) $category_name = 'self';
-			//throw new HTTP_Exception_404('Category is not defined');
+		if(! $category_name AND ! $category_id)
+		{
+//			$category_name = 'self';
+		    $blog_category = Jelly::query('blog_category')->where('name', '=', 'self')->limit(1)->select();
+		}
+		elseif(! $category_name AND $category_id)
+		{
+			$blog_category = Jelly::query('blog_category', $category_id)->select();
+		}
+
 
         if ($this->_user['member_group_id']==$this->admin_group)
-		    $categories = Jelly::query('blog_category')->active()->admin($this->_user['member_id'])->select();
+        {
+	        $categories = Jelly::query('blog_category')->active()->admin($this->_user['member_id'])->select();
+        }
         else
-            $categories = Jelly::query('blog_category')->active()->common($this->_user['member_id'])->select();
+        {
+	        $categories = Jelly::query('blog_category')->active()->common($this->_user['member_id'])->select();
+        }
 
 		$current_category = NULL;
 		foreach($categories as $category)
 		{
-			if($category->name == $category_name)
+			if($category->id == $blog_category->id)
 			{
 				$current_category = $category;
 			}

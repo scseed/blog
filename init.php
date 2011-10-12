@@ -108,7 +108,7 @@ Route::set('blog', '(<lang>/)blog(/<action>)(/<category>)', array(
         'category' => NULL,
 ));
 */
-Route::set('blog_article', '(<lang>/)article(/<id>)(/<action>)', array(
+Route::set('blog_article', '(<lang>/)article(/<id>)(/<action>)(/<category>)', array(
 	'lang'     => $langs,
 	'id'       => '\d+',
 	'category' => '[^\d][\w_]+',
