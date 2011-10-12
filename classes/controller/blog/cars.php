@@ -292,11 +292,12 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
             throw new HTTP_Exception_404();
 
         $images = Jelly::query('image')->where('car', '=', $car->id)->select();
-        $this->template->title =
+        $this->template->title = 'Acura '.$car->model->name.' '.$car->year.' / '.__('Фото галерея');
+        $this->template->page_title =
                 HTML::anchor(
-	                Route::url('blog_cars', array('action' => 'list')),
+	                Route::url('blog_cars', array('action' => 'list', 'id' => $car->user->id)),
 	                'Acura '.$car->model->name.' '.$car->year
-                ).' / '.__('Image Gallery')
+                ).' / '.__('Фото галерея')
 
         ;
         $this->template->content =
@@ -340,11 +341,13 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
                 ->order_by('date_create', 'DESC')
                 ->select();
 
-        $this->template->title = HTML::anchor(
-		        Route::url('blog_cars', array('action' => 'list')),
+        $this->template->title = 'Acura '.$category->car->model->name.' '.$category->car->year.' / Борт-Журнал';
+        $this->template->page_title = HTML::anchor(
+		        Route::url('blog_cars', array('action' => 'list', 'id' => $category->car->user->id)),
 		        'Acura '.$category->car->model->name.' '.$category->car->year
             ).' / Борт-Журнал'
         ;
+
         $this->template->content = View::factory('frontend/content/blog/carbooks')
                 ->bind('category', $category)
                 ->bind('carbooks', $articles)
