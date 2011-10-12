@@ -1,12 +1,6 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');?>
 <div id="posts">
-    <div class="post">
-    <?php echo HTML::anchor(
-        Route::url('blog_article', array('action' => 'new', 'id' => $category->id)),
-        __('Написать статью в блог'),
-        array('class' => 'button')
-    )?>
-    </div>
+    <?php if($add_article):?><div class="post"><?php echo $add_article?></div><?php endif;?>
 <?php
 foreach($carbooks as $blog_article):
 	$article_url = Route::get('blog_article')->uri(array(

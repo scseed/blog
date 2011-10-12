@@ -348,9 +348,19 @@ class Controller_Blog_Cars extends Controller_Blog_Template {
             ).' / Борт-Журнал'
         ;
 
+
+        $add_article = ($this->_user['member_id'] == $category->user->id)
+            ? HTML::anchor(
+		        Route::url('blog_article', array('action' => 'new', 'id' => $category->id)),
+		        __('Написать статью в блог'),
+		        array('class' => 'button_link')
+		    )
+            : NULL;
+
         $this->template->content = View::factory('frontend/content/blog/carbooks')
                 ->bind('category', $category)
                 ->bind('carbooks', $articles)
+                ->bind('add_article', $add_article)
                 ->bind('pager', $pager)
                 ;
     }
