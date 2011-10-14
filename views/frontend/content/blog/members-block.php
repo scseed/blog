@@ -14,8 +14,8 @@
                 <div class="frame">
                     <?php
                         echo HTML::anchor(
-                            Route::url('forum', array('app' => 'user',
-                                                    'module' => $member['member_id'] . '-' . $member['name'])),
+                            //Route::url('forum', array('app' => 'user', 'module' => $member['member_id'] . '-' . $member['name'])),
+                            Route::url('user_data', array('id' => $member['member_id'])),
                             $ipbwi->member->avatar($member['member_id'])); ?>
                 </div>
                 <?php
