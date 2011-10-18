@@ -30,6 +30,31 @@ class Controller_Blog_List extends Controller_Blog_Template {
 			->bind('category', $category);
 	}
 
+    public function action_author() {
+        $user_id = $this->request->param('id', 0);
+        $user = Jelly::factory('user', $user_id);
+        if (! $user->loaded()) {
+            throw new HTTP_Exception_404('There is no such user');
+        }
+        $articles_count = Jelly::query('blog')->active()->where('author', '=', $user_id)->count();
+        $page = max(1, arr::get($_GET, 'page', 1));
+        $offset = 10 * ($page-1);
+
+        $pager = new Pagination(array(
+             'total_items'		=> $articles_count,
+              'view'			=> 'pagination/ru'
+        ));
+        $articles = Jelly::query('blog')->active()->where('author', '=', $user_id)->offset($offset)->limit(10)
+            ->order_by('date_create', 'desc')->select();
+
+        $this->template->title = 'Все статьи автора '.$user->name;
+        if ($page>1)
+            $this->template->title .= ' / страница '.$page;
+        $this->template->content = View::factory('frontend/content/blog/author')
+            ->set('articles', $articles)
+            ->set('pager', $pager);
+    }
+
     public function action_activity() {
         
         if( ! $this->_ajax) {
