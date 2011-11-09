@@ -81,7 +81,7 @@ Route::set('article_list', '(<lang>/)articles/<category>/<id>', array(
 ));
 
 
-Route::set('blog', '(<lang>/)blog/<category>(/<id>)(/<action>)', array(
+Route::set('blog', '(<lang>/)blog(/<category>)(/<id>)(/<action>)', array(
 	'lang'       => $langs,
 	'category' => '[\w_]+',
 	'id'       => '\d+',

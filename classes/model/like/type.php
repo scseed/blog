@@ -1,12 +1,12 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
 /**
- * type Model for Jelly ORM
+ * like_type Model for Jelly ORM
  *
- * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
+ * @author Sergei Toporkov <stopkin0@gmail.com>
  * @copyrignt
  */
-class Model_type extends Jelly_Model {
+class Model_Like_Type extends Jelly_Model {
 
 	/**
 	 * Initializating model meta information
@@ -15,10 +15,11 @@ class Model_type extends Jelly_Model {
 	 */
 	public static function initialize(Jelly_Meta $meta)
 	{
-		$meta->table('type')
+		$meta->table('like_types')
 			->fields(array(
-				'id' => Jelly::field('Primary'),
-				'name' => Jelly::field('String'),
+				'id'        => Jelly::field('Primary'),
+				'name'      => Jelly::field('String'),
+				'is_active' => Jelly::field('Boolean'),
 			));
 	}
 } // End Model_type

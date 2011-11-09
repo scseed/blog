@@ -9,7 +9,8 @@
  */
 abstract class Controller_Blog_Template extends Controller_Template {
 
-    protected $admin_group = 0;
+    protected $admin_group  = 0;
+    protected $_blog_config = NULL;
 
 	public function before()
 	{
@@ -23,9 +24,14 @@ abstract class Controller_Blog_Template extends Controller_Template {
 				break;
 		}
 
-        @include ipbwi_BOARD_PATH.'conf_global.php';
-        $this->admin_group = intval($INFO['admin_group']);
-        View::set_global('admin_group', $this->admin_group);
+		if(defined('ipbwi_BOARD_PATH'))
+		{
+			include ipbwi_BOARD_PATH.'conf_global.php';
+			$this->admin_group = intval($INFO['admin_group']);
+            View::set_global('admin_group', $this->admin_group);
+		}
+
+		$this->_blog_config = Kohana::$config->load('blog');
 
 		parent::before();
 		StaticCss::instance()->add('css/blog.css');

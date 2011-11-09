@@ -5,7 +5,7 @@
             <?php echo
                 HTML::anchor(
                     //Route::url('forum', array('app' => 'user', 'module' => $article->author->id . '-' . $article->author->name)),
-                    Route::url('user_data', array('id' => $article->author->id)),
+                    Route::url('user_data', array('lang' => I18n::lang(), 'id' => $article->author->id)),
                     HTML::image($user_avatar, array('alt' => 'Автор')),
                     array('title' => 'Автор статьи')
                 );
@@ -13,7 +13,7 @@
             <div class="title">
                 <?php echo HTML::anchor(
                     //Route::url('forum', array('app' => 'user', 'module' => $article->author->id . '-' . $article->author->name)),
-                    Route::url('user_data', array('id' => $article->author->id)),
+                    Route::url('user_data', array('lang' => I18n::lang(), 'id' => $article->author->id)),
                     $article->author->name,
                     array('title' => $article->author->name)
                 );
@@ -22,7 +22,8 @@
         </div>
     </div>
     <div class="right">
-        <?php echo Request::factory(Route::get('likes')->uri(array(
+        <?php echo Request::factory(Route::url('likes', array(
+	        'lang' => I18n::lang(),
             'action' => empty($like_action)? 'count': $like_action,
             'type' => 'blog',
             'object' => $article->id

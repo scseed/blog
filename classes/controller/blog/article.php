@@ -271,27 +271,53 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 	public function action_new()
 	{
+		$lang          = HTML::chars($this->request->param('lang'));
 		$category_name = HTML::chars($this->request->param('category'));
-		$category_id = (int) $this->request->param('id');
+		$category_id   = (int) $this->request->param('id');
+		$user_is_admin = FALSE;
+		$user_id       = NULL;
 
-		if(! $category_name AND ! $category_id)
+		if(is_array($this->_user))
 		{
-//			$category_name = 'self';
-		    $blog_category = Jelly::query('blog_category')->where('name', '=', 'self')->limit(1)->select();
+			$user_is_admin = $this->_user['member_group_id'] == $this->admin_group;
+			$user_id = $this->_user['member_id'];
 		}
-		elseif(! $category_name AND $category_id)
+		elseif(is_object($this->_user))
+		{
+			$user_is_admin = $this->_is_admin;
+			$user_id = $this->_user->id;
+		}
+
+		if( ! $category_name AND ! $category_id)
+		{
+		    $blog_category = Jelly::query('blog_category')
+		        ->where('name', '=', $this->_blog_config->default_category)
+		        ->limit(1)
+		        ->select();
+		}
+		elseif( ! $category_name AND $category_id)
 		{
 			$blog_category = Jelly::query('blog_category', $category_id)->select();
 		}
 
 
-        if ($this->_user['member_group_id']==$this->admin_group)
+        if($user_is_admin)
         {
-	        $categories = Jelly::query('blog_category')->active()->admin($this->_user['member_id'])->select();
+	        $categories = Jelly::query('blog_category')
+	            ->with('lang')
+	            ->active()
+	            ->admin($user_id)
+	            ->where(':lang.abbr', '=', $lang)
+	            ->select();
         }
         else
         {
-	        $categories = Jelly::query('blog_category')->active()->common($this->_user['member_id'])->select();
+	        $categories = Jelly::query('blog_category')
+	            ->with('lang')
+	            ->active()
+	            ->common($user_id)
+	            ->where(':lang.abbr', '=', $lang)
+	            ->select();
         }
 
 		$current_category = NULL;
@@ -303,14 +329,14 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			}
 		}
 
-		if( ! $current_category)
-			throw new HTTP_Exception_404('Category is not exists');
+//		if( ! $current_category)
+//			throw new HTTP_Exception_404('Category is not exists');
 
-        if($this->request->method() !== HTTP_Request::POST) {
-            $uniq = uniqid();
-            Cookie::set_simple('mc_rootpath', $uniq);
-            @mkdir(DOCROOT.'media'.DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR.$uniq, 0777, TRUE);
-        }
+//        if($this->request->method() !== HTTP_Request::POST) {
+//            $uniq = uniqid();
+//            Cookie::set_simple('mc_rootpath', $uniq);
+//            @mkdir(DOCROOT.'media'.DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR.$uniq, 0777, TRUE);
+//        }
 
 		$post = array(
 			'article' => array(
@@ -322,7 +348,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 		);
 		$errors = NULL;
 
-		if($this->request->method() === HTTP_Request::POST)
+		if($this->request->method() === Request::POST)
 		{
 			$article_data = Arr::extract($this->request->post('article'), array_keys($post['article']));
 
@@ -330,7 +356,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
             $parser = HTML_parser::factory($article_data['text']);
 
-            foreach(Kohana::config('tags')->striptags as $tag)
+            foreach($this->_blog_config->striptags as $tag)
             {
 	            foreach($parser->find($tag) as $elem)
 	            {
@@ -340,13 +366,13 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
             $article_data['text'] = $parser->innertext;
 
-			$article_data['author'] = $this->_user['member_id'];
+			$article_data['author'] = $user_id;
 
 			$article = Jelly::factory('blog');
 
 			$article->set($article_data);
 
-            $article->uniq = Cookie::get_simple('mc_rootpath');
+//            $article->uniq = Cookie::get_simple('mc_rootpath');
 
 			try
 			{
@@ -374,7 +400,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			$post['tags'] = implode(',', $_tags);
 		}
 
-		$this->template->title = __('New Blog Article');
+		$this->template->title = __('Новая статья в Блоге');
 		$this->template->content = View::factory('frontend/form/blog/new')
 			->bind('current_category', $current_category->id)
 			->bind('categories', $categories)

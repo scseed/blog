@@ -1,12 +1,13 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
 /**
- * like Model for Jelly ORM
+ * likes Model for Jelly ORM
  *
- * @author Sergei Gladkovskiy <smgladkovskiy@gmail.com>
- * @copyrignt
+ * @package SCSeed
+ * @package Blog
+ * @author Sergei Toporkov <stopkin0@gmail.com>
  */
-class Model_like extends Jelly_Model {
+class Model_Like extends Jelly_Model {
 
 	/**
 	 * Initializating model meta information
@@ -15,10 +16,26 @@ class Model_like extends Jelly_Model {
 	 */
 	public static function initialize(Jelly_Meta $meta)
 	{
-		$meta->table('like')
+		$meta->table('likes')
 			->fields(array(
 				'id' => Jelly::field('Primary'),
-				'name' => Jelly::field('String'),
-			));
+				'type' => Jelly::field('BelongsTo', array(
+					'foreign' => 'like_type'
+				)),
+                'object' => Jelly::field('Integer', array('column'=>'object_id')),
+                'author' => Jelly::field('BelongsTo', array(
+                    'foreign' => 'user'
+                )),
+                'date_create' => Jelly::field('Timestamp', array(
+                    'auto_now_create' => TRUE,
+                )),
+			))
+            ->load_with(array(
+                    'type',
+                    'author'))
+
+			;
+
 	}
-} // End Model_like
+
+} // End Model_Like

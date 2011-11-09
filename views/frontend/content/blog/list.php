@@ -1,11 +1,12 @@
 ﻿<?php defined('SYSPATH') or die('No direct access allowed.');?>
-<?php echo Request::factory(Route::get('blog_filter')->uri(array(
+<?php echo Request::factory(Route::url('blog_filter', array(
+	'lang' => I18n::lang(),
     'action' => 'show',
 )))->execute()->body()?>
 <div id="posts">
     <div class="post">
     <?php echo HTML::anchor(
-        Route::url('blog_article', array('action' => 'new', 'category' => 'self')),
+        Route::url('blog_article', array('lang' => I18n::lang(), 'action' => 'new', 'category' => $category)),
         __('Написать статью в блог'),
         array('class' => 'button')
     )?>
@@ -13,9 +14,10 @@
 <?php
     if (! empty($articles))
     foreach($articles as $blog_article):
-    $article_url = Route::get('blog_article')->uri(array(
-					'id' => $blog_article->id
-				));
+    $article_url = Route::url('blog_article', array(
+        'lang' => I18n::lang(),
+		'id' => $blog_article->id
+	));
     //echo $_ipbwi->member->avatar($blog_article->author->id);
 	$user_avatar = ($blog_article->author->has_avatar)
 		? 'media/images/avatars/'.$blog_article->author->id.'/thumb.jpg'

@@ -28,13 +28,20 @@ class Model_Blog_Category extends Jelly_Model {
 					    array('not_empty'),
                     ))),
 				'description' => Jelly::field('Text'),
-                'is_common' => Jelly::field('Boolean'),
-                'is_active' => Jelly::field('Boolean'),
+                'is_common' => Jelly::field('Boolean', array(
+	                'default' => TRUE
+                )),
+                'is_active' => Jelly::field('Boolean', array(
+	                'default' => TRUE,
+                )),
 				'blogs' => Jelly::field('HasMany'),
 
 // TODO: car book belongs to car but not to user ???
 
-                'user' => Jelly::field('BelongsTo', array(
+                'lang' => Jelly::field('BelongsTo', array(
+                    'foreign' => 'system_lang'
+                )),
+				'user' => Jelly::field('BelongsTo', array(
                     'foreign' => 'user'
                 )),
                 'car' => Jelly::field('BelongsTo'),
