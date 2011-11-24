@@ -45,7 +45,7 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 
 		$comments = Request::factory(
 			Route::url('comments', array(
-//					'lang'    => I18n::lang(),
+					'lang'    => I18n::lang(),
 					'action'    => 'tree',
 					'type'      => 'blog',
 					'object_id' => $article->id,
@@ -53,10 +53,32 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			)
 		)->execute()->body();
 
+		$tags = NULL;
+
+//		($_user)
+//			? if ($_user['member_group_id']==$admin_group or $_user['member_id']==$article->author->id) {
+//            echo HTML::anchor(Route::get('blog_article')->uri(array(
+//                    'action' => 'new'
+//				)), 'Новая статья');
+//            echo HTML::anchor(Route::get('blog_article')->uri(array(
+//					'id' => $article->id,
+//                    'action' => 'edit'
+//				)), 'Правка');
+//            echo HTML::anchor(Route::get('blog_article')->uri(array(
+//					'id' => $article->id,
+//                    'action' => 'del'
+//				)), 'Удалить', array('class'=>'button-confirm'));
+//        }
+//    }
+
+		$actions = NULL;
+
 		$this->template->title = $article->title;
 		$this->template->content = View::factory('frontend/content/blog/article')
 			->bind('article', $article)
 			->bind('comments', $comments)
+			->bind('tags', $tags)
+			->bind('actions', $actions)
 		;
 	}
 

@@ -24,6 +24,8 @@ abstract class Controller_Blog_Template extends Controller_Template {
 				break;
 		}
 
+		$this->_blog_config = Kohana::$config->load('blog');
+
 		if(defined('ipbwi_BOARD_PATH'))
 		{
 			include ipbwi_BOARD_PATH.'conf_global.php';

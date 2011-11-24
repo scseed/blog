@@ -36,8 +36,25 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 
 	protected function _list()
 	{
-		$category_name = HTML::chars($this->request->param('category', NULL));
-		$category = NULL;
+		$category_name      = HTML::chars($this->request->param('category', NULL));
+		$lang               = HTML::chars($this->request->param('lang', NULL));
+		$category           = NULL;
+		$user_groups        = array();
+		$user_id            = NULL;
+		$is_allowed_to_post = FALSE;
+
+		$user = $this->_user;
+
+		if(is_array($user))
+		{
+			$user_id = $user['member_id'];
+			$user_groups = '??'; // @TODO remember, how it in ipbwi
+		}
+		elseif(is_object($user))
+		{
+			$user_id = $user->id;
+			$user_groups = $user->roles->as_array();
+		}
 
 		if($category_name)
 		{
@@ -46,6 +63,10 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 				->active()
 				->limit(1)
 				->select();
+		}
+		if($user)
+		{
+			$is_allowed_to_post = in_array($user_groups, $this->_blog_config->allowed_to_post_groups);
 		}
 
 		if( $category AND ! $category->loaded())
@@ -171,8 +192,10 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
                 else
                 {
 	                $articles = Jelly::query('blog')
+	                    ->with('lang')
 		                ->active()
 		                ->order_by('date_create', 'DESC')
+	                    ->where(':lang.abbr', '=', $lang)
 		                ->limit(10)
 		                ->offset($offset)
 		                ->select();
@@ -187,6 +210,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 			->bind('articles', $articles)
 			->bind('category', $category)
             ->bind('pager', $pager)
+            ->bind('is_allowed_to_post', $is_allowed_to_post)
         ;
 	}
 

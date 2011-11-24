@@ -22,6 +22,9 @@ class Model_Blog extends Jelly_Model {
 				'category' => Jelly::field('BelongsTo', array(
 					'foreign' => 'blog_category'
 				)),
+				'lang' => Jelly::field('BelongsTo', array(
+					'foreign' => 'system_lang'
+				)),
 				'author' => Jelly::field('BelongsTo', array(
 					'foreign' => 'user'
 				)),

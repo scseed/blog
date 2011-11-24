@@ -5,11 +5,13 @@
 )))->execute()->body()?>
 <div id="posts">
     <div class="post">
-    <?php echo HTML::anchor(
-        Route::url('blog_article', array('lang' => I18n::lang(), 'action' => 'new', 'category' => $category)),
-        __('Написать статью в блог'),
-        array('class' => 'button')
-    )?>
+    <?php echo ($is_allowed_to_post)
+        ?  HTML::anchor(
+		        Route::url('blog_article', array('lang' => I18n::lang(), 'action' => 'new', 'category' => $category)),
+		        __('Написать статью в блог'),
+		        array('class' => 'button')
+		    )
+        : NULL;?>
     </div>
 <?php
     if (! empty($articles))
