@@ -53,7 +53,17 @@ class Controller_Blog_Article extends Controller_Blog_Template {
 			)
 		)->execute()->body();
 
-		$tags = NULL;
+		$_tags = $article->tags;
+
+		$tags = array();
+		foreach($_tags as $tag)
+		{
+			$tags[] = HTML::anchor(
+				Route::url('tags', array('lang' => I18n::lang(), 'type' => 'blog', 'tag_name' => $tag->name)),
+				$tag->name
+			);
+		}
+		$tags = implode(', ', $tags);
 
 //		($_user)
 //			? if ($_user['member_group_id']==$admin_group or $_user['member_id']==$article->author->id) {

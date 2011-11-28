@@ -22,6 +22,7 @@ class Model_Blog_Category extends Jelly_Model {
 				'name' => Jelly::field('String', array(
                     'rules' => array(
 					    array('not_empty'),
+	                    array('alpha_dash', array(':value', TRUE, TRUE))
                     ))),
 				'title' => Jelly::field('String', array(
                     'rules' => array(

@@ -104,7 +104,7 @@ Route::set('blog', '(<lang>/)blog(/<action>)(/<category>)', array(
 Route::set('blog_article', '(<lang>/)article(/<category>)(/<id>)(/<action>)', array(
 	'lang'     => $langs,
 	'id'       => '\d+',
-	'category' => '([a-zA-Z_0-9]+)',
+	'category' => '([a-zA-Z_]?)',
 ))
 	->defaults(array(
 		'directory' => 'blog',
@@ -149,10 +149,10 @@ Route::set('blog_members', '(<lang>/)members/<action>(/<id>)', array(
         'id' => NULL
 ));
 
-Route::set('tags', '(<lang>/)tags(/<type>)/<object_id>', array(
+Route::set('tags', '(<lang>/)tags(/<type>)/<tag_name>', array(
 	'lang'      => $langs,
 	'type'      => '\w+',
-	'object_id' => '[-_\w]+',
+	'tag_name' => '[-_a-zа-я]+',
 ))
 	->defaults(array(
 		'directory' => 'blog',

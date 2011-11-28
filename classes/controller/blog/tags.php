@@ -17,26 +17,26 @@ class Controller_Blog_Tags extends Controller_Blog_Template {
 	 */
 	public function action_list()
 	{
-		if( ! $this->_ajax)
+//		if( ! $this->_ajax)
+//			throw new HTTP_Exception_404();
+
+		$tag_name   = HTML::chars($this->request->param('tag_name'));
+		$tag_object = HTML::chars($this->request->param('type'));
+
+		if( ! $tag_name OR !$tag_object)
 			throw new HTTP_Exception_404();
 
-		$object_id = (int) $this->request->param('object_id');
-		$type_name = HTML::chars($this->request->param('type'));
-
-		if( ! $object_id OR !$type_name)
-			throw new HTTP_Exception_404();
-
-		$model_name = Inflector::plural($type_name).'_tags';
+		$model_name = Inflector::plural($tag_object).'_tags';
 		$objects_tags = Jelly::query($model_name)
 			->with('tag')
-			->with($type_name)
-			->where($type_name, '=', $object_id)
-			->order_by($model_name.':tag.name', 'ASC')
+			->with($tag_object)
+			->where(':tag.name', '=', $tag_name)
+			->order_by(':tag.name', 'ASC')
 			->select();
 
 		$tags_count = count($objects_tags);
 
-		$this->template->content = View::factory('frontend/content/blog/tags')
+		$this->template->content = View::factory('frontend/content/'.$tag_object.'/tags')
 			->bind('objects_tags', $objects_tags)
 			->bind('tags_count', $tags_count)
 			;

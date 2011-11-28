@@ -74,19 +74,19 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		if( $category AND ! $category->loaded())
 			throw new HTTP_Exception_404('There is no such blog category: :category', array(':category' => $category_name));
 
-        if ($category AND $category->is_common)
+        if ($category AND ! $category->is_common)
         {
 	        $articles_count = Jelly::query('blog')
 		        ->active()
 		        ->where('category', '=', $category->id)
 		        ->count();
         }
-        elseif($category)
+        elseif($category AND $category->is_common)
         {
 	        $articles_count = Jelly::query('blog')
 		        ->active()
 		        ->where('category', '=', $category->id)
-	            ->and_where('author_id', '=', $this->_user['member_id'])
+	            ->and_where('author_id', '=', $user_id)
 		        ->count();
         }
 		else
