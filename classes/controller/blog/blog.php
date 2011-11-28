@@ -66,6 +66,10 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 				->limit(1)
 				->select();
 		}
+		if($user)
+		{
+			$is_allowed_to_post = in_array($user_groups, $this->_blog_config->allowed_to_post_groups);
+		}
 
 		if( $category AND ! $category->loaded())
 			throw new HTTP_Exception_404('There is no such blog category: :category', array(':category' => $category_name));
@@ -190,8 +194,10 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
                 else
                 {
 	                $articles = Jelly::query('blog')
+	                    ->with('lang')
 		                ->active()
 		                ->order_by('date_create', 'DESC')
+	                    ->where(':lang.abbr', '=', $lang)
 		                ->limit(10)
 		                ->offset($offset)
 		                ->select();
@@ -206,6 +212,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 			->bind('articles', $articles)
 			->bind('category', $category)
             ->bind('pager', $pager)
+            ->bind('is_allowed_to_post', $is_allowed_to_post)
         ;
 	}
 
