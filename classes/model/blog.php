@@ -39,6 +39,12 @@ class Model_Blog extends Jelly_Model {
 						)
 					)
 				),
+				'intro' => Jelly::field('Text', array(
+						'rules' => array(
+							array('not_empty'),
+						)
+					)
+				),
 				'text' => Jelly::field('Text', array(
 						'rules' => array(
 							array('not_empty'),

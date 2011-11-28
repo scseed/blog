@@ -1,13 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-$langs = 'ru';
-if(class_exists('Page'))
-{
-	/**
-	 * Load language conf
-	 */
-	$langs = Page::instance()->system_langs();
-}
+$langs = '[a-z]{2}';
 
 $blog_list_methods = get_class_methods('Controller_Blog_List');
 
@@ -108,10 +101,10 @@ Route::set('blog', '(<lang>/)blog(/<action>)(/<category>)', array(
         'category' => NULL,
 ));
 */
-Route::set('blog_article', '(<lang>/)article(/<id>)(/<action>)(/<category>)', array(
+Route::set('blog_article', '(<lang>/)article(/<category>)(/<id>)(/<action>)', array(
 	'lang'     => $langs,
 	'id'       => '\d+',
-	'category' => '[^\d][\w_]+',
+	'category' => '([a-zA-Z_0-9]+)',
 ))
 	->defaults(array(
 		'directory' => 'blog',

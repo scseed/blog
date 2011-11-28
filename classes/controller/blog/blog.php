@@ -36,13 +36,32 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 
 	protected function _list()
 	{
-		$category_name = HTML::chars($this->request->param('category', NULL));
-		$category = NULL;
+		$category_name      = HTML::chars($this->request->param('category', NULL));
+		$lang               = HTML::chars($this->request->param('lang', 'ru'));
+		$category           = NULL;
+		$user_groups        = array();
+		$user_id            = NULL;
+		$is_allowed_to_post = FALSE;
+
+		$user = $this->_user;
+
+		if(is_array($user))
+		{
+			$user_id = $user['member_id'];
+			$user_groups = '??'; // @TODO remember, how it in ipbwi
+		}
+		elseif(is_object($user))
+		{
+			$user_id = $user->id;
+			$user_groups = $user->roles->as_array();
+		}
 
 		if($category_name)
 		{
 			$category = Jelly::query('blog_category')
+				->with('lang')
 				->where('name', '=', $category_name)
+				->where(':lang.abbr', '=', $lang)
 				->active()
 				->limit(1)
 				->select();
@@ -56,7 +75,6 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 	        $articles_count = Jelly::query('blog')
 		        ->active()
 		        ->where('category', '=', $category->id)
-		        ->and_where('author_id', '=', $this->_user['member_id'])
 		        ->count();
         }
         elseif($category)
@@ -64,6 +82,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 	        $articles_count = Jelly::query('blog')
 		        ->active()
 		        ->where('category', '=', $category->id)
+	            ->and_where('author_id', '=', $this->_user['member_id'])
 		        ->count();
         }
 		else
