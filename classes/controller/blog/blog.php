@@ -79,6 +79,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 	        $articles_count = Jelly::query('blog')
 		        ->active()
 		        ->where('category', '=', $category->id)
+	            ->where('date_create', '<', mktime(0,0,0,date('m'),date('d'),date('Y')))
 		        ->count();
         }
         elseif($category AND $category->is_common)
@@ -87,12 +88,14 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		        ->active()
 		        ->where('category', '=', $category->id)
 	            ->and_where('author_id', '=', $user_id)
+	            ->where('date_create', '<', mktime(0,0,0,date('m'),date('d'),date('Y')))
 		        ->count();
         }
 		else
 		{
 			$articles_count = Jelly::query('blog')
 		        ->active()
+				->where('date_create', '<', mktime(0,0,0,date('m'),date('d'),date('Y')))
 		        ->count();
 		}
 
@@ -176,6 +179,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		                ->active()
 		                ->where('category', '=', $category->id)
 		                ->and_where('author_id', '=', $this->_user['member_id'])
+		                ->where('date_create', '<', mktime(0,0,0,date('m'),date('d'),date('Y')))
 		                ->order_by('date_create', 'DESC')
 		                ->limit(10)
 		                ->offset($offset)
@@ -186,6 +190,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 	                $articles = Jelly::query('blog')
 		                ->active()
 		                ->where('category', '=', $category->id)
+	                    ->where('date_create', '<', mktime(0,0,0,date('m'),date('d'),date('Y')))
 		                ->order_by('date_create', 'DESC')
 		                ->limit(10)
 		                ->offset($offset)
@@ -198,6 +203,7 @@ class Controller_Blog_Blog extends Controller_Blog_Template {
 		                ->active()
 		                ->order_by('date_create', 'DESC')
 	                    ->where(':lang.abbr', '=', $lang)
+	                    ->where('date_create', '<', mktime(0,0,0,date('m'),date('d'),date('Y')))
 		                ->limit(10)
 		                ->offset($offset)
 		                ->select();
