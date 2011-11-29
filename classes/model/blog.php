@@ -20,7 +20,11 @@ class Model_Blog extends Jelly_Model {
 			->fields(array(
 				'id' => Jelly::field('Primary'),
 				'category' => Jelly::field('BelongsTo', array(
-					'foreign' => 'blog_category'
+					'foreign' => 'blog_category',
+					'rules' => array(
+						array('not_empty')
+					),
+					'convert_empty' => TRUE,
 				)),
 				'lang' => Jelly::field('BelongsTo', array(
 					'foreign' => 'system_lang'

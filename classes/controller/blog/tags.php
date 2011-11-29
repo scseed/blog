@@ -32,10 +32,12 @@ class Controller_Blog_Tags extends Controller_Blog_Template {
 			->with($tag_object)
 			->where(':tag.name', '=', $tag_name)
 			->order_by(':tag.name', 'ASC')
+			->order_by(':'.$tag_object.'.date_create', 'DESC')
 			->select();
 
 		$tags_count = count($objects_tags);
 
+		$this->template->title   = __('Статьи с тегом "'.$tag_name.'"');
 		$this->template->content = View::factory('frontend/content/'.$tag_object.'/tags')
 			->bind('objects_tags', $objects_tags)
 			->bind('tags_count', $tags_count)
@@ -57,7 +59,7 @@ class Controller_Blog_Tags extends Controller_Blog_Template {
 
 		$tag = Jelly::query('tag')->where('name', '=', $tag_name)->limit(1)->select();
 
-		$blogs = $tag->blogs;
+		$blogs = $tag->get('blog')->order_by('date_create', 'DESC')->select();
 
 		$this->template->title = $tag->name;
 		$this->template->content = View::factory('frontend/content/blog/list')
