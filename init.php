@@ -152,7 +152,7 @@ Route::set('blog_members', '(<lang>/)members/<action>(/<id>)', array(
 Route::set('tags', '(<lang>/)tags(/<type>)/<tag_name>', array(
 	'lang'      => $langs,
 	'type'      => '\w+',
-	'tag_name' => '[-_a-zа-я]+',
+	'tag_name' => '[-\pL_\s\d]+',
 ))
 	->defaults(array(
 		'directory' => 'blog',
